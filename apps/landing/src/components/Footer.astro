@@ -1,0 +1,168 @@
+---
+import Logo from "./Logo.astro";
+
+const columns = [
+  {
+    heading: "Lernen",
+    links: [
+      { label: "Lernpfade", href: "/lernen" },
+      { label: "Selbsttest", href: "/selbsttest" },
+      { label: "Für Schulen", href: "/schulen" },
+    ],
+  },
+  {
+    heading: "Wissen",
+    links: [
+      { label: "Glossar", href: "/glossar" },
+      { label: "Wiki", href: "/wiki" },
+      { label: "Quellen", href: "/quellen" },
+    ],
+  },
+  {
+    heading: "Über uns",
+    links: [
+      { label: "Team", href: "/team" },
+      { label: "Partner", href: "/partner" },
+      { label: "Kontakt", href: "/kontakt" },
+    ],
+  },
+  {
+    heading: "Rechtliches",
+    links: [
+      { label: "Impressum", href: "/impressum" },
+      { label: "Datenschutz", href: "/datenschutz" },
+      { label: "Barrierefreiheit", href: "/barrierefreiheit" },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <Logo />
+        <p class="site-footer__claim">
+          Wir stärken Medienkompetenz –<br />für eine sichere und mündige Gesellschaft.
+        </p>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer-Navigation">
+        {columns.map((col) => (
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-heading">{col.heading}</h3>
+            <ul role="list">
+              {col.links.map((link) => (
+                <li>
+                  <a href={link.href} class="site-footer__link">{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="site-footer__copy">
+        &copy; {new Date().getFullYear()} medienkundig – Sicher. Stark. Digital.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: #21204c;
+    border-top: none;
+    padding-block: var(--space-16) var(--space-8);
+    margin-top: var(--space-20);
+  }
+
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-12);
+    margin-bottom: var(--space-12);
+  }
+
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .site-footer__brand :global(.logo__img) {
+    filter: brightness(0) invert(1);
+  }
+
+  .site-footer__claim {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: var(--leading-relaxed);
+  }
+
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+  }
+
+  .site-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .site-footer__col-heading {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .site-footer__link {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.5);
+    transition: color var(--transition-fast);
+  }
+
+  .site-footer__link:hover {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .site-footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-6);
+  }
+
+  .site-footer__copy {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  @media (max-width: 900px) {
+    .site-footer__top {
+      grid-template-columns: 1fr;
+    }
+
+    .site-footer__nav {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .site-footer__nav {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8) var(--space-4);
+    }
+  }
+</style>

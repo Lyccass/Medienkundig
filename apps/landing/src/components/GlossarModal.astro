@@ -1,0 +1,402 @@
+---
+import { glossarTerms } from "@medienkundig/ui";
+---
+
+<div class="gm" id="glossar-modal" role="dialog" aria-modal="true" aria-labelledby="gm-term" hidden>
+  <div class="gm__backdrop"></div>
+
+  <div class="gm__sheet">
+    <div class="gm__close-row">
+      <button class="gm__close" aria-label="Schließen" type="button">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="gm__body">
+      <p class="gm__category" id="gm-category"></p>
+      <h2 class="gm__term" id="gm-term"></h2>
+      <p class="gm__short" id="gm-short"></p>
+      <div class="gm__divider"></div>
+      <p class="gm__full" id="gm-full"></p>
+      <div class="gm__example" id="gm-example" hidden>
+        <span class="gm__example-label">Beispiel</span>
+        <p class="gm__example-text" id="gm-example-text"></p>
+      </div>
+      <div class="gm__media" id="gm-media" hidden></div>
+      <div class="gm__related" id="gm-related"></div>
+    </div>
+
+    <div class="gm__footer">
+      <a href="/glossar" class="gm__link">Alle Begriffe im Glossar →</a>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="glossar-term-data" is:inline set:html={JSON.stringify(glossarTerms)}></script>
+
+<style>
+  .gm {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .gm[hidden] { display: none; }
+
+  .gm__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 8, 20, 0.5);
+    backdrop-filter: blur(3px);
+    cursor: pointer;
+  }
+
+  /* Bottom-sheet style panel */
+  .gm__sheet {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -8px 48px rgba(0,0,0,0.14);
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    animation: sheet-up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  @keyframes sheet-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+
+  .gm__close-row {
+    display: flex;
+    justify-content: center;
+    padding: 14px 24px 4px;
+    position: relative;
+  }
+
+  /* Drag handle */
+  .gm__close-row::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #e0ddef;
+  }
+
+  .gm__close {
+    position: absolute;
+    right: 20px;
+    top: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: #f4f3f9;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .gm__close:hover { background: #e8e6f4; color: var(--color-text); }
+
+  /* Body */
+  .gm__body {
+    padding: 16px 28px 20px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .gm__category {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .gm__term {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .gm__short {
+    font-size: 1rem;
+    color: var(--color-text-soft);
+    line-height: 1.55;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .gm__divider {
+    height: 1px;
+    background: #f0eef8;
+    margin-block: 4px;
+  }
+
+  .gm__full {
+    font-size: 0.9375rem;
+    color: var(--color-text-soft);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Related */
+  .gm__related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .gm__related-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #bbb;
+  }
+
+  .gm__related-chip {
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1.5px solid #e8e6f4;
+    background: #f8f7ff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .gm__related-chip:hover {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+  }
+
+  /* Example */
+  .gm__example {
+    background: #f8f7ff;
+    border-left: 3px solid var(--color-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .gm__example[hidden] { display: none; }
+
+  .gm__example-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+  }
+
+  .gm__example-text {
+    font-size: 0.875rem;
+    color: #444;
+    line-height: 1.6;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* Media */
+  .gm__media { display: flex; flex-direction: column; gap: 8px; }
+  .gm__media[hidden] { display: none; }
+  .gm__media iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-md);
+    border: none;
+  }
+  .gm__media img {
+    width: 100%;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+  }
+  .gm__media-caption {
+    font-size: 11px;
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  /* Footer */
+  .gm__footer {
+    padding: 14px 28px 20px;
+    border-top: 1px solid #f0eef8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .gm__link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  .gm__link:hover { opacity: 1; }
+
+  .gm__source {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .gm__source:hover { color: var(--color-primary); }
+
+  @media (min-width: 600px) {
+    .gm {
+      align-items: center;
+    }
+    .gm__sheet {
+      border-radius: 20px;
+      max-height: 80vh;
+      animation: modal-in 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    @keyframes modal-in {
+      from { transform: scale(0.95) translateY(8px); opacity: 0; }
+      to   { transform: scale(1)    translateY(0);   opacity: 1; }
+    }
+    .gm__close-row::before { display: none; }
+  }
+</style>
+
+<script>
+  type Term = {
+    id: string; term: string; category: string;
+    short: string; full: string; related: string[];
+    example?: string;
+    source?: { label: string; url: string };
+    media?: { type: "image" | "youtube"; src: string; caption?: string };
+  };
+
+  const terms: Term[] = JSON.parse(
+    document.getElementById("glossar-term-data")!.textContent!
+  );
+
+  const modal    = document.getElementById("glossar-modal") as HTMLElement;
+  const backdrop = modal.querySelector<HTMLElement>(".gm__backdrop")!;
+  const closeBtn = modal.querySelector<HTMLButtonElement>(".gm__close")!;
+
+  function open(id: string) {
+    const t = terms.find((t) => t.id === id);
+    if (!t) return;
+
+    (modal.querySelector("#gm-category") as HTMLElement).textContent = t.category;
+    (modal.querySelector("#gm-term") as HTMLElement).textContent     = t.term;
+    (modal.querySelector("#gm-short") as HTMLElement).textContent    = t.short;
+    (modal.querySelector("#gm-full") as HTMLElement).textContent     = t.full;
+
+    // Example
+    const exEl   = modal.querySelector("#gm-example") as HTMLElement;
+    const exText = modal.querySelector("#gm-example-text") as HTMLElement;
+    if (t.example) {
+      exText.textContent = t.example;
+      exEl.hidden = false;
+    } else {
+      exEl.hidden = true;
+    }
+
+    // Media
+    const mediaEl = modal.querySelector("#gm-media") as HTMLElement;
+    if (t.media) {
+      if (t.media.type === "youtube") {
+        mediaEl.innerHTML = `
+          <iframe src="https://www.youtube-nocookie.com/embed/${t.media.src}" allowfullscreen loading="lazy" title="${t.term}"></iframe>
+          ${t.media.caption ? `<p class="gm__media-caption">${t.media.caption}</p>` : ""}
+        `;
+      } else {
+        mediaEl.innerHTML = `
+          <img src="${t.media.src}" alt="${t.term}" loading="lazy" />
+          ${t.media.caption ? `<p class="gm__media-caption">${t.media.caption}</p>` : ""}
+        `;
+      }
+      mediaEl.hidden = false;
+    } else {
+      mediaEl.hidden = true;
+      mediaEl.innerHTML = "";
+    }
+
+    // Related terms
+    const relEl = modal.querySelector("#gm-related") as HTMLElement;
+    if (t.related.length > 0) {
+      const related = t.related
+        .map((rid) => terms.find((x) => x.id === rid))
+        .filter(Boolean) as Term[];
+      relEl.innerHTML =
+        `<span class="gm__related-label">Verwandt</span>` +
+        related.map((r) =>
+          `<button class="gm__related-chip" data-glossar="${r.id}" type="button">${r.term}</button>`
+        ).join("");
+    } else {
+      relEl.innerHTML = "";
+    }
+
+    // Source in footer
+    const footerEl = modal.querySelector(".gm__footer") as HTMLElement;
+    const srcEl    = footerEl.querySelector(".gm__source") as HTMLElement | null;
+    if (t.source) {
+      const html = `<a class="gm__source" href="${t.source.url}" target="_blank" rel="noopener" title="Quelle öffnen">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ${t.source.label}
+      </a>`;
+      if (srcEl) srcEl.outerHTML = html;
+      else footerEl.insertAdjacentHTML("afterbegin", html);
+    } else if (srcEl) {
+      srcEl.remove();
+    }
+
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    closeBtn.focus();
+  }
+
+  function close() {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  document.addEventListener("click", (e) => {
+    const el = (e.target as HTMLElement).closest<HTMLElement>("[data-glossar]");
+    if (el?.dataset.glossar) open(el.dataset.glossar);
+  });
+
+  backdrop.addEventListener("click", close);
+  closeBtn.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.hidden) close();
+  });
+
+  (window as any).__glossar = { open, close };
+</script>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1535"/>
+      <stop offset="100%" stop-color="#2d1680"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6c3fff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#6c3fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="url(#bg)"/>
+
+  <!-- Soft glow in center -->
+  <ellipse cx="640" cy="360" rx="400" ry="280" fill="url(#glow)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="640" cy="360" r="200" fill="none" stroke="#6c3fff" stroke-width="1" stroke-dasharray="8 12" opacity="0.3"/>
+  <circle cx="640" cy="360" r="280" fill="none" stroke="#6c3fff" stroke-width="1" stroke-dasharray="4 16" opacity="0.15"/>
+
+  <!-- Logo text -->
+  <text x="640" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white" opacity="0.5" letter-spacing="-0.5">medienkundig</text>
+
+  <!-- Play button area -->
+  <circle cx="640" cy="370" r="56" fill="white" fill-opacity="0.12"/>
+  <circle cx="640" cy="370" r="44" fill="white" fill-opacity="0.9"/>
+  <path d="M630 352 L660 370 L630 388 Z" fill="#6c3fff"/>
+
+  <!-- Duration hint -->
+  <text x="640" y="460" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="white" opacity="0.4">Ein kurzer Einstieg · 1:30 min</text>
+</svg>

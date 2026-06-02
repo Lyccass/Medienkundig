@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+---
+
+<button class="glossar-term" data-glossar={id} type="button"><slot /></button>
+
+<style>
+  .glossar-term {
+    background: var(--color-primary-soft);
+    border: none;
+    border-bottom: 2px solid var(--color-primary);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font: inherit;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .glossar-term:hover { background: #ddd6fe; }
+</style>

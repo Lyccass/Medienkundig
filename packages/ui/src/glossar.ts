@@ -1,0 +1,219 @@
+export interface GlossarMedia {
+  type: "image" | "youtube";
+  src: string;
+  caption?: string;
+}
+
+export interface GlossarSource {
+  label: string;
+  url: string;
+}
+
+export interface GlossarTerm {
+  id: string;
+  term: string;
+  category: string;
+  short: string;
+  full: string;
+  related: string[];
+  example?: string;
+  source?: GlossarSource;
+  media?: GlossarMedia;
+}
+
+export const glossarTerms: GlossarTerm[] = [
+  {
+    id: "phishing",
+    term: "Phishing",
+    category: "Betrug & Manipulation",
+    short: "Täuschungsversuche per E-Mail oder Nachricht, um persönliche Daten zu stehlen.",
+    full: "Beim Phishing versuchen Kriminelle, durch gefälschte E-Mails, Webseiten oder Nachrichten an sensible Informationen wie Passwörter oder Bankdaten zu gelangen. Typische Merkmale: unbekannte Absender-Domains, künstliche Dringlichkeit und Links zu gefälschten Webseiten.",
+    related: ["spam", "social-engineering", "domain-spoofing"],
+    example: "Eine E-Mail von »sparkasse-sicherheit@konto-verify.net« fordert Sie auf, Ihr Konto innerhalb von 24 Stunden zu bestätigen – die Domain gehört nicht zur Sparkasse.",
+    source: { label: "BSI – Phishing", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Cyber-Sicherheitslage/Methoden-der-Cyber-Kriminalitaet/Phishing/phishing_node.html" },
+  },
+  {
+    id: "deepfake",
+    term: "Deepfake",
+    category: "KI & Manipulation",
+    short: "KI-generierte, täuschend echte Bild-, Video- oder Audioinhalte.",
+    full: "Deepfakes sind mit Künstlicher Intelligenz erstellte oder veränderte Medien, die eine reale Person etwas sagen oder tun lassen, was nie stattgefunden hat. Sie werden zunehmend für Desinformation, Betrug und die Verbreitung von Falschnachrichten eingesetzt.",
+    related: ["fake-news", "ki"],
+    example: "Ein viral gehendes Video zeigt einen Politiker bei einer Aussage, die er so nie gemacht hat – erstellt mit KI in wenigen Minuten und kaum von echtem Material zu unterscheiden.",
+    source: { label: "Bundeszentrale für politische Bildung", url: "https://www.bpb.de/themen/medien-journalismus/digitale-medien/328937/deepfakes/" },
+  },
+  {
+    id: "fake-news",
+    term: "Fake News",
+    category: "Desinformation",
+    short: "Bewusst falsche oder irreführende Nachrichten, die als Tatsachen verbreitet werden.",
+    full: "Fake News sind absichtlich verbreitete Falschinformationen, die wie seriöse Nachrichten aussehen. Sie können politisch motiviert sein, Klicks generieren oder gezielt Verwirrung stiften. Erkennungsmerkmale: reißerische Schlagzeilen, fehlende Quellenangaben, unbekannte Domains.",
+    related: ["clickbait", "filterbubble", "deepfake"],
+    example: "Der Artikel »Studie beweist: Handystrahlen verursachen Gedächtnisverlust« auf gesundheit-aktuell24.de hat kein Impressum, keinen Autor und verweist auf angeblich zurückgehaltene WHO-Daten.",
+    source: { label: "Klicksafe – Fake News erkennen", url: "https://www.klicksafe.de/themen/kommunizieren/fake-news" },
+  },
+  {
+    id: "social-engineering",
+    term: "Social Engineering",
+    category: "Betrug & Manipulation",
+    short: "Psychologische Manipulation, um Menschen zur Preisgabe sensibler Informationen zu bringen.",
+    full: "Social Engineering bezeichnet Methoden, bei denen Angreifer menschliche Schwächen wie Vertrauen, Hilfsbereitschaft oder Dringlichkeit ausnutzen, um an vertrauliche Informationen zu gelangen. Häufige Formen: Phishing, Vishing (Telefon) oder Pretexting.",
+    related: ["phishing", "spam"],
+    example: "Ein Anrufer gibt sich als IT-Mitarbeiter Ihrer Firma aus und bittet freundlich um Ihr Passwort – »nur kurz für ein dringendes Update«. Legitime IT-Support-Teams fragen nie nach Passwörtern.",
+    source: { label: "BSI – Social Engineering", url: "https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Cyber-Sicherheitslage/Methoden-der-Cyber-Kriminalitaet/Social-Engineering/social-engineering_node.html" },
+  },
+  {
+    id: "spam",
+    term: "Spam",
+    category: "Betrug & Manipulation",
+    short: "Unerwünschte Massen-E-Mails oder -nachrichten, oft mit betrügerischen Inhalten.",
+    full: "Spam bezeichnet unerwünschte, massenhaft versendete Nachrichten – meist per E-Mail. Sie können harmlose Werbung enthalten, aber auch Phishing-Links, Schadsoftware oder Betrugsangebote. Spam-Filter erkennen viele solcher Nachrichten, aber nicht alle.",
+    related: ["phishing", "malware"],
+    example: "Eine E-Mail verspricht: »Sie haben 50.000 € gewonnen – klicken Sie hier!« Der enthaltene Link führt auf eine gefälschte Bankseite, die Ihre Daten stiehlt.",
+    source: { label: "Bundesnetzagentur – Spam", url: "https://www.bundesnetzagentur.de/DE/Vportal/TK/Telefon/Aerger/Spam/start.html" },
+  },
+  {
+    id: "malware",
+    term: "Malware",
+    category: "Sicherheit",
+    short: "Schadsoftware, die Geräte infiziert, Schaden anrichten oder Daten stehlen kann.",
+    full: "Malware (Malicious Software) ist ein Sammelbegriff für schädliche Programme wie Viren, Trojaner, Spyware oder Ransomware. Sie gelangt meist über E-Mail-Anhänge, infizierte Downloads oder unsichere Webseiten auf das Gerät.",
+    related: ["ransomware", "phishing"],
+    example: "Ein E-Mail-Anhang namens »Rechnung_2024.pdf.exe« installiert beim Öffnen unbemerkt ein Programm, das alle Tastatureingaben aufzeichnet und an Angreifer sendet.",
+    source: { label: "BSI – Schadprogramme", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Cyber-Sicherheitslage/Methoden-der-Cyber-Kriminalitaet/Schadprogramme/schadprogramme_node.html" },
+  },
+  {
+    id: "ransomware",
+    term: "Ransomware",
+    category: "Sicherheit",
+    short: "Erpressungssoftware, die Dateien verschlüsselt und Lösegeld fordert.",
+    full: "Ransomware ist eine Art Malware, die Dateien auf dem betroffenen Gerät verschlüsselt und dann Lösegeld – meist in Kryptowährung – für die Entschlüsselung fordert. Besonders Unternehmen und öffentliche Einrichtungen sind häufige Ziele.",
+    related: ["malware"],
+    example: "Alle Dateien auf dem Firmen-PC sind plötzlich unlesbar. Auf dem Bildschirm erscheint: »Zahlen Sie 2.000 € in Bitcoin innerhalb von 48 Stunden, sonst werden Ihre Daten gelöscht.«",
+    source: { label: "BSI – Ransomware", url: "https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Empfehlungen-nach-Angriffsart/Ransomware/ransomware_node.html" },
+  },
+  {
+    id: "clickbait",
+    term: "Clickbait",
+    category: "Desinformation",
+    short: "Reißerische Überschriften, die Klicks provozieren, aber inhaltlich wenig liefern.",
+    full: "Clickbait (Klickköder) bezeichnet Inhalte – meist Schlagzeilen oder Thumbnails – die bewusst sensationell oder irreführend gestaltet sind, um möglichst viele Klicks zu generieren. Der tatsächliche Inhalt hält die Versprechen oft nicht.",
+    related: ["fake-news", "filterbubble"],
+    example: "»Sie werden nicht glauben, was dieser Politiker wirklich getan hat!« – der Artikel enthält nur vage Andeutungen, keine Fakten, dafür viel Werbung und viele weitere Clickbait-Links.",
+    source: { label: "Bundeszentrale für politische Bildung", url: "https://www.bpb.de/lernen/digitale-bildung/werkzeugkiste-wissenschaftliches-arbeiten/292496/clickbait/" },
+  },
+  {
+    id: "filterbubble",
+    term: "Filterblase",
+    category: "Desinformation",
+    short: "Algorithmisch erzeugte Informationsblase, die nur bestimmte Inhalte zeigt.",
+    full: "Die Filterblase entsteht, wenn Algorithmen auf Social Media und Suchmaschinen immer mehr Inhalte zeigen, die zur eigenen Meinung passen. Dies verstärkt bestehende Überzeugungen und erschwert einen ausgewogenen Blick auf Themen.",
+    related: ["fake-news", "clickbait"],
+    example: "Nach einigen Klicks auf impfkritische Beiträge schlägt YouTube immer extremere Videos zum Thema vor – der Algorithmus verstärkt die eigene Perspektive, bis andere Sichtweisen kaum noch auftauchen.",
+    source: { label: "Bundeszentrale für politische Bildung – Filterblase", url: "https://www.bpb.de/themen/medien-journalismus/digitale-medien/503692/filterblase-und-echokammern/" },
+  },
+  {
+    id: "https",
+    term: "HTTPS",
+    category: "Technologie",
+    short: "Sicheres Web-Protokoll, das die Verbindung zwischen Browser und Server verschlüsselt.",
+    full: "HTTPS (HyperText Transfer Protocol Secure) ist die verschlüsselte Variante des HTTP-Protokolls. Eine Webseite mit HTTPS schützt die übertragenen Daten vor Abfangen. Erkennbar am Schloss-Symbol in der Browserzeile – ein wichtiges Vertrauenssignal.",
+    related: ["domain-spoofing", "domain"],
+    example: "Beim Online-Banking zeigt Ihr Browser »https://www.sparkasse.de« mit Schloss-Symbol. Fehlt das »s« oder das Schloss, geben Sie keine Daten ein – die Verbindung ist ungesichert.",
+    source: { label: "BSI – Sicheres Surfen", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/Surfen-im-Internet/surfen-im-internet_node.html" },
+  },
+  {
+    id: "zwei-faktor",
+    term: "Zwei-Faktor-Authentifizierung",
+    category: "Sicherheit",
+    short: "Zusätzliche Sicherheitsstufe beim Login über einen zweiten Bestätigungsschritt.",
+    full: "Die Zwei-Faktor-Authentifizierung (2FA) ergänzt das Passwort um einen zweiten Faktor – z.B. einen per SMS gesendeten Code oder eine Authenticator-App. Selbst wenn das Passwort gestohlen wird, bleibt der Account geschützt.",
+    related: [],
+    example: "Nach der Eingabe Ihres Passworts sendet Ihr E-Mail-Anbieter einen 6-stelligen Code aufs Handy. Erst nach Eingabe dieses Codes öffnet sich das Postfach – kein Fremder kann sich einloggen, selbst wenn er Ihr Passwort kennt.",
+    source: { label: "BSI – Zwei-Faktor-Authentisierung", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/Accountschutz/Zwei-Faktor-Authentisierung/zwei-faktor-authentisierung_node.html" },
+  },
+  {
+    id: "metadaten",
+    term: "Metadaten",
+    category: "Datenschutz",
+    short: "Daten über Daten – z.B. wann, wo und von wem eine Datei erstellt wurde.",
+    full: "Metadaten sind Informationen, die eine Datei oder Nachricht beschreiben, ohne ihren eigentlichen Inhalt zu sein: z.B. GPS-Koordinaten in Fotos, Erstellungsdatum von Dokumenten oder Absender und Zeitstempel einer E-Mail. Sie können viel über eine Person verraten.",
+    related: ["dsgvo", "cookie"],
+    example: "Ein Foto, das Sie direkt vom Smartphone per WhatsApp versenden, kann GPS-Koordinaten enthalten – so kann der Empfänger den genauen Ort erkennen, an dem das Foto aufgenommen wurde.",
+    source: { label: "Verbraucherzentrale – Metadaten", url: "https://www.verbraucherzentrale.de/wissen/digitale-welt/datenschutz/metadaten-was-digitale-dateien-ueber-uns-verraten-12430" },
+  },
+  {
+    id: "cookie",
+    term: "Cookie",
+    category: "Datenschutz",
+    short: "Kleine Datei, die Webseiten im Browser speichern, um Nutzer wiederzuerkennen.",
+    full: "Cookies sind kleine Textdateien, die eine Webseite im Browser speichert. Sie ermöglichen z.B. das Eingeloggt-Bleiben, aber auch das Tracking über mehrere Seiten hinweg. Drittanbieter-Cookies werden häufig für gezielte Werbung genutzt.",
+    related: ["dsgvo", "metadaten"],
+    example: "Nachdem Sie online nach Laufschuhen gesucht haben, erscheinen auf Nachrichtenwebseiten und Social Media plötzlich Werbeanzeigen für Laufschuhe – Drittanbieter-Cookies haben Ihr Surfverhalten gespeichert.",
+    source: { label: "Verbraucherzentrale – Cookies", url: "https://www.verbraucherzentrale.de/wissen/digitale-welt/datenschutz/cookies-kontrollieren-und-verwalten-so-gehts-13996" },
+  },
+  {
+    id: "dsgvo",
+    term: "DSGVO",
+    category: "Datenschutz",
+    short: "EU-Datenschutzgrundverordnung – regelt den Umgang mit personenbezogenen Daten.",
+    full: "Die Datenschutz-Grundverordnung (DSGVO) ist seit 2018 in der EU gültig und regelt, wie Unternehmen mit personenbezogenen Daten umgehen dürfen. Sie gibt Nutzerinnen und Nutzern Rechte wie Auskunft, Berichtigung und Löschung ihrer Daten.",
+    related: ["cookie", "metadaten"],
+    example: "Sie können bei jedem Unternehmen schriftlich anfragen, welche Daten es über Sie gespeichert hat – und deren vollständige Löschung fordern. Das Unternehmen muss innerhalb von 30 Tagen antworten.",
+    source: { label: "Bundesbeauftragter für den Datenschutz (BfDI)", url: "https://www.bfdi.bund.de/DE/Buerger/Inhalte/Allgemein/Datenschutz/WasDatenschutzBedeutet.html" },
+  },
+  {
+    id: "domain",
+    term: "Domain",
+    category: "Technologie",
+    short: "Die Adresse einer Webseite oder eines E-Mail-Servers – z.B. amazon.de oder gmail.com.",
+    full: "Eine Domain ist der lesbare Name einer Internetadresse. Bei E-Mails steht die Domain hinter dem @-Zeichen (z.B. sparkasse.de). Bei Webseiten ist es der Teil nach dem 'https://' (z.B. amazon.de). Der entscheidende Teil ist immer direkt vor dem letzten Punkt – alles davor ist eine Subdomain.",
+    related: ["domain-spoofing", "https", "phishing"],
+    example: "Bei »www.paypal-sicherheit.com« ist die Domain »paypal-sicherheit.com« – nicht »paypal.com«. Die echte PayPal-Domain ist immer »paypal.com«, egal was davor oder dahinter steht.",
+    source: { label: "BSI – Sichere E-Mails erkennen", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/E-Mail/e-mail_node.html" },
+  },
+  {
+    id: "domain-spoofing",
+    term: "Domain-Spoofing",
+    category: "Betrug & Manipulation",
+    short: "Gefälschte Webadresse, die einer echten täuschend ähnlich sieht.",
+    full: "Beim Domain-Spoofing erstellen Kriminelle Webseiten mit Adressen, die echten Seiten zum Verwechseln ähneln – z.B. 'amaz0n.de' statt 'amazon.de'. Ziel ist es, Nutzer zur Eingabe sensibler Daten zu verleiten.",
+    related: ["phishing", "https", "domain"],
+    example: "»amaz0n.de« (mit der Ziffer Null statt dem Buchstaben O) sieht auf den ersten Blick aus wie Amazon – ist aber eine Fälschung. Schauen Sie immer genau auf die genaue Schreibweise der Domain.",
+    source: { label: "BSI – Gefälschte Webseiten", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Cyber-Sicherheitslage/Methoden-der-Cyber-Kriminalitaet/Phishing/phishing_node.html" },
+  },
+  {
+    id: "ki",
+    term: "Künstliche Intelligenz (KI)",
+    category: "KI & Manipulation",
+    short: "Computersysteme, die menschliche Intelligenz nachahmen – mit wachsendem Einfluss.",
+    full: "Künstliche Intelligenz beschreibt Systeme, die menschliche Aufgaben ausführen können: Sprache verstehen, Bilder erkennen, Entscheidungen treffen. Im Kontext der Medienkompetenz ist besonders relevant, wie KI zur Erstellung von Deepfakes, automatisierten Falschnachrichten oder Profilerstellung eingesetzt wird.",
+    related: ["deepfake", "filterbubble"],
+    example: "Ein KI-System wie ChatGPT beantwortet Fragen in natürlicher Sprache – kann dabei aber plausibel klingende Fehlinformationen produzieren (»Halluzinationen«). Prüfen Sie wichtige Aussagen immer anhand seriöser Quellen.",
+    source: { label: "Bundeszentrale für politische Bildung – KI", url: "https://www.bpb.de/themen/digitalisierung/kuenstliche-intelligenz/" },
+  },
+  {
+    id: "url",
+    term: "URL",
+    category: "Technologie",
+    short: "Die vollständige Adresse einer Webseite, die im Browser eingetippt oder angeklickt wird.",
+    full: "URL steht für »Uniform Resource Locator« – auf Deutsch: die vollständige Adresse einer Webseite. Eine URL besteht aus Protokoll (https://), Domain (amazon.de) und optionalem Pfad (/produkte/schuhe). Die URL zeigt Ihnen genau, wohin ein Link führt – bevor Sie klicken.",
+    related: ["domain", "https", "phishing"],
+    example: "Der Link in einer verdächtigen E-Mail zeigt im Text »www.sparkasse.de«, aber die echte URL lautet »sparkasse-login.konto-info.net« – ein klares Warnsignal. Fahren Sie mit der Maus über einen Link, um die echte URL zu sehen.",
+    source: { label: "BSI – Sichere Links erkennen", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/Surfen-im-Internet/surfen-im-internet_node.html" },
+  },
+  {
+    id: "vpn",
+    term: "VPN",
+    category: "Sicherheit",
+    short: "Virtuelles privates Netzwerk – verschlüsselt die Internetverbindung.",
+    full: "Ein VPN (Virtual Private Network) verschlüsselt die Internetverbindung und leitet sie über einen Server in einem anderen Land. Es schützt vor Überwachung im öffentlichen WLAN. Nicht alle VPN-Anbieter sind vertrauenswürdig.",
+    related: ["https"],
+    example: "Im WLAN des Cafés kann theoretisch jeder im Netzwerk Ihren unverschlüsselten Datenverkehr mitlesen. Mit einem aktivierten VPN sind alle Ihre Daten verschlüsselt – auch in öffentlichen Netzen.",
+    source: { label: "BSI – VPN", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/Surfen-im-Internet/Im-oeffentlichen-WLAN/im-oeffentlichen-wlan_node.html" },
+  },
+];
+
+export const glossarCategories = [
+  ...new Set(glossarTerms.map((t) => t.category)),
+].sort();

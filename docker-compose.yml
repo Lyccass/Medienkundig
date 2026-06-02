@@ -1,0 +1,39 @@
+services:
+  landing:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/landing/node_modules
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm --filter landing run dev -- --host 0.0.0.0 --port 4321"
+    expose:
+      - "4321"
+
+  webapp:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/webapp/node_modules
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm --filter webapp run dev -- --host 0.0.0.0 --port 5173"
+    expose:
+      - "5173"
+
+  proxy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - landing
+      - webapp
+
+volumes:
+  caddy_data:
+  caddy_config:

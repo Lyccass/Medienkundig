@@ -1,0 +1,15 @@
+{
+  auto_https off
+}
+
+medienkundig.local {
+  reverse_proxy landing:4321
+}
+
+medienkundig {
+  reverse_proxy landing:4321
+}
+
+app.medienkundig.local {
+  reverse_proxy webapp:5173
+}

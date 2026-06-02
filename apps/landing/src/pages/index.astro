@@ -1,0 +1,21 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Hero from "@/components/Hero.astro";
+import VideoIntro from "@/components/VideoIntro.astro";
+import WhySection from "@/components/WhySection.astro";
+import LearningSteps from "@/components/LearningSteps.astro";
+import AppTeaser from "@/components/AppTeaser.astro";
+import FaqSection from "@/components/FaqSection.astro";
+---
+
+<BaseLayout>
+  <Hero />
+  <VideoIntro
+  videoSrc="/assets/f4a336f0ebbf70b75598af475906647b24c76c90.mp4"
+  posterSrc="/assets/Screenshot 2026-06-01 at 12.43.27.png"
+/>
+  <WhySection />
+  <LearningSteps />
+  <FaqSection />
+  <AppTeaser />
+</BaseLayout>

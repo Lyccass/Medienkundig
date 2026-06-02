@@ -1,0 +1,16 @@
+{
+  "name": "landing",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@medienkundig/theme": "workspace:*",
+    "@medienkundig/ui": "workspace:*",
+    "astro": "^4.16.0",
+    "@fontsource-variable/inter": "^5.0.0"
+  }
+}
