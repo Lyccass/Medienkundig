@@ -23,8 +23,11 @@
 
   /* Semantic */
   --color-success:       #2d9e6b;
+  --color-success-soft:  #e8f8f1;
   --color-warning:       #e0820f;
+  --color-warning-soft:  #fef3e6;
   --color-danger:        #d63f3f;
+  --color-danger-soft:   #fdeaea;
 
   /* Radius */
   --radius-xs:  4px;

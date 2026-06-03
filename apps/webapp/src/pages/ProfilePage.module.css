@@ -1,0 +1,226 @@
+.page {
+  padding: 2rem 1.5rem 4rem;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pageTitle {
+  font-size: var(--text-2xl);
+  font-weight: 900;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+/* Hero */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
+  border-radius: var(--radius-xl);
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.heroInfo {}
+
+.heroName {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: #fff;
+}
+
+.heroSub {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.75);
+  margin-top: 0.25rem;
+}
+
+/* Stats */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem 0.5rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.statIcon {
+  font-size: 1.5rem;
+}
+
+.statValue {
+  font-size: var(--text-xl);
+  font-weight: 900;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+/* Section */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.sectionTitle {
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+/* Overall progress */
+.overallBar {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.overallFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-primary), #9333ea);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+.overallLabel {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+/* Category grid */
+.categoryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.categoryCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.radial {
+  flex-shrink: 0;
+}
+
+.categoryInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.categoryIcon {
+  font-size: 1.5rem;
+}
+
+.categoryTitle {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.categorySubtitle {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  margin-top: 0.125rem;
+}
+
+/* Achievements */
+.badges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  opacity: 0.4;
+  transition: opacity var(--transition-fast);
+}
+
+.badge.badgeUnlocked {
+  opacity: 1;
+  border-color: #fde047;
+  background: #fefce8;
+}
+
+.badgeIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.badgeLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.badge.badgeUnlocked .badgeLabel {
+  color: var(--color-text);
+}
+
+/* Reset */
+.resetSection {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.resetBtn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1rem;
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.resetBtn:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}

@@ -1,62 +1,84 @@
+import type { ReactNode } from "react";
+import { BookOpen, RefreshCw, User, FolderSearch } from "lucide-react";
 import styles from "./AppShell.module.css";
 
-function Logo() {
-  return (
-    <a href="http://medienkundig.local" className={styles.logo} aria-label="Zurück zur Startseite">
-      <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <rect width="28" height="28" rx="8" fill="var(--color-primary)"/>
-        <path d="M14 5L21 9.5V18.5L14 23L7 18.5V9.5L14 5Z" fill="white" fillOpacity="0.25"/>
-        <path d="M14 8L19 11V17L14 20L9 17V11L14 8Z" fill="white"/>
-      </svg>
-      <span>medienkundig</span>
-    </a>
-  );
+export type Page = "learn" | "repeat" | "profile" | "faelle";
+
+interface NavItemDef {
+  id: Page;
+  label: string;
+  icon: ReactNode;
 }
 
-function NavItem({ label, active = false }: { label: string; active?: boolean }) {
-  return (
-    <a href="#" className={`${styles.navItem} ${active ? styles.navItemActive : ""}`}>
-      {label}
-    </a>
-  );
+const NAV_ITEMS: NavItemDef[] = [
+  { id: "learn",   label: "Lernen",      icon: <BookOpen  size={22} strokeWidth={1.8} /> },
+  { id: "faelle",  label: "Fälle",       icon: <FolderSearch size={22} strokeWidth={1.8} /> },
+  { id: "repeat",  label: "Wiederholen", icon: <RefreshCw size={22} strokeWidth={1.8} /> },
+  { id: "profile", label: "Profil",      icon: <User      size={22} strokeWidth={1.8} /> },
+];
+
+interface Props {
+  activePage: Page;
+  onNavigate: (page: Page) => void;
+  xp: number;
+  streak: number;
+  children: ReactNode;
 }
 
-export function AppShell() {
+export function AppShell({ activePage, onNavigate, xp, streak, children }: Props) {
   return (
     <div className={styles.shell}>
-      <header className={styles.header}>
-        <Logo />
-        <nav className={styles.nav} aria-label="App-Navigation">
-          <NavItem label="Profil" active />
-          <NavItem label="Lernpfade" />
-          <NavItem label="Erfolge" />
-          <NavItem label="Weiteres" />
-        </nav>
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.card}>
-          <div className={styles.cardIcon} aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="10" fill="var(--color-primary-soft)"/>
-              <path d="M18 7L27 12V24L18 29L9 24V12L18 7Z" fill="none" stroke="var(--color-primary)" strokeWidth="2"/>
-              <polyline points="13,18 17,22 23,14" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-
-          <h1 className={styles.title}>medienkundig Webapp</h1>
-          <p className={styles.description}>
-            Hier entsteht Ihre persönliche Lernumgebung. Lernpfade, Übungen,
-            Fortschritt und mehr – alles auf einem Blick.
-          </p>
-
-          <div className={styles.statusBadge}>In Entwicklung</div>
-
-          <a href="http://medienkundig.local" className={styles.backLink}>
-            ← Zurück zur Startseite
+      {/* Sidebar */}
+      <nav className={styles.sidebar} aria-label="App-Navigation">
+        <div className={styles.sidebarTop}>
+          <a href="http://medienkundig.local" className={styles.logo} aria-label="Startseite">
+            <img src="/logo.png" alt="medienkundig" className={styles.logoImg} />
           </a>
+
+          <ul className={styles.navList}>
+            {NAV_ITEMS.map((item) => (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  className={`${styles.navItem} ${activePage === item.id ? styles.navItemActive : ""}`}
+                  onClick={() => onNavigate(item.id)}
+                  aria-current={activePage === item.id ? "page" : undefined}
+                >
+                  <span className={styles.navIcon}>{item.icon}</span>
+                  <span className={styles.navLabel}>{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-      </main>
+
+        <div className={styles.sidebarBottom}>
+          <div className={styles.statPill}>
+            <span title="Tage-Serie">🔥 {streak}</span>
+            <span className={styles.statDivider} />
+            <span title="XP">⚡ {xp}</span>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main */}
+      <main className={styles.main}>{children}</main>
+
+      {/* Bottom nav mobile */}
+      <nav className={styles.bottomNav} aria-label="Mobile Navigation">
+        {NAV_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`${styles.bottomNavItem} ${activePage === item.id ? styles.bottomNavItemActive : ""}`}
+            onClick={() => onNavigate(item.id)}
+            aria-current={activePage === item.id ? "page" : undefined}
+          >
+            <span className={styles.bottomNavIcon}>{item.icon}</span>
+            <span className={styles.bottomNavLabel}>{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }

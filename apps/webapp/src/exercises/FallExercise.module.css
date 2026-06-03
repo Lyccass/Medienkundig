@@ -1,0 +1,186 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Scenario type label ── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}
+
+/* ── Scenario — no card, just document typography ── */
+.scenario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 0.875rem;
+  border-left: 3px solid var(--color-border-strong);
+}
+
+/* Email */
+.emailMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.metaKey {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  width: 44px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metaVal {
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+}
+
+.emailFrom {
+  font-size: 12px;
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+/* SMS / Chat */
+.sender {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.bubble {
+  display: inline-block;
+  background: var(--color-surface-soft);
+  border-radius: 2px var(--radius-md) var(--radius-md) var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-relaxed);
+  max-width: 90%;
+}
+
+/* Web URL bar */
+.urlBar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--color-surface-soft);
+  border-radius: var(--radius-xs);
+  padding: 0.2rem 0.5rem;
+  width: fit-content;
+}
+
+.urlIcon {
+  color: var(--color-danger);
+}
+
+.urlText {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: monospace;
+  color: var(--color-danger);
+}
+
+/* Social URL */
+.socialUrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Body text */
+.body {
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+  line-height: var(--leading-relaxed);
+  white-space: pre-line;
+}
+
+/* Warning note */
+.warningNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 11px;
+  font-weight: 600;
+  color: #92400e;
+  margin-top: 0.25rem;
+}
+
+/* ── Question ── */
+.question {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+/* ── Options ── */
+.options {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  font-size: var(--text-base);
+  color: var(--color-text-soft);
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+}
+
+.option:disabled { cursor: default; }
+.option.correct  { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+.option.wrong    { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+
+.letter {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.option.correct .letter { background: #dcfce7; color: #16a34a; }
+.option.wrong   .letter { background: #fee2e2; color: #dc2626; }
+
+.text { flex: 1; }
+.mark { font-weight: 700; }
