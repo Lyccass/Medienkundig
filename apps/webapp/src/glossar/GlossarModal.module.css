@@ -7,6 +7,27 @@
   justify-content: center;
 }
 
+@media (min-width: 600px) {
+  .overlay {
+    align-items: center;
+  }
+
+  .sheet {
+    border-radius: 20px;
+    max-height: 80vh;
+    animation: modalIn 0.22s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  @keyframes modalIn {
+    from { transform: scale(0.95) translateY(8px); opacity: 0; }
+    to   { transform: scale(1)    translateY(0);   opacity: 1; }
+  }
+
+  .closeRow::before {
+    display: none;
+  }
+}
+
 .backdrop {
   position: absolute;
   inset: 0;

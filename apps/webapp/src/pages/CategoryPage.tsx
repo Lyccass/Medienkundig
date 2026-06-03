@@ -252,7 +252,7 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
           return (
             <div key={unit.id} className={styles.unit}>
               {/* Unit header */}
-              <div className={styles.unitHeader} style={{ background: category.colorSoft, borderColor: `${category.color}33` }}>
+              <div className={styles.unitHeader} style={{ "--cat-color": category.color } as React.CSSProperties}>
                 <div className={styles.unitInfo}>
                   <p className={styles.unitEyebrow} style={{ color: category.color }}>Einheit 1</p>
                   <h2 className={styles.unitTitle}>{unit.title}</h2>

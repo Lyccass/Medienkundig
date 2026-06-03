@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import { BookOpen, RefreshCw, User, FolderSearch } from "lucide-react";
+import { BookOpen, RefreshCw, User, FolderSearch, BookMarked, Flame, Zap } from "lucide-react";
 import styles from "./AppShell.module.css";
 
-export type Page = "learn" | "repeat" | "profile" | "faelle";
+export type Page = "learn" | "repeat" | "profile" | "faelle" | "glossar";
 
 interface NavItemDef {
   id: Page;
@@ -11,10 +11,11 @@ interface NavItemDef {
 }
 
 const NAV_ITEMS: NavItemDef[] = [
-  { id: "learn",   label: "Lernen",      icon: <BookOpen  size={22} strokeWidth={1.8} /> },
+  { id: "learn",   label: "Lernen",      icon: <BookOpen     size={22} strokeWidth={1.8} /> },
   { id: "faelle",  label: "Fälle",       icon: <FolderSearch size={22} strokeWidth={1.8} /> },
-  { id: "repeat",  label: "Wiederholen", icon: <RefreshCw size={22} strokeWidth={1.8} /> },
-  { id: "profile", label: "Profil",      icon: <User      size={22} strokeWidth={1.8} /> },
+  { id: "repeat",  label: "Wiederholen", icon: <RefreshCw    size={22} strokeWidth={1.8} /> },
+  { id: "glossar", label: "Glossar",     icon: <BookMarked   size={22} strokeWidth={1.8} /> },
+  { id: "profile", label: "Profil",      icon: <User         size={22} strokeWidth={1.8} /> },
 ];
 
 interface Props {
@@ -54,9 +55,9 @@ export function AppShell({ activePage, onNavigate, xp, streak, children }: Props
 
         <div className={styles.sidebarBottom}>
           <div className={styles.statPill}>
-            <span title="Tage-Serie">🔥 {streak}</span>
+            <span title="Tage-Serie" className={styles.statItem}><Flame size={13} strokeWidth={2} /> {streak}</span>
             <span className={styles.statDivider} />
-            <span title="XP">⚡ {xp}</span>
+            <span title="XP" className={styles.statItem}><Zap size={13} strokeWidth={2} /> {xp}</span>
           </div>
         </div>
       </nav>

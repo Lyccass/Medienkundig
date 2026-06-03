@@ -9,6 +9,7 @@ import { LearnPage } from "./pages/LearnPage";
 import { CategoryPage } from "./pages/CategoryPage";
 import { RepeatPage } from "./pages/RepeatPage";
 import { FaellePage } from "./pages/FaellePage";
+import { GlossarPage } from "./pages/GlossarPage";
 import { useProgress } from "./store/useProgress";
 import { categories } from "./data/courses";
 import type { Exercise } from "./data/courses";
@@ -19,6 +20,7 @@ type View =
   | { type: "faelle" }
   | { type: "exercise"; exercises: Exercise[]; categoryId: string; returnToCategory?: string; returnToFaelle?: boolean }
   | { type: "repeat" }
+  | { type: "glossar" }
   | { type: "profile" };
 
 export default function App() {
@@ -29,6 +31,7 @@ export default function App() {
   const goRepeat  = useCallback(() => setView({ type: "repeat" }),  []);
   const goProfile = useCallback(() => setView({ type: "profile" }), []);
   const goFaelle  = useCallback(() => setView({ type: "faelle" }),  []);
+  const goGlossar = useCallback(() => setView({ type: "glossar" }), []);
   const goCategory = useCallback((categoryId: string) => setView({ type: "category", categoryId }), []);
 
   const goExercise = useCallback(
@@ -75,7 +78,8 @@ export default function App() {
   const navPage: Page =
     view.type === "learn" || view.type === "category" ? "learn" :
     view.type === "faelle"  ? "faelle"  :
-    view.type === "repeat"  ? "repeat"  : "profile";
+    view.type === "repeat"  ? "repeat"  :
+    view.type === "glossar" ? "glossar" : "profile";
 
   return (
     <GlossarProvider>
@@ -85,6 +89,7 @@ export default function App() {
           if      (p === "learn")   goLearn();
           else if (p === "faelle")  goFaelle();
           else if (p === "repeat")  goRepeat();
+          else if (p === "glossar") goGlossar();
           else                      goProfile();
         }}
         xp={progress.xp}
@@ -116,6 +121,7 @@ export default function App() {
             onStartRepeat={(exercises, catId) => goExercise(exercises, catId)}
           />
         )}
+        {view.type === "glossar" && <GlossarPage />}
         {view.type === "profile" && (
           <ProfilePage progress={progress} onResetProgress={resetProgress} />
         )}
