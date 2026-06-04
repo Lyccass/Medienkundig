@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { glossarTerms, glossarCategories } from "@medienkundig/ui";
 import { useGlossar } from "../glossar/GlossarContext";
+import { PageHeader } from "../components/PageHeader";
 import styles from "./GlossarPage.module.css";
 
 const sorted = [...glossarTerms].sort((a, b) => a.term.localeCompare(b.term, "de"));

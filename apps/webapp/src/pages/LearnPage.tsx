@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CheckCircle2, Play } from "lucide-react";
+import { CheckCircle2, Play } from "lucide-react"; // CheckCircle2 used in LearnSection (right panel)
 import { categories, type Category } from "../data/courses";
 import type { Progress } from "../store/useProgress";
 import {

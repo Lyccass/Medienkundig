@@ -1,166 +1,93 @@
 # medienkundig
 
-Monorepo für das medienkundig-Projekt – eine Plattform zur Förderung von Medienkompetenz im digitalen Alltag.
+**medienkundig** ist eine interaktive Lernplattform zur Förderung digitaler Medienkompetenz – entwickelt im Rahmen einer Bachelorarbeit.
+
+Die Plattform richtet sich an sogenannte *Digital Immigrants*: Menschen ab 50, die im Alltag zunehmend mit digitalen Medien in Berührung kommen, aber bisher wenig formale Berührungspunkte damit hatten. Ziel ist es, grundlegende Konzepte wie sichere Passwörter, das Erkennen von Betrug oder den kritischen Umgang mit Online-Nachrichten niedrigschwellig und verständlich zu vermitteln – ohne Fachjargon, ohne Überforderung.
 
 ---
 
-## Projektstruktur
+## Was die Plattform bietet
+
+Die App ist in vier Themenbereiche gegliedert:
+
+- **Digitale Grundlagen** – Was sind Links, Domains und Logins? Wie erkenne ich eine echte Webseite?
+- **Betrug erkennen** – Phishing, Fake-Shops und gefälschte Nachrichten entlarven
+- **News & Quellen prüfen** – Falschmeldungen erkennen, Quellen kritisch hinterfragen
+- **Social Media verstehen** – Datenschutz, Privatsphäre und bewusstes Teilen in sozialen Netzwerken
+
+Jedes Thema enthält kurze Lerneinheiten mit Aufgaben in verschiedenen Formaten (Multiple Choice, Szenarien, Memory, Lückentexte). Fortschritt wird lokal gespeichert, ein Glossar erklärt wichtige Begriffe, und ein Wiederholungsmodus hilft dabei, Gelerntes zu festigen.
+
+---
+
+## Technischer Aufbau
+
+Das Projekt ist als pnpm-Monorepo organisiert:
 
 ```
 medienkundig/
 ├── apps/
-│   ├── landing/          # SEO-Landingpage (Astro)
-│   └── webapp/           # Web-App-Shell (React + Vite)
+│   ├── landing/     # Öffentliche Landingpage (Astro)
+│   └── webapp/      # Lern-App (React + Vite)
 ├── packages/
-│   ├── theme/            # Geteilte CSS-Design-Tokens
-│   └── ui/               # Geteilte UI-Komponenten (ausbaubar)
-├── docker/
-│   └── Caddyfile         # Reverse-Proxy-Konfiguration
+│   ├── theme/       # Geteilte CSS-Design-Tokens
+│   └── ui/          # Geteilte UI-Komponenten
 ├── docker-compose.yml
-├── package.json
-├── pnpm-workspace.yaml
 └── README.md
 ```
 
+| Bereich | Technologie |
+|---------|-------------|
+| Landingpage | Astro 4 |
+| Lern-App | React 18 + Vite 5 |
+| Sprache | TypeScript |
+| Pakete | pnpm Workspaces |
+| Proxy | Caddy 2 |
+| Container | Docker Compose |
+| Schrift | Ubuntu Sans Variable |
+
 ---
 
-## Voraussetzungen
+## Lokal starten
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (für Docker-basierte Entwicklung)
-- **oder** [Node.js 20+](https://nodejs.org/) und [pnpm](https://pnpm.io/) für lokale Entwicklung ohne Docker
-
----
-
-## Lokale Entwicklung mit Docker
-
-### 1. `/etc/hosts` einrichten
-
-Fügen Sie folgende Zeilen zur Datei `/etc/hosts` hinzu (macOS/Linux: `/etc/hosts`, Windows: `C:\Windows\System32\drivers\etc\hosts`):
-
-```
-127.0.0.1 medienkundig.local
-127.0.0.1 app.medienkundig.local
-```
-
-### 2. Projekt starten
+### Mit Docker
 
 ```bash
+# /etc/hosts einmalig ergänzen:
+# 127.0.0.1 medienkundig.local
+# 127.0.0.1 app.medienkundig.local
+
 docker compose up
 ```
-
-Beim ersten Start werden alle Abhängigkeiten automatisch installiert. Das dauert einige Minuten.
-
-### 3. URLs
 
 | URL | Inhalt |
 |-----|--------|
 | http://medienkundig.local | Landingpage |
-| http://app.medienkundig.local | Web-App |
+| http://app.medienkundig.local | Lern-App |
 
-> **Hinweis:** HTTPS ist lokal deaktiviert. Caddy läuft im HTTP-only-Modus für `.local`-Domains.
-
----
-
-## Lokale Entwicklung ohne Docker (mit pnpm)
+### Ohne Docker (pnpm)
 
 ```bash
-# Abhängigkeiten installieren
 pnpm install
-
-# Alle Apps gleichzeitig starten
 pnpm dev
 ```
-
-Direkter Zugriff ohne `/etc/hosts`-Einträge:
 
 | URL | Inhalt |
 |-----|--------|
 | http://localhost:4321 | Landingpage |
-| http://localhost:5173 | Web-App |
+| http://localhost:5173 | Lern-App |
 
 ---
 
-## Design-Tokens anpassen
+## Design-Tokens
 
-Alle Design-Tokens sind zentral in einer Datei definiert:
+Alle visuellen Grundeinstellungen sind zentral definiert:
 
 ```
 packages/theme/src/index.css
 ```
 
-Wichtige Tokens:
-
-| Token | Beschreibung |
-|-------|-------------|
-| `--color-primary` | Hauptmarkenfarbe (Lila) |
-| `--color-text` | Haupttextfarbe |
-| `--color-bg` | Seitenhintergrund |
-| `--font-sans` | Schriftart |
-| `--radius-md` | Standardabrundung |
-
-Änderungen wirken sich sofort auf Landing und Webapp aus.
+Änderungen dort gelten automatisch für Landingpage und App.
 
 ---
 
-## Assets hinzufügen
-
-### Maskottchen ersetzen
-
-```
-apps/landing/public/assets/mascot-placeholder.svg
-```
-
-Ersetzen Sie diese Datei mit dem echten Maskottchen (SVG empfohlen, PNG möglich). Die Referenz in `Hero.astro` bleibt gleich.
-
-### Video einbinden
-
-Das Video-Platzhalterbild liegt hier:
-
-```
-apps/landing/public/assets/video-poster-placeholder.svg
-```
-
-**Option A – Lokale Videodatei:**
-Legen Sie die Videodatei unter `apps/landing/public/assets/intro.mp4` ab und übergeben Sie den Pfad als Prop:
-
-```astro
-<VideoIntro videoSrc="/assets/intro.mp4" posterSrc="/assets/video-poster.jpg" />
-```
-
-**Option B – YouTube/Vimeo-Embed:**
-Übergeben Sie die Embed-URL als Prop:
-
-```astro
-<VideoIntro embedUrl="https://www.youtube-nocookie.com/embed/VIDEO_ID" />
-```
-
----
-
-## Weiterbauen – nächste Schritte
-
-Die Web-App (`apps/webapp`) ist aktuell ein leerer Shell. Mögliche nächste Schritte:
-
-1. **Routing** – React Router oder TanStack Router einrichten
-2. **Auth** – Einfache Authentifizierung (z.B. Supabase, Clerk)
-3. **Lernpfade** – Inhaltsstruktur und Quiz-Logik implementieren
-4. **Fortschritt** – User-State verwalten (z.B. Zustand, Jotai)
-5. **Glossar/Wiki** – Content-Management via Astro Content Collections erweitern
-6. **Selbsttest** – Interaktiver Einstiegstest auf der Landingpage
-
----
-
-## Technologie-Stack
-
-| Bereich | Technologie |
-|---------|-------------|
-| Landingpage | [Astro 4](https://astro.build/) |
-| Web-App | [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/) |
-| Sprache | TypeScript |
-| Pakete | [pnpm Workspaces](https://pnpm.io/workspaces) |
-| Proxy | [Caddy 2](https://caddyserver.com/) |
-| Container | [Docker Compose](https://docs.docker.com/compose/) |
-| Schrift | Ubuntu Sans |
-
----
-
-© 2025 medienkundig
+*Bachelorarbeit – Luka Sandvoß und Jacquline Lehmann, 2025/2026*

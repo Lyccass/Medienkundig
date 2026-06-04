@@ -51,10 +51,10 @@
 /* ── Topic row ──────────────────────────────────────────────────────────── */
 .row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
   width: 100%;
-  padding: 1.125rem 0.75rem;
+  padding: 0.875rem 0.75rem;
   background: none;
   border: none;
   border-radius: 0;
