@@ -38,6 +38,43 @@ button {
   cursor: pointer;
 }
 
+/* ── Shared page shell helpers ─────────────────────────────────────────────
+   Used by: ProfilePage, GlossarPage, FaellePage, RepeatPage
+   Keeps widths, padding and spacing identical across all content pages.
+───────────────────────────────────────────────────────────────────────── */
+.pageShell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Two-column body: 200px sidebar + flexible main (Glossar / Fälle / Wiederholen) */
+.pageBody {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 3rem;
+  max-width: var(--app-page-outer-max);
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem var(--app-page-padding-x) 5rem;
+  align-items: start;
+}
+
+/* Single-column body (Profile) */
+.pageBodySingle {
+  max-width: var(--app-page-outer-max);
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem var(--app-page-padding-x) 5rem;
+}
+
+@media (max-width: 900px) {
+  .pageBody {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

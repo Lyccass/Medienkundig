@@ -36,34 +36,33 @@ export function GlossarPage() {
 
   const letters = Object.keys(grouped).sort();
 
+  const searchAction = (
+    <div className={styles.searchWrap}>
+      <Search size={16} className={styles.searchIcon} aria-hidden />
+      <input
+        type="search"
+        placeholder="Begriff suchen…"
+        className={styles.searchInput}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        aria-label="Glossar durchsuchen"
+      />
+    </div>
+  );
+
   return (
-    <div className={styles.page}>
-      {/* Page header */}
-      <div className={styles.head}>
-        <div className={styles.headInner}>
-          <div>
-            <h1 className={styles.title}>Glossar</h1>
-            <p className={styles.sub}>{glossarTerms.length} Begriffe rund um Medienkompetenz, einfach erklärt.</p>
-          </div>
-          <div className={styles.searchWrap}>
-            <Search size={16} className={styles.searchIcon} aria-hidden />
-            <input
-              type="search"
-              placeholder="Begriff suchen…"
-              className={styles.searchInput}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Glossar durchsuchen"
-            />
-          </div>
-        </div>
-      </div>
+    <div className="pageShell">
+      <PageHeader
+        title="Glossar"
+        subtitle={`${glossarTerms.length} Begriffe rund um Medienkompetenz, einfach erklärt.`}
+        action={searchAction}
+      />
 
       {/* Two-pane body */}
-      <div className={styles.body}>
+      <div className="pageBody">
 
         {/* Sidebar */}
-        <aside className={styles.sidebar}>
+        <aside className={styles.sidebar} aria-label="Filter">
           <p className={styles.sidebarLabel}>Kategorien</p>
           <nav className={styles.catNav}>
             <button

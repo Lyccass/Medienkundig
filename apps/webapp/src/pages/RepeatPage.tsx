@@ -4,6 +4,7 @@ import type { Exercise, Category } from "../data/courses";
 import { useProgressContext } from "../store/ProgressContext";
 import { shuffle } from "../utils/shuffle";
 import { TYPE_LABELS } from "../constants/ui";
+import { PageHeader } from "../components/PageHeader";
 import styles from "./RepeatPage.module.css";
 
 interface ExerciseWithMeta {
@@ -37,17 +38,14 @@ export function RepeatPage({ onStartRepeat }: Props) {
     ? allCompleted
     : allCompleted.filter((item) => item.category.id === filter);
 
+  const subtitle = allCompleted.length === 0
+    ? "Abgeschlossene Übungen gezielt festigen."
+    : `${allCompleted.length} abgeschlossene Übungen – in zufälliger Reihenfolge.`;
+
   if (allCompleted.length === 0) {
     return (
-      <div className={styles.page}>
-        <div className={styles.head}>
-          <div className={styles.headInner}>
-            <div>
-              <h1 className={styles.title}>Wiederholen</h1>
-              <p className={styles.sub}>Abgeschlossene Übungen gezielt festigen.</p>
-            </div>
-          </div>
-        </div>
+      <div className="pageShell">
+        <PageHeader title="Wiederholen" subtitle={subtitle} />
         <div className={styles.empty}>
           <p className={styles.emptyTitle}>Noch keine Übungen abgeschlossen</p>
           <p className={styles.emptyText}>
@@ -59,19 +57,10 @@ export function RepeatPage({ onStartRepeat }: Props) {
   }
 
   return (
-    <div className={styles.page}>
-      {/* Header */}
-      <div className={styles.head}>
-        <div className={styles.headInner}>
-          <div>
-            <h1 className={styles.title}>Wiederholen</h1>
-            <p className={styles.sub}>{allCompleted.length} abgeschlossene Übungen – in zufälliger Reihenfolge.</p>
-          </div>
-        </div>
-      </div>
+    <div className="pageShell">
+      <PageHeader title="Wiederholen" subtitle={subtitle} />
 
-      {/* Two-pane body */}
-      <div className={styles.body}>
+      <div className="pageBody">
 
         {/* Sidebar */}
         <aside className={styles.sidebar}>

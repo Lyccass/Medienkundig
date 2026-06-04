@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, MapPinned } from "lucide-react";
 import { faelle, type FallAdventure, type FallTopic } from "../data/faelle";
 import { categories, type Exercise } from "../data/courses";
 import { TOPIC_ICONS, THEME_ICONS } from "../constants/ui";
+import { PageHeader } from "../components/PageHeader";
 import styles from "./FaellePage.module.css";
 
 const THEME_FILTERS = ["Alle", "Alltag", "Online-Shopping", "Konto", "Reise"] as const;
@@ -28,19 +29,10 @@ export function FaellePage({ onStartFall }: Props) {
   );
 
   return (
-    <div className={styles.page}>
-      {/* Header */}
-      <div className={styles.head}>
-        <div className={styles.headInner}>
-          <div>
-            <h1 className={styles.title}>Fälle</h1>
-            <p className={styles.sub}>Mehrteilige Alltagsszenarien mit echten Entscheidungen.</p>
-          </div>
-        </div>
-      </div>
+    <div className="pageShell">
+      <PageHeader title="Fälle" subtitle="Mehrteilige Alltagsszenarien mit echten Entscheidungen." />
 
-      {/* Two-pane body */}
-      <div className={styles.body}>
+      <div className="pageBody">
 
         {/* Sidebar */}
         <aside className={styles.sidebar}>
