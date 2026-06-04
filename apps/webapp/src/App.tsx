@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { GlossarProvider } from "./glossar/GlossarContext";
 import { GlossarModal } from "./glossar/GlossarModal";
 import { AppShell } from "./components/AppShell";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import type { Page } from "./components/AppShell";
 import { ExercisePage } from "./pages/ExercisePage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -10,9 +11,76 @@ import { CategoryPage } from "./pages/CategoryPage";
 import { RepeatPage } from "./pages/RepeatPage";
 import { FaellePage } from "./pages/FaellePage";
 import { GlossarPage } from "./pages/GlossarPage";
-import { useProgress } from "./store/useProgress";
+import { useProgressContext } from "./store/ProgressContext";
 import { categories } from "./data/courses";
 import type { Exercise } from "./data/courses";
+
+const LESSON_SLIDES: Record<string, Array<Omit<Extract<Exercise["data"], { type: "lesson" }>, "type">>> = {
+  grundlagen: [
+    {
+      title: "Woran du eine Internetadresse erkennst",
+      body: "Eine Internetadresse zeigt, wohin ein Link führt. Der wichtigste Teil heißt Domain: Das ist der Hauptname direkt vor .de, .com oder einer ähnlichen Endung.",
+      bullets: ["Eine kurze Domain ist leichter zu prüfen.", "Zusatzwörter wie login24 oder sicher-konto können ein Warnzeichen sein."],
+      glossarLinks: ["domain"],
+    },
+    {
+      title: "Sichere Verbindung bedeutet nicht automatisch sichere Seite",
+      body: "HTTPS und das Schloss im Browser zeigen nur, dass die Verbindung verschlüsselt ist. Auch Betrugsseiten können HTTPS nutzen.",
+      bullets: ["Prüfe zusätzlich die Domain der Webseite.", "Gib persönliche Daten nur ein, wenn du sicher bist."],
+      glossarLinks: ["https"],
+    },
+  ],
+  scamming: [
+    {
+      title: "Betrug im Internet wirkt oft dringend",
+      body: "Viele Betrugsversuche setzen dich unter Druck: angeblich läuft ein Konto ab, ein Paket wartet oder ein Familienmitglied braucht sofort Hilfe. Das Fachwort Phishing beschreibt gefälschte Nachrichten, die Daten stehlen sollen.",
+      bullets: ["Nimm dir Zeit.", "Öffne keine Links aus der Nachricht.", "Frage über einen bekannten Kontaktweg nach."],
+      glossarLinks: ["phishing"],
+    },
+    {
+      title: "Gefälschte Nachrichten erkennen",
+      body: "Gefälschte E-Mails oder SMS sehen oft echt aus. Bei Phishing achtest du besonders auf Absender, Link-Adresse und ungewöhnliche Forderungen.",
+      bullets: ["Banken fragen keine Passwörter per Nachricht ab.", "Unbekannte Nummern sollten nie direkt Geld bekommen."],
+      glossarLinks: ["phishing"],
+    },
+  ],
+  news: [
+    {
+      title: "Nicht jede Meldung ist eine verlässliche Nachricht",
+      body: "Bevor du eine Nachricht glaubst oder weiterleitest, prüfe, wer sie veröffentlicht hat. Reißerische Überschriften nennt man oft Clickbait.",
+      bullets: ["Achte auf Datum und Quelle.", "Suche nach einer zweiten Bestätigung."],
+      glossarLinks: ["clickbait"],
+    },
+  ],
+  socialmedia: [
+    {
+      title: "Soziale Netzwerke zeigen nicht alles neutral",
+      body: "Plattformen zeigen dir oft Inhalte, die zu deinen bisherigen Klicks passen. So kann eine Filterblase entstehen: Du siehst dann weniger andere Sichtweisen.",
+      bullets: ["Prüfe starke Behauptungen außerhalb der Plattform.", "Teile persönliche Daten nur bewusst."],
+      glossarLinks: ["filterblase"],
+    },
+  ],
+};
+
+function withLessonSlides(categoryId: string, exercises: Exercise[]): Exercise[] {
+  const slides = LESSON_SLIDES[categoryId] ?? [];
+  if (slides.length === 0) return exercises;
+
+  return exercises.flatMap((exercise, index) => {
+    const slide = slides[index % slides.length];
+    return [
+      {
+        id: `lesson-${categoryId}-${index + 1}`,
+        data: {
+          type: "lesson",
+          mediaType: "text",
+          ...slide,
+        },
+      } satisfies Exercise,
+      exercise,
+    ];
+  });
+}
 
 type View =
   | { type: "learn" }
@@ -25,13 +93,13 @@ type View =
 
 export default function App() {
   const [view, setView] = useState<View>({ type: "learn" });
-  const { progress, completeExercises, resetProgress } = useProgress();
+  const { progress, completeExercises, resetProgress } = useProgressContext();
 
-  const goLearn   = useCallback(() => setView({ type: "learn" }),   []);
-  const goRepeat  = useCallback(() => setView({ type: "repeat" }),  []);
-  const goProfile = useCallback(() => setView({ type: "profile" }), []);
-  const goFaelle  = useCallback(() => setView({ type: "faelle" }),  []);
-  const goGlossar = useCallback(() => setView({ type: "glossar" }), []);
+  const goLearn    = useCallback(() => setView({ type: "learn" }),    []);
+  const goRepeat   = useCallback(() => setView({ type: "repeat" }),   []);
+  const goProfile  = useCallback(() => setView({ type: "profile" }),  []);
+  const goFaelle   = useCallback(() => setView({ type: "faelle" }),   []);
+  const goGlossar  = useCallback(() => setView({ type: "glossar" }),  []);
   const goCategory = useCallback((categoryId: string) => setView({ type: "category", categoryId }), []);
 
   const goExercise = useCallback(
@@ -58,18 +126,19 @@ export default function App() {
     else goLearn();
   }, [view, goFaelle, goCategory, goLearn]);
 
-  // Full-screen exercise page — no AppShell
   if (view.type === "exercise") {
     const cat = categories.find((c) => c.id === view.categoryId);
+    const isFallRun = view.categoryId === "faelle";
     return (
       <GlossarProvider>
-        <ExercisePage
-          exercises={view.exercises}
-          categoryColor={cat?.color ?? "#6c3fff"}
-          categoryTitle={cat?.title ?? "Wiederholen"}
-          onComplete={handleExerciseComplete}
-          onClose={handleExerciseClose}
-        />
+        <ErrorBoundary>
+          <ExercisePage
+            exercises={view.exercises}
+            categoryTitle={cat?.title ?? (isFallRun ? "Fall" : "Wiederholen")}
+            onComplete={handleExerciseComplete}
+            onClose={handleExerciseClose}
+          />
+        </ErrorBoundary>
         <GlossarModal />
       </GlossarProvider>
     );
@@ -104,20 +173,19 @@ export default function App() {
             progress={progress}
             onBack={goLearn}
             onStartExercises={(exercises, catId) =>
-              goExercise(exercises, catId, { returnToCategory: view.categoryId })
+              goExercise(withLessonSlides(catId, exercises), catId, { returnToCategory: view.categoryId })
             }
           />
         )}
         {view.type === "faelle" && (
           <FaellePage
-            onStartFall={(exercise, catId) =>
-              goExercise([exercise], catId, { returnToFaelle: true })
+            onStartFall={(exercises) =>
+              goExercise(exercises, "faelle", { returnToFaelle: true })
             }
           />
         )}
         {view.type === "repeat" && (
           <RepeatPage
-            progress={progress}
             onStartRepeat={(exercises, catId) => goExercise(exercises, catId)}
           />
         )}

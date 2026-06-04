@@ -45,15 +45,15 @@
 }
 
 .option.correct {
-  border-color: #16a34a;
-  background: #f0fdf4;
-  color: #15803d;
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+  color: var(--color-primary-dark);
 }
 
 .option.wrong {
-  border-color: #dc2626;
-  background: #fef2f2;
-  color: #b91c1c;
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .letter {
@@ -71,13 +71,13 @@
 }
 
 .option.correct .letter {
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .option.wrong .letter {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .text {

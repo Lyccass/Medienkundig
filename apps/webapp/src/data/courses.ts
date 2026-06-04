@@ -13,6 +13,7 @@ export interface BildAuswahlData {
   imageDescription: string;
   options: { label: string; hint?: string }[];
   correct: number;
+  explanation?: string;
   glossarLinks?: string[];
 }
 
@@ -42,6 +43,8 @@ export interface VervollstaendigenData {
   after: string;
   options: string[];
   correct: number;
+  parts?: string[];
+  correctAnswers?: string[];
   explanation?: string;
   glossarLinks?: string[];
 }
@@ -67,7 +70,17 @@ export interface FallData {
   glossarLinks?: string[];
 }
 
+export interface LessonData {
+  type: "lesson";
+  title: string;
+  body: string;
+  bullets?: string[];
+  mediaType?: "text" | "audio" | "video";
+  glossarLinks?: string[];
+}
+
 export type ExerciseData =
+  | LessonData
   | MCQData
   | BildAuswahlData
   | AudioAuswahlData
@@ -91,38 +104,170 @@ export interface Category {
   id: string;
   title: string;
   subtitle: string;
-  color: string;
-  colorSoft: string;
   units: Unit[];
 }
 
 export const categories: Category[] = [
   {
+    id: "grundlagen",
+    title: "Digitale Grundlagen",
+    subtitle: "Logins, Links & Datensicherheit",
+    units: [
+      {
+        id: "gl-unit1",
+        title: "Erste Schritte im Internet",
+        description: "Lerne die wichtigsten Begriffe und Konzepte für einen sicheren Alltag im Internet.",
+        exercises: [
+          {
+            id: "gl-1",
+            data: {
+              type: "multipleChoice",
+              question: "Was ist eine Domain?",
+              options: [
+                "Ein Passwort für eine Webseite",
+                "Die Adresse einer Webseite im Internet",
+                "Ein Benutzerkonto",
+                "Ein Sicherheitsprogramm",
+              ],
+              correct: 1,
+              explanation: "Eine Domain ist die Adresse einer Webseite, zum Beispiel medienkundig.de.",
+              glossarLinks: ["domain"],
+            },
+          },
+          {
+            id: "gl-2",
+            data: {
+              type: "fall",
+              question: "Welche Webseite ist echt?",
+              scenario: {
+                type: "web",
+                url: "medienkundig-login24.net",
+                content: "Sie erhalten eine E-Mail mit zwei Links: »medienkundig.de« und »medienkundig-login24.net«. Beide Seiten sehen ähnlich aus.",
+              },
+              options: [
+                "medienkundig-login24.net – weil sie einen Bindestrich hat",
+                "medienkundig.de – weil sie mit https:// beginnt und keine Zusatzwörter hat",
+                "Beide sind gleich sicher",
+                "Keine, weil alle Webseiten gefährlich sind",
+              ],
+              correct: 1,
+              explanation: "Die echte Seite hat eine kurze, klare Domain ohne Zusatzwörter und nutzt HTTPS.",
+              glossarLinks: ["domain", "https"],
+            },
+          },
+          {
+            id: "gl-3",
+            data: {
+              type: "multipleChoice",
+              question: "Was bedeutet das Schloss-Symbol in der Browserzeile?",
+              options: [
+                "Die Seite gehört einer Bank",
+                "Die Verbindung zur Seite ist verschlüsselt (HTTPS)",
+                "Die Seite ist kostenlos",
+                "Sie sind eingeloggt",
+              ],
+              correct: 1,
+              explanation: "Das Schloss zeigt HTTPS an – Ihre Verbindung ist verschlüsselt und sicherer.",
+              glossarLinks: ["https"],
+            },
+          },
+          {
+            id: "gl-4",
+            data: {
+              type: "multipleChoice",
+              question: "Was ist ein sicheres Passwort?",
+              options: [
+                "Ihr Geburtstag",
+                "Der Name Ihres Haustieres",
+                "Eine zufällige Kombination aus Buchstaben, Zahlen und Sonderzeichen",
+                "Das Wort »Passwort«",
+              ],
+              correct: 2,
+              explanation: "Sichere Passwörter sind lang, zufällig und enthalten verschiedene Zeichentypen.",
+              glossarLinks: ["passwort"],
+            },
+          },
+          {
+            id: "gl-5",
+            data: {
+              type: "multipleChoice",
+              question: "Was ist ein Link?",
+              options: [
+                "Ein Benutzername",
+                "Eine klickbare Verknüpfung zu einer anderen Seite",
+                "Eine Art Dateivirus",
+                "Ein spezielles Fenster im Browser",
+              ],
+              correct: 1,
+              explanation: "Ein Link ist eine klickbare Verknüpfung, die Sie direkt zu einer anderen Seite führt.",
+              glossarLinks: ["link"],
+            },
+          },
+          {
+            id: "gl-6",
+            data: {
+              type: "vervollstaendigen",
+              question: "Füllen Sie die Lücken mit den passenden Begriffen.",
+              before: "",
+              after: "",
+              parts: [
+                "Eine ",
+                " ist der Name einer Webseite. Ein ",
+                " führt zu einer anderen Seite. ",
+                " zeigt eine verschlüsselte Verbindung an.",
+              ],
+              correctAnswers: ["Domain", "Link", "HTTPS"],
+              options: ["Link", "Passwort", "Domain", "HTTPS", "Cookie"],
+              correct: 0,
+              explanation:
+                "Domain, Link und HTTPS sind Grundbegriffe für sicheres Bewegen im Internet.",
+              glossarLinks: ["domain", "link", "https"],
+            },
+          },
+          {
+            id: "gl-7",
+            data: {
+              type: "memory",
+              question: "Ordnen Sie die Begriffe den richtigen Erklärungen zu:",
+              pairs: [
+                { term: "Domain", definition: "Name einer Webseite" },
+                { term: "Link", definition: "Klickbare Verbindung zu einer Seite" },
+                { term: "HTTPS", definition: "Verschlüsselte Verbindung" },
+                { term: "Cookie", definition: "Speichert Informationen im Browser" },
+              ],
+              explanation:
+                "Diese Begriffe begegnen Ihnen im Alltag ständig. Wer sie erkennt, kann Webseiten sicherer einschätzen.",
+              glossarLinks: ["domain", "https", "cookie"],
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: "scamming",
-    title: "Scamming",
-    subtitle: "Online- & Offline-Betrug",
-    color: "#d97706",
-    colorSoft: "#fef3e6",
+    title: "Betrug erkennen",
+    subtitle: "Gefälschte Nachrichten & falsche Angebote",
     units: [
       {
         id: "scam-unit1",
         title: "Betrug erkennen",
-        description: "Lerne die häufigsten Betrugsmaschen im Internet und am Telefon zu erkennen.",
+        description: "Lerne die häufigsten Tricks von Betrügern im Internet und am Telefon zu erkennen.",
         exercises: [
           {
             id: "scam-1",
             data: {
               type: "multipleChoice",
-              question: "Was ist Phishing?",
+              question: "Was bedeutet Phishing?",
               options: [
                 "Eine Angelmethode im Internet",
-                "Täuschungsversuche per E-Mail oder Nachricht, um Daten zu stehlen",
+                "Gefälschte E-Mails oder Nachrichten, mit denen Daten gestohlen werden sollen",
                 "Ein Sicherheitsprogramm für E-Mails",
                 "Eine Art soziales Netzwerk",
               ],
               correct: 1,
               explanation:
-                "Phishing bezeichnet gefälschte Nachrichten, die Sie zur Preisgabe sensibler Daten verleiten sollen.",
+                "Phishing ist ein Fachwort für gefälschte Nachrichten, die Passwörter oder andere persönliche Daten stehlen sollen.",
               glossarLinks: ["phishing"],
             },
           },
@@ -146,7 +291,7 @@ export const categories: Category[] = [
               ],
               correct: 1,
               explanation:
-                "Die echte Sparkassen-Domain lautet sparkasse.de. »konto-verify.net« ist eine Fälschung – das klassische Merkmal von Phishing.",
+                "Die echte Adresse der Sparkasse lautet sparkasse.de. »konto-verify.net« ist eine Fälschung und ein typisches Warnsignal.",
               glossarLinks: ["phishing", "domain-spoofing", "domain"],
             },
           },
@@ -154,14 +299,21 @@ export const categories: Category[] = [
             id: "scam-3",
             data: {
               type: "vervollstaendigen",
-              question: "Ergänzen Sie den Satz:",
+              question: "Füllen Sie die Lücken mit den passenden Warnsignalen.",
               before: "Beim ",
               after:
                 " versuchen Kriminelle, durch gefälschte E-Mails an Ihre Passwörter zu gelangen.",
-              options: ["Phishing", "Surfen", "Chatten", "Lesen"],
+              parts: [
+                "Beim ",
+                " wollen Kriminelle Daten stehlen. Häufig nutzen sie ",
+                " und eine fremde ",
+                ".",
+              ],
+              correctAnswers: ["Phishing", "Zeitdruck", "Domain"],
+              options: ["Phishing", "Zeitdruck", "Domain", "Surfen", "Newsletter"],
               correct: 0,
               explanation:
-                "Phishing ist eine der häufigsten Angriffsmethoden im Internet – erkennbar an fremden Domains, gefälschten Absendern und künstlicher Dringlichkeit.",
+                "Phishing ist ein Fachwort für solche gefälschten Nachrichten. Warnsignale sind fremde Internetadressen, falsche Absender und künstlicher Zeitdruck.",
               glossarLinks: ["phishing"],
             },
           },
@@ -209,8 +361,6 @@ export const categories: Category[] = [
     id: "news",
     title: "News & Quellen",
     subtitle: "Informationen kritisch bewerten",
-    color: "#2563eb",
-    colorSoft: "#eff6ff",
     units: [
       {
         id: "news-unit1",
@@ -263,11 +413,17 @@ export const categories: Category[] = [
             id: "news-3",
             data: {
               type: "vervollstaendigen",
-              question: "Ergänzen Sie den Satz:",
+              question: "Füllen Sie die Lücken mit den passenden Begriffen.",
               before:
                 "Absichtlich verbreitete Falschinformationen, die wie echte Nachrichten wirken, nennt man ",
               after: ".",
-              options: ["Fake News", "Wetterberichte", "Produktbewertungen", "Suchbegriffe"],
+              parts: [
+                "Absichtlich verbreitete Falschinformationen nennt man ",
+                ". Reißerische Überschriften für mehr Klicks heißen ",
+                ".",
+              ],
+              correctAnswers: ["Fake News", "Clickbait"],
+              options: ["Clickbait", "Fake News", "Wetterberichte", "Suchbegriffe"],
               correct: 0,
               explanation:
                 "Fake News sind gezielt verbreitete Falschinformationen. Prüfen Sie vor dem Teilen immer: Wer hat das geschrieben, wann, und mit welcher Quellenangabe?",
@@ -315,8 +471,6 @@ export const categories: Category[] = [
     id: "socialmedia",
     title: "Social Media",
     subtitle: "Sicher in sozialen Netzwerken",
-    color: "#9333ea",
-    colorSoft: "#faf5ff",
     units: [
       {
         id: "sm-unit1",
@@ -368,11 +522,17 @@ export const categories: Category[] = [
             id: "sm-3",
             data: {
               type: "vervollstaendigen",
-              question: "Ergänzen Sie den Satz:",
+              question: "Füllen Sie die Lücken mit den passenden Begriffen.",
               before: "Ein ",
               after:
                 " ist ein KI-generiertes Video, das eine reale Person etwas sagen lässt, was sie nie gesagt hat.",
-              options: ["Deepfake", "Screenshot", "Selfie", "Livestream"],
+              parts: [
+                "Ein ",
+                " kann eine Person täuschend echt zeigen. Eine ",
+                " entsteht, wenn man fast nur noch ähnliche Meinungen sieht.",
+              ],
+              correctAnswers: ["Deepfake", "Filterblase"],
+              options: ["Deepfake", "Filterblase", "Selfie", "Livestream"],
               correct: 0,
               explanation:
                 "Deepfakes werden immer überzeugender. Im Zweifel immer die Originalquelle suchen – auf dem offiziellen Kanal der Person oder Institution.",
@@ -417,12 +577,11 @@ export const categories: Category[] = [
       },
     ],
   },
-  {
+  // NOTE: "general" (Allgemeines) removed — content folded into "grundlagen"
+  /* {
     id: "general",
     title: "Allgemeines",
     subtitle: "Passwörter & Datenschutz",
-    color: "#16a34a",
-    colorSoft: "#f0fdf4",
     units: [
       {
         id: "gen-unit1",
@@ -474,12 +633,19 @@ export const categories: Category[] = [
             id: "gen-3",
             data: {
               type: "vervollstaendigen",
-              question: "Ergänzen Sie den Satz:",
+              question: "Füllen Sie die Lücken mit den passenden Schutzbegriffen.",
               before: "Die ",
               after:
                 " fügt beim Login einen zweiten Sicherheitsschritt hinzu – z. B. einen Code per SMS.",
+              parts: [
+                "Die ",
+                " fügt beim Login einen zweiten Schritt hinzu. Ein ",
+                " sollte lang und schwer zu erraten sein.",
+              ],
+              correctAnswers: ["Zwei-Faktor-Authentifizierung", "Passwort"],
               options: [
                 "Zwei-Faktor-Authentifizierung",
+                "Passwort",
                 "Passworterinnerung",
                 "Virensoftware",
                 "Datensicherung",
@@ -529,5 +695,5 @@ export const categories: Category[] = [
         ],
       },
     ],
-  },
+  }, */
 ];

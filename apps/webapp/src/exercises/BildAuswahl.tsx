@@ -31,7 +31,7 @@ export function BildAuswahl({ data, onAnswer, disabled }: Props) {
           <rect x="170" y="20" width="130" height="55" rx="8" fill="#ddd8f8" />
           <rect x="20" y="85" width="130" height="55" rx="8" fill="#ddd8f8" />
           <rect x="170" y="85" width="130" height="55" rx="8" fill="#ddd8f8" />
-          <text x="160" y="148" textAnchor="middle" fill="#a89ee0" fontSize="11" fontFamily="system-ui">
+          <text x="160" y="148" textAnchor="middle" fill="#a89ee0" fontSize="11" fontFamily="Ubuntu Sans Variable, Ubuntu Sans">
             {data.imageDescription}
           </text>
         </svg>

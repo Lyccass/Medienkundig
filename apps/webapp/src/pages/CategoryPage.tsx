@@ -1,7 +1,7 @@
 import React from "react";
 import { ShieldAlert, Newspaper, Smartphone, Lock, HelpCircle, ImageIcon, Volume2, Shuffle, PenLine, Star, ChevronLeft } from "lucide-react";
 import { categories } from "../data/courses";
-import type { Category, Exercise } from "../data/courses";
+import type { Exercise } from "../data/courses";
 import type { Progress } from "../store/useProgress";
 import styles from "./CategoryPage.module.css";
 
@@ -82,12 +82,11 @@ function buildDonePath(nodes: NodeDef[]): string {
 
 interface PathViewProps {
   exercises: Exercise[];
-  category: Category;
   completedIds: string[];
   onNodeClick: (index: number) => void;
 }
 
-function PathView({ exercises, category, completedIds, onNodeClick }: PathViewProps) {
+function PathView({ exercises, completedIds, onNodeClick }: PathViewProps) {
   const nodes = buildNodes(exercises, completedIds);
   const totalH = PAD_TOP + (exercises.length - 1) * STEP_H + NODE_R + PAD_TOP;
   const fullPath = buildSvgPath(nodes);
@@ -95,7 +94,7 @@ function PathView({ exercises, category, completedIds, onNodeClick }: PathViewPr
 
   return (
     <div className={styles.pathOuter}>
-      <div className={styles.pathContainer} style={{ height: totalH, maxWidth: CONTAINER_W }}>
+      <div className={`${styles.pathContainer} ${styles[`pathCount${Math.min(exercises.length, 8)}`]}`}>
         {/* SVG background path */}
         <svg
           className={styles.pathSvg}
@@ -107,16 +106,16 @@ function PathView({ exercises, category, completedIds, onNodeClick }: PathViewPr
         >
           {/* Ghost full path */}
           {fullPath && (
-            <path d={fullPath} stroke={category.colorSoft} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <path className={styles.pathTrackLine} d={fullPath} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           )}
           {/* Completed portion */}
           {donePath && (
-            <path d={donePath} stroke="#16a34a" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <path className={styles.pathDoneLine} d={donePath} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           )}
           {/* Active node glow ring */}
           {nodes.map((n) =>
             n.state === "active" ? (
-              <circle key={`glow-${n.id}`} cx={n.cx} cy={n.cy} r={NODE_R + 10} fill={category.color} opacity="0.12" />
+              <circle className={styles.nodeGlow} key={`glow-${n.id}`} cx={n.cx} cy={n.cy} r={NODE_R + 10} />
             ) : null,
           )}
         </svg>
@@ -132,15 +131,7 @@ function PathView({ exercises, category, completedIds, onNodeClick }: PathViewPr
             <button
               key={node.id}
               type="button"
-              className={`${styles.node} ${isDone ? styles.nodeDone : ""} ${isActive ? styles.nodeActive : ""} ${isLocked ? styles.nodeLocked : ""} ${isLast ? styles.nodeLast : ""}`}
-              style={{
-                left: node.cx - NODE_R,
-                top: node.cy - NODE_R,
-                width: NODE_R * 2,
-                height: NODE_R * 2,
-                "--node-color": isDone ? "#16a34a" : isActive ? category.color : "#c8c4d8",
-                "--node-soft": isDone ? "#dcfce7" : isActive ? category.colorSoft : "#f0eef8",
-              } as React.CSSProperties}
+              className={`${styles.node} ${styles[`nodePos${i}`]} ${isDone ? styles.nodeDone : ""} ${isActive ? styles.nodeActive : ""} ${isLocked ? styles.nodeLocked : ""} ${isLast ? styles.nodeLast : ""}`}
               onClick={() => onNodeClick(i)}
               disabled={isLocked}
               aria-label={`Übung ${i + 1}: ${node.exercise.data.type === "memory" ? "Memory" : (node.exercise.data as { question: string }).question}`}
@@ -203,13 +194,13 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
   return (
     <div className={styles.page}>
       {/* Header */}
-      <div className={styles.header} style={{ "--cat-color": category.color } as React.CSSProperties}>
+      <div className={styles.header}>
         <button type="button" className={styles.backBtn} onClick={onBack} aria-label="Zurück">
           <ChevronLeft size={18} strokeWidth={2} />
           Lernpfade
         </button>
 
-        <div className={styles.heroBar} style={{ background: `linear-gradient(135deg, ${category.color}, ${category.color}cc)` }}>
+        <div className={styles.heroBar}>
           <div className={styles.heroLeft}>
             <span className={styles.heroIcon}>{CATEGORY_ICONS[category.id]}</span>
             <div>
@@ -219,11 +210,11 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
           </div>
           <div className={styles.heroProgress}>
             <svg width="52" height="52" viewBox="0 0 52 52">
-              <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="5" />
+              <circle className={styles.heroProgressTrack} cx="26" cy="26" r="21" fill="none" strokeWidth="5" />
               <circle
+                className={styles.heroProgressFill}
                 cx="26" cy="26" r="21"
                 fill="none"
-                stroke="white"
                 strokeWidth="5"
                 strokeDasharray={`${pct * 132} ${(1 - pct) * 132}`}
                 strokeDashoffset="33"
@@ -252,16 +243,15 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
           return (
             <div key={unit.id} className={styles.unit}>
               {/* Unit header */}
-              <div className={styles.unitHeader} style={{ "--cat-color": category.color } as React.CSSProperties}>
+              <div className={styles.unitHeader}>
                 <div className={styles.unitInfo}>
-                  <p className={styles.unitEyebrow} style={{ color: category.color }}>Einheit 1</p>
+                  <p className={styles.unitEyebrow}>Einheit 1</p>
                   <h2 className={styles.unitTitle}>{unit.title}</h2>
                   <p className={styles.unitDesc}>{unit.description}</p>
                 </div>
                 <button
                   type="button"
                   className={styles.startBtn}
-                  style={{ background: category.color }}
                   onClick={() => handleUnitStart(unit.exercises)}
                 >
                   {btnLabel}
@@ -271,7 +261,6 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
               {/* Exercise path */}
               <PathView
                 exercises={unit.exercises}
-                category={category}
                 completedIds={progress.completedExercises}
                 onNodeClick={(i) => handleNodeClick(unit.exercises, i)}
               />

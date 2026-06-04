@@ -6,12 +6,12 @@
 
 /* ── Header ── */
 .head {
-  padding: 2rem 1.5rem 1.5rem;
+  padding: 2rem var(--app-page-padding-x) 1.5rem;
   border-bottom: 1px solid rgba(228, 225, 240, 0.6);
 }
 
 .headInner {
-  max-width: 1100px;
+  max-width: var(--app-page-max);
   margin: 0 auto;
   display: flex;
   align-items: flex-end;
@@ -76,10 +76,10 @@
   display: grid;
   grid-template-columns: 200px 1fr;
   gap: 3rem;
-  max-width: 1100px;
+  max-width: var(--app-page-outer-max);
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 1.5rem 5rem;
+  padding: 2rem var(--app-page-padding-x) 5rem;
   align-items: start;
 }
 

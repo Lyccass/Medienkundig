@@ -8,6 +8,9 @@ export default defineConfig({
     host: true,
   },
   vite: {
+    server: {
+      allowedHosts: ["medienkundig.local", "app.medienkundig.local", "localhost", "app.localhost"],
+    },
     ssr: {
       noExternal: ["@medienkundig/ui"],
     },

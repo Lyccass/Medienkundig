@@ -6,5 +6,6 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    allowedHosts: ["medienkundig.local", "app.medienkundig.local", "localhost", "app.localhost"],
   },
 });

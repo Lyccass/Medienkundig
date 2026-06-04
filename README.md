@@ -159,7 +159,7 @@ Die Web-App (`apps/webapp`) ist aktuell ein leerer Shell. Mögliche nächste Sch
 | Pakete | [pnpm Workspaces](https://pnpm.io/workspaces) |
 | Proxy | [Caddy 2](https://caddyserver.com/) |
 | Container | [Docker Compose](https://docs.docker.com/compose/) |
-| Schrift | [Inter Variable](https://rsms.me/inter/) |
+| Schrift | Ubuntu Sans |
 
 ---
 

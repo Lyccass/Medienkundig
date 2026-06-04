@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fontsource-variable/inter": "^5.0.0",
+    "@fontsource-variable/ubuntu-sans": "^5.2.10",
     "@medienkundig/theme": "workspace:*",
     "@medienkundig/ui": "workspace:*",
     "lucide-react": "^1.17.0",

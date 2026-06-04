@@ -10,15 +10,38 @@ interface Props {
 }
 
 export function Vervollstaendigen({ data, onAnswer, disabled }: Props) {
-  const [picked, setPicked] = useState<number | null>(null);
+  const gapCount = data.correctAnswers?.length ?? 1;
+  const parts = data.parts ?? [data.before, data.after];
+  const [picked, setPicked] = useState<Array<number | null>>(
+    Array.from({ length: gapCount }, () => null),
+  );
+  const [submitted, setSubmitted] = useState(false);
 
   function handlePick(i: number) {
-    if (disabled || picked !== null) return;
-    setPicked(i);
-    onAnswer(i);
+    if (disabled || submitted || picked.includes(i)) return;
+    const nextGap = picked.findIndex((value) => value === null);
+    if (nextGap === -1) return;
+
+    const next = [...picked];
+    next[nextGap] = i;
+    setPicked(next);
+
+    if (next.every((value) => value !== null)) {
+      const isCorrect = data.correctAnswers
+        ? data.correctAnswers.every((answer, gapIndex) => data.options[next[gapIndex] ?? -1] === answer)
+        : next[0] === data.correct;
+      setSubmitted(true);
+      onAnswer(isCorrect ? data.correct : -1);
+    }
   }
 
-  const filledWord = picked !== null ? data.options[picked] : null;
+  function getGapState(gapIndex: number): "default" | "correct" | "wrong" {
+    if (!submitted) return "default";
+    const selected = picked[gapIndex];
+    if (selected === null) return "wrong";
+    const expected = data.correctAnswers?.[gapIndex] ?? data.options[data.correct];
+    return data.options[selected] === expected ? "correct" : "wrong";
+  }
 
   return (
     <div className={styles.root}>
@@ -27,29 +50,31 @@ export function Vervollstaendigen({ data, onAnswer, disabled }: Props) {
       </p>
 
       <div className={styles.sentence} aria-live="polite">
-        <span>{data.before}</span>
-        <span
-          className={`${styles.blank} ${
-            picked !== null
-              ? picked === data.correct
-                ? styles.correct
-                : styles.wrong
-              : ""
-          }`}
-        >
-          {filledWord ?? "___"}
-        </span>
-        <span>{data.after}</span>
+        {Array.from({ length: gapCount }).map((_, gapIndex) => {
+          const selected = picked[gapIndex];
+          const state = getGapState(gapIndex);
+          return (
+            <span key={gapIndex} className={styles.sentencePart}>
+              <span>{parts[gapIndex]}</span>
+              <span className={`${styles.blank} ${state !== "default" ? styles[state] : ""}`}>
+                {selected !== null ? data.options[selected] : "___"}
+              </span>
+            </span>
+          );
+        })}
+        <span>{parts[gapCount]}</span>
       </div>
 
       <div className={styles.chips}>
         {data.options.map((opt, i) => {
           let state: "default" | "correct" | "wrong" | "dim" = "default";
-          if (picked !== null) {
-            if (i === picked && picked === data.correct) state = "correct";
-            else if (i === picked) state = "wrong";
-            else if (i === data.correct) state = "correct";
+          const usedGap = picked.findIndex((value) => value === i);
+          if (submitted) {
+            if (usedGap !== -1) state = getGapState(usedGap);
+            else if (data.correctAnswers?.includes(opt) || i === data.correct) state = "correct";
             else state = "dim";
+          } else if (picked.includes(i)) {
+            state = "dim";
           }
           return (
             <button
@@ -57,7 +82,7 @@ export function Vervollstaendigen({ data, onAnswer, disabled }: Props) {
               type="button"
               className={`${styles.chip} ${styles[state]}`}
               onClick={() => handlePick(i)}
-              disabled={disabled || picked !== null}
+              disabled={disabled || submitted || picked.includes(i)}
             >
               {opt}
             </button>

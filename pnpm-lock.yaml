@@ -14,9 +14,9 @@ importers:
 
   apps/landing:
     dependencies:
-      '@fontsource-variable/inter':
-        specifier: ^5.0.0
-        version: 5.2.8
+      '@fontsource-variable/ubuntu-sans':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@medienkundig/theme':
         specifier: workspace:*
         version: link:../../packages/theme
@@ -29,9 +29,9 @@ importers:
 
   apps/webapp:
     dependencies:
-      '@fontsource-variable/inter':
-        specifier: ^5.0.0
-        version: 5.2.8
+      '@fontsource-variable/ubuntu-sans':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@medienkundig/theme':
         specifier: workspace:*
         version: link:../../packages/theme
@@ -331,8 +331,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/inter@5.2.8':
-    resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
+  '@fontsource-variable/ubuntu-sans@5.2.10':
+    resolution: {integrity: sha512-oDLimqeDpeHynO+r+UqODkoeniVJZqHsQ863H3pu8anqDOa6bCknOWEuipOzOF31k5ongz/OGN55H+rb/+rJkQ==}
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -1955,7 +1955,7 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-  '@fontsource-variable/inter@5.2.8': {}
+  '@fontsource-variable/ubuntu-sans@5.2.10': {}
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:

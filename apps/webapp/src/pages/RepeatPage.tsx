@@ -1,23 +1,10 @@
 import { useMemo, useState } from "react";
 import { categories } from "../data/courses";
 import type { Exercise, Category } from "../data/courses";
-import type { Progress } from "../store/useProgress";
+import { useProgressContext } from "../store/ProgressContext";
+import { shuffle } from "../utils/shuffle";
+import { TYPE_LABELS } from "../constants/ui";
 import styles from "./RepeatPage.module.css";
-
-const CATEGORY_ICONS: Record<string, string> = {
-  scamming: "🛡️",
-  news: "📰",
-  socialmedia: "📱",
-  general: "🔒",
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  multipleChoice: "Multiple Choice",
-  bildAuswahl: "Bild-Auswahl",
-  audioAuswahl: "Audio",
-  memory: "Memory",
-  vervollstaendigen: "Lückentext",
-};
 
 interface ExerciseWithMeta {
   exercise: Exercise;
@@ -25,20 +12,11 @@ interface ExerciseWithMeta {
 }
 
 interface Props {
-  progress: Progress;
   onStartRepeat: (exercises: Exercise[], categoryId: string) => void;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-export function RepeatPage({ progress, onStartRepeat }: Props) {
+export function RepeatPage({ onStartRepeat }: Props) {
+  const { progress } = useProgressContext();
   const [filter, setFilter] = useState<string>("all");
 
   const allCompleted = useMemo<ExerciseWithMeta[]>(() => {
@@ -59,17 +37,18 @@ export function RepeatPage({ progress, onStartRepeat }: Props) {
     ? allCompleted
     : allCompleted.filter((item) => item.category.id === filter);
 
-  function handleStartAll() {
-    const exs = filtered.map((item) => item.exercise);
-    onStartRepeat(exs, "repeat");
-  }
-
   if (allCompleted.length === 0) {
     return (
       <div className={styles.page}>
-        <h1 className={styles.pageTitle}>Wiederholen</h1>
+        <div className={styles.head}>
+          <div className={styles.headInner}>
+            <div>
+              <h1 className={styles.title}>Wiederholen</h1>
+              <p className={styles.sub}>Abgeschlossene Übungen gezielt festigen.</p>
+            </div>
+          </div>
+        </div>
         <div className={styles.empty}>
-          <span className={styles.emptyIcon}>📚</span>
           <p className={styles.emptyTitle}>Noch keine Übungen abgeschlossen</p>
           <p className={styles.emptyText}>
             Schließe zuerst Lerneinheiten ab – dann erscheinen sie hier zum Wiederholen.
@@ -81,66 +60,88 @@ export function RepeatPage({ progress, onStartRepeat }: Props) {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.pageTitle}>Wiederholen</h1>
-      <p className={styles.pageSubtitle}>
-        {allCompleted.length} abgeschlossene Übungen – in zufälliger Reihenfolge.
-      </p>
-
-      <div className={styles.toolbar}>
-        <div className={styles.filters}>
-          <button
-            type="button"
-            className={`${styles.filterChip} ${filter === "all" ? styles.filterActive : ""}`}
-            onClick={() => setFilter("all")}
-          >
-            Alle ({allCompleted.length})
-          </button>
-          {categories.map((cat) => {
-            const count = allCompleted.filter((i) => i.category.id === cat.id).length;
-            if (count === 0) return null;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                className={`${styles.filterChip} ${filter === cat.id ? styles.filterActive : ""}`}
-                style={filter === cat.id ? { background: cat.colorSoft, color: cat.color, borderColor: cat.color } : {}}
-                onClick={() => setFilter(cat.id)}
-              >
-                {CATEGORY_ICONS[cat.id]} {cat.title} ({count})
-              </button>
-            );
-          })}
+      {/* Header */}
+      <div className={styles.head}>
+        <div className={styles.headInner}>
+          <div>
+            <h1 className={styles.title}>Wiederholen</h1>
+            <p className={styles.sub}>{allCompleted.length} abgeschlossene Übungen – in zufälliger Reihenfolge.</p>
+          </div>
         </div>
-
-        <button type="button" className={styles.startAllBtn} onClick={handleStartAll} disabled={filtered.length === 0}>
-          {filtered.length} Übungen starten
-        </button>
       </div>
 
-      <div className={styles.list}>
-        {filtered.map(({ exercise, category }) => (
+      {/* Two-pane body */}
+      <div className={styles.body}>
+
+        {/* Sidebar */}
+        <aside className={styles.sidebar}>
+          <p className={styles.sidebarLabel}>Kategorie</p>
+          <nav className={styles.catNav}>
+            <button
+              type="button"
+              className={`${styles.cat} ${filter === "all" ? styles.catActive : ""}`}
+              onClick={() => setFilter("all")}
+            >
+              <span className={styles.catDot} />
+              Alle
+              <span className={styles.catCount}>{allCompleted.length}</span>
+            </button>
+            {categories.map((cat) => {
+              const count = allCompleted.filter((i) => i.category.id === cat.id).length;
+              if (count === 0) return null;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  className={`${styles.cat} ${filter === cat.id ? styles.catActive : ""}`}
+                  onClick={() => setFilter(cat.id)}
+                >
+                  <span className={styles.catDot} />
+                  {cat.title}
+                  <span className={styles.catCount}>{count}</span>
+                </button>
+              );
+            })}
+          </nav>
+
           <button
-            key={exercise.id}
             type="button"
-            className={styles.exerciseCard}
-            onClick={() => onStartRepeat([exercise], category.id)}
-            style={{ borderLeft: `4px solid ${category.color}` }}
+            className={styles.startBtn}
+            onClick={() => onStartRepeat(filtered.map((i) => i.exercise), "repeat")}
+            disabled={filtered.length === 0}
           >
-            <div className={styles.cardLeft}>
-              <span className={styles.catBadge} style={{ background: category.colorSoft, color: category.color }}>
-                {CATEGORY_ICONS[category.id]} {category.title}
-              </span>
-              <p className={styles.cardQuestion}>
-                {exercise.data.type !== "memory"
-                  ? (exercise.data as { question: string }).question
-                  : (exercise.data as { question: string }).question}
-              </p>
-            </div>
-            <span className={styles.typeBadge}>
-              {TYPE_LABELS[exercise.data.type]}
-            </span>
+            {filtered.length} Übungen starten
           </button>
-        ))}
+        </aside>
+
+        {/* Exercise list */}
+        <main className={styles.main}>
+          <ul className={styles.list} role="list">
+            {filtered.map(({ exercise, category }) => (
+              <li key={exercise.id} className={styles.row}>
+                <button
+                  type="button"
+                  className={styles.rowBtn}
+                  onClick={() => onStartRepeat([exercise], category.id)}
+                >
+                  <div className={styles.rowLeft}>
+                    <span className={styles.rowCat}>{category.title}</span>
+                    <p className={styles.rowQuestion}>
+                      {(exercise.data as { question: string }).question}
+                    </p>
+                  </div>
+                  <div className={styles.rowRight}>
+                    <span className={styles.rowType}>{TYPE_LABELS[exercise.data.type]}</span>
+                    <svg className={styles.rowArrow} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                      <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </main>
+
       </div>
     </div>
   );

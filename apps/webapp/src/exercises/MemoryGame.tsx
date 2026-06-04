@@ -1,20 +1,12 @@
 import { useState, useEffect } from "react";
 import type { MemoryData } from "../data/courses";
 import { HighlightTerms } from "../utils/highlightTerms";
+import { shuffle } from "../utils/shuffle";
 import styles from "./MemoryGame.module.css";
 
 interface Props {
   data: MemoryData;
   onComplete: () => void;
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 export function MemoryGame({ data, onComplete }: Props) {

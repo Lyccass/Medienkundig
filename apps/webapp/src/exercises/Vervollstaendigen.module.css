@@ -21,9 +21,13 @@
   border: 1.5px solid var(--color-border);
 }
 
+.sentencePart {
+  display: inline;
+}
+
 .blank {
   display: inline-block;
-  min-width: 120px;
+  min-width: 9rem;
   padding: 0.125rem 0.75rem;
   margin: 0 0.25rem;
   border-radius: var(--radius-sm);
@@ -36,15 +40,15 @@
 }
 
 .blank.correct {
-  background: #dcfce7;
-  border-color: #16a34a;
-  color: #15803d;
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: var(--color-primary-dark);
 }
 
 .blank.wrong {
-  background: #fee2e2;
-  border-color: #dc2626;
-  color: #b91c1c;
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 .chips {
@@ -72,15 +76,15 @@
 }
 
 .chip.correct {
-  border-color: #16a34a;
-  background: #dcfce7;
-  color: #15803d;
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+  color: var(--color-primary-dark);
 }
 
 .chip.wrong {
-  border-color: #dc2626;
-  background: #fee2e2;
-  color: #b91c1c;
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .chip.dim {

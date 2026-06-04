@@ -38,12 +38,11 @@ export function AudioAuswahl({ data, onAnswer, disabled }: Props) {
         </button>
         <div className={styles.playerInfo}>
           <span className={styles.playerLabel}>{data.audioLabel}</span>
-          <div className={styles.waveform} aria-hidden>
+          <div className={`${styles.waveform} ${played ? styles.waveformPlayed : ""}`} aria-hidden>
             {Array.from({ length: 28 }).map((_, i) => (
               <span
                 key={i}
-                className={styles.bar}
-                style={{ height: `${Math.sin(i * 0.7) * 10 + 14}px`, opacity: played ? 1 : 0.35 }}
+                className={`${styles.bar} ${styles[`bar${i % 7}`]}`}
               />
             ))}
           </div>

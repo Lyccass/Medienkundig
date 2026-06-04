@@ -72,8 +72,21 @@
   width: 3px;
   border-radius: 2px;
   background: var(--color-primary);
+  opacity: 0.35;
   transition: opacity var(--transition-fast);
 }
+
+.waveformPlayed .bar {
+  opacity: 1;
+}
+
+.bar0 { height: 14px; }
+.bar1 { height: 20px; }
+.bar2 { height: 24px; }
+.bar3 { height: 23px; }
+.bar4 { height: 17px; }
+.bar5 { height: 11px; }
+.bar6 { height: 8px; }
 
 .transcriptToggle {
   background: none;
@@ -138,15 +151,15 @@
 }
 
 .option.correct {
-  border-color: #16a34a;
-  background: #f0fdf4;
-  color: #15803d;
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+  color: var(--color-primary-dark);
 }
 
 .option.wrong {
-  border-color: #dc2626;
-  background: #fef2f2;
-  color: #b91c1c;
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .letter {
@@ -164,13 +177,13 @@
 }
 
 .option.correct .letter {
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .option.wrong .letter {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .text {

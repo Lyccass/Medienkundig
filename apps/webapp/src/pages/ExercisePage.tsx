@@ -7,11 +7,11 @@ import { AudioAuswahl } from "../exercises/AudioAuswahl";
 import { MemoryGame } from "../exercises/MemoryGame";
 import { Vervollstaendigen } from "../exercises/Vervollstaendigen";
 import { FallExercise } from "../exercises/FallExercise";
+import { HighlightTerms } from "../utils/highlightTerms";
 import styles from "./ExercisePage.module.css";
 
 interface Props {
   exercises: Exercise[];
-  categoryColor: string;
   categoryTitle: string;
   onComplete: (xpEarned: number, exerciseIds: string[]) => void;
   onClose: () => void;
@@ -27,7 +27,6 @@ const XP_MEMORY = 20;
 
 export function ExercisePage({
   exercises,
-  categoryColor,
   categoryTitle,
   onComplete,
   onClose,
@@ -35,6 +34,7 @@ export function ExercisePage({
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>({ type: "question" });
   const [xpEarned, setXpEarned] = useState(0);
+  const [correctExerciseIds, setCorrectExerciseIds] = useState<string[]>([]);
 
   const current = exercises[index];
   const isMemory = current?.data.type === "memory";
@@ -57,19 +57,19 @@ export function ExercisePage({
       data.type === "vervollstaendigen" ||
       data.type === "fall"
     ) {
-      const correct = selectedIndex === (data as { correct: number }).correct;
+      const correct = selectedIndex === data.correct;
       setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
-      setPhase({
-        type: "feedback",
-        correct,
-        explanation: (data as { explanation?: string }).explanation,
-      });
+      if (correct) {
+        setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
+      }
+      setPhase({ type: "feedback", correct, explanation: data.explanation });
     }
   }
 
   const handleMemoryComplete = useCallback(() => {
     setXpEarned((x) => x + XP_MEMORY);
-    const explanation = (current.data as { explanation?: string }).explanation;
+    setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
+    const explanation = current.data.type === "memory" ? current.data.explanation : undefined;
     setPhase({ type: "feedback", correct: true, explanation });
   }, [current]);
 
@@ -84,16 +84,18 @@ export function ExercisePage({
   }
 
   const progress = (index + (phase.type !== "question" ? 1 : 0)) / exercises.length;
+  const scoredExercises = exercises.filter((exercise) => exercise.data.type !== "lesson");
 
   /* ── Complete screen ── */
   if (phase.type === "complete") {
-    const maxXp = exercises.length * XP_CORRECT;
-    const perfect = phase.xp >= maxXp;
+    const maxXp = scoredExercises.length * XP_CORRECT;
+    const correctCount = correctExerciseIds.length;
+    const perfect = correctCount === scoredExercises.length;
     return (
       <div className={styles.page}>
         <div className={styles.completeWrap}>
           <div className={`${styles.completeCircle} ${perfect ? styles.completePerfect : ""}`}>
-            <Check size={40} strokeWidth={2.5} color="white" />
+            <Check className={styles.iconOnDark} size={40} strokeWidth={2.5} />
           </div>
           <h2 className={styles.completeTitle}>{perfect ? "Perfekt! 🎉" : "Gut gemacht!"}</h2>
           <p className={styles.completeSub}>Einheit abgeschlossen</p>
@@ -106,15 +108,14 @@ export function ExercisePage({
 
           {!perfect && (
             <p className={styles.completeTip}>
-              {Math.round((phase.xp / maxXp) * 100)}% korrekt
+              {correctCount} von {scoredExercises.length} Übungen richtig beantwortet
             </p>
           )}
 
           <button
             type="button"
             className={styles.doneBtn}
-            style={{ background: categoryColor }}
-            onClick={() => onComplete(phase.xp, exercises.map((e) => e.id))}
+            onClick={() => onComplete(phase.xp, correctExerciseIds)}
           >
             WEITER
           </button>
@@ -136,25 +137,41 @@ export function ExercisePage({
           <X size={18} strokeWidth={2} />
         </button>
 
-        <div className={styles.progressTrack}>
-          <div
-            className={styles.progressFill}
-            style={{ width: `${progress * 100}%`, background: categoryColor }}
-          />
-        </div>
+        <progress className={styles.progressTrack} value={progress} max={1} aria-label="Fortschritt" />
 
         <span className={styles.stepCounter}>{index + 1}/{exercises.length}</span>
       </header>
 
       {/* Body */}
       <main className={styles.body}>
-        <div className={styles.exerciseCard}>
-          <p className={styles.catLabel} style={{ color: categoryColor }}>
-            {categoryTitle}
-          </p>
+        <div className={`${styles.exerciseCard} ${current.data.type === "lesson" ? styles.lessonMode : ""}`} key={current.id}>
+          <p className={styles.catLabel}>{categoryTitle}</p>
 
           {current.data.type === "multipleChoice" && (
             <MultipleChoice data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
+          )}
+          {current.data.type === "lesson" && (
+            <div className={styles.lesson}>
+              <p className={styles.lessonKicker}>
+                {current.data.mediaType === "audio" ? "Hören & verstehen" : current.data.mediaType === "video" ? "Ansehen & verstehen" : "Kurz erklärt"}
+              </p>
+              <h1 className={styles.lessonTitle}>{current.data.title}</h1>
+              <p className={styles.lessonBody}>
+                <HighlightTerms text={current.data.body} ids={current.data.glossarLinks} />
+              </p>
+              {current.data.bullets && (
+                <ul className={styles.lessonList}>
+                  {current.data.bullets.map((bullet) => (
+                    <li key={bullet}>
+                      <HighlightTerms text={bullet} ids={current.data.glossarLinks} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button type="button" className={styles.lessonBtn} onClick={advance}>
+                Weiter zur Übung
+              </button>
+            </div>
           )}
           {current.data.type === "bildAuswahl" && (
             <BildAuswahl data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
@@ -183,8 +200,8 @@ export function ExercisePage({
             <div className={styles.feedbackLeft}>
               <div className={`${styles.feedbackBadge} ${isCorrect ? styles.badgeCorrect : styles.badgeWrong}`}>
                 {isCorrect
-                  ? <Check size={16} strokeWidth={2.5} color="white" />
-                  : <X size={16} strokeWidth={2.5} color="white" />
+                  ? <Check className={styles.iconOnDark} size={16} strokeWidth={2.5} />
+                  : <X className={styles.iconOnDark} size={16} strokeWidth={2.5} />
                 }
               </div>
               <div className={styles.feedbackTexts}>
@@ -207,7 +224,7 @@ export function ExercisePage({
           </>
         ) : isMemory ? (
           <p className={styles.hintText}>
-            <RotateCcw size={13} strokeWidth={2} style={{ display: "inline", marginRight: "0.375rem", verticalAlign: "middle" }} />
+            <RotateCcw className={styles.inlineIcon} size={13} strokeWidth={2} />
             Alle Paare zuordnen, um fortzufahren
           </p>
         ) : (

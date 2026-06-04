@@ -49,7 +49,7 @@
 
 .emailFrom {
   font-size: 12px;
-  font-family: monospace;
+  font-family: var(--font-sans);
   font-weight: 700;
   color: var(--color-danger);
 }
@@ -90,7 +90,7 @@
 .urlText {
   font-size: 12px;
   font-weight: 700;
-  font-family: monospace;
+  font-family: var(--font-sans);
   color: var(--color-danger);
 }
 
@@ -119,7 +119,7 @@
   gap: 0.3rem;
   font-size: 11px;
   font-weight: 600;
-  color: #92400e;
+  color: var(--color-warning);
   margin-top: 0.25rem;
 }
 
@@ -162,8 +162,8 @@
 }
 
 .option:disabled { cursor: default; }
-.option.correct  { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
-.option.wrong    { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+.option.correct  { border-color: var(--color-success); background: var(--color-success-soft); color: var(--color-primary-dark); }
+.option.wrong    { border-color: var(--color-danger); background: var(--color-danger-soft); color: var(--color-danger); }
 
 .letter {
   flex-shrink: 0;
@@ -179,8 +179,8 @@
   color: var(--color-muted);
 }
 
-.option.correct .letter { background: #dcfce7; color: #16a34a; }
-.option.wrong   .letter { background: #fee2e2; color: #dc2626; }
+.option.correct .letter { background: var(--color-success-soft); color: var(--color-success); }
+.option.wrong   .letter { background: var(--color-danger-soft); color: var(--color-danger); }
 
 .text { flex: 1; }
 .mark { font-weight: 700; }

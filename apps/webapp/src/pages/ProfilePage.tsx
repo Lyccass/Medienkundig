@@ -11,7 +11,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   general:     <Lock        size={20} strokeWidth={2} />,
 };
 
-function RadialProgress({ value, max, color }: { value: number; max: number; color: string }) {
+function RadialProgress({ value, max }: { value: number; max: number }) {
   const pct = max === 0 ? 0 : value / max;
   const r = 22;
   const circ = 2 * Math.PI * r;
@@ -19,18 +19,17 @@ function RadialProgress({ value, max, color }: { value: number; max: number; col
 
   return (
     <svg width="56" height="56" viewBox="0 0 56 56" className={styles.radial}>
-      <circle cx="28" cy="28" r={r} fill="none" stroke="rgba(228,225,240,0.5)" strokeWidth="5" />
+      <circle className={styles.radialTrack} cx="28" cy="28" r={r} fill="none" strokeWidth="5" />
       <circle
         cx="28" cy="28" r={r}
         fill="none"
-        stroke={color}
+        className={styles.radialFill}
         strokeWidth="5"
         strokeDasharray={`${dash} ${circ - dash}`}
         strokeDashoffset={circ / 4}
         strokeLinecap="round"
-        style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.4,0,0.2,1)" }}
       />
-      <text x="28" y="33" textAnchor="middle" fontSize="12" fontWeight="700" fill={color}>
+      <text className={styles.radialText} x="28" y="33" textAnchor="middle" fontSize="12" fontWeight="700">
         {value}/{max}
       </text>
     </svg>
@@ -51,7 +50,6 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
 
   return (
     <div className={styles.page}>
-      {/* Gradient header */}
       <div className={styles.head}>
         <div className={styles.headInner}>
           <div className={styles.heroLeft}>
@@ -90,9 +88,7 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
         {/* Overall progress */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Gesamtfortschritt</h2>
-          <div className={styles.overallBar}>
-            <div className={styles.overallFill} style={{ width: `${overallPct}%` }} />
-          </div>
+          <progress className={styles.overallBar} value={overallPct} max={100} aria-label="Gesamtfortschritt" />
           <p className={styles.overallLabel}>{completedCount} von {totalExercises} Übungen abgeschlossen</p>
         </div>
 
@@ -105,9 +101,9 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
               const catCompleted = catExercises.filter((id) => progress.completedExercises.includes(id)).length;
               return (
                 <div key={cat.id} className={styles.categoryCard}>
-                  <RadialProgress value={catCompleted} max={catExercises.length} color={cat.color} />
+                  <RadialProgress value={catCompleted} max={catExercises.length} />
                   <div className={styles.categoryInfo}>
-                    <span className={styles.categoryIcon} style={{ color: cat.color }}>{CATEGORY_ICONS[cat.id]}</span>
+                    <span className={styles.categoryIcon}>{CATEGORY_ICONS[cat.id]}</span>
                     <div>
                       <p className={styles.categoryTitle}>{cat.title}</p>
                       <p className={styles.categorySubtitle}>{cat.subtitle}</p>
@@ -130,7 +126,7 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
               { icon: <Flame  size={20} strokeWidth={1.8} />, label: "7-Tage-Serie",     unlocked: progress.streak >= 7 },
             ].map((b) => (
               <div key={b.label} className={`${styles.badge} ${b.unlocked ? styles.badgeUnlocked : ""}`}>
-                <span className={styles.badgeIcon} style={{ display: "flex" }}>{b.icon}</span>
+                <span className={styles.badgeIcon}>{b.icon}</span>
                 <span className={styles.badgeLabel}>{b.label}</span>
               </div>
             ))}

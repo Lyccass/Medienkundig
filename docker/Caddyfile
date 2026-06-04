@@ -2,14 +2,13 @@
   auto_https off
 }
 
-medienkundig.local {
+http://medienkundig.local,
+http://medienkundig,
+http://localhost {
   reverse_proxy landing:4321
 }
 
-medienkundig {
-  reverse_proxy landing:4321
-}
-
-app.medienkundig.local {
+http://app.medienkundig.local,
+http://app.localhost {
   reverse_proxy webapp:5173
 }

@@ -1,153 +1,393 @@
+:root {
+  --preview-pad-h: 2.25rem;
+}
+
+/* ── Page: 50/50 split, full viewport height ────────────────────────────── */
 .page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* ── LEFT column ────────────────────────────────────────────────────────── */
+.left {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* ── Header ── */
-.head {
-  padding: 2rem 1.5rem 1.5rem;
-  border-bottom: 1px solid rgba(228, 225, 240, 0.6);
+.leftHeader {
+  flex-shrink: 0;
+  padding: 2.25rem 2.5rem 1.25rem;
 }
 
-.headInner {
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.pageTitle {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+.title {
+  font-size: clamp(1.75rem, 2.5vw, 2.5rem);
   font-weight: 900;
   letter-spacing: -0.04em;
   color: var(--color-text);
   line-height: 1;
+  margin: 0;
 }
 
-.pageSubtitle {
+.subtitle {
   font-size: var(--text-sm);
   color: var(--color-muted);
-  margin-top: 0.375rem;
+  margin: 0.35rem 0 0;
 }
 
-/* ── Content ── */
-.content {
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem 1.5rem 5rem;
+/* ── Path list ──────────────────────────────────────────────────────────── */
+.pathWrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.25rem 2rem 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(108, 63, 255, 0.12) transparent;
 }
 
-/* ── List ── */
-.list {
-  display: flex;
-  flex-direction: column;
-}
-
+/* ── Topic row ──────────────────────────────────────────────────────────── */
 .row {
-  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  padding: 1rem 0.5rem;
+  width: 100%;
+  padding: 1.125rem 0.75rem;
   background: none;
   border: none;
-  border-bottom: 1px solid rgba(228, 225, 240, 0.6);
-  text-align: left;
+  border-radius: 0;
   cursor: pointer;
-  transition: background var(--transition-fast);
-  width: 100%;
+  text-align: left;
   font-family: inherit;
+  transition: background 140ms ease;
 }
 
-.row:first-child {
-  border-top: 1px solid rgba(228, 225, 240, 0.6);
+.row + .row {
+  border-top: 1px solid var(--color-border);
 }
 
 .row:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: transparent;
 }
 
-.row:hover .rowArrow {
-  transform: translateX(3px);
-  opacity: 1;
+.rowSelected {
+  background: transparent;
 }
 
-/* Thin color accent */
-.rowBar {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 52%;
-  border-radius: 2px;
+/* ── Step circle ────────────────────────────────────────────────────────── */
+.circle {
   flex-shrink: 0;
-}
-
-.rowIcon {
-  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary);
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 0.875rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-muted);
+  transition: border-color 140ms ease, color 140ms ease;
+  margin-top: 0.1rem;
 }
 
+.rowSelected .circle {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+/* ── Row body ───────────────────────────────────────────────────────────── */
 .rowBody {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  min-width: 0;
+  gap: 0.3rem;
 }
 
 .rowHead {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
 .rowTitle {
-  font-size: var(--text-lg);
-  font-weight: 700;
+  font-size: var(--text-base);
+  font-weight: 800;
   color: var(--color-text);
   line-height: 1.2;
 }
 
 .rowCount {
+  flex-shrink: 0;
   font-size: var(--text-sm);
   font-weight: 800;
-  flex-shrink: 0;
+  color: var(--color-primary);
 }
 
-.rowSub {
+.rowDesc {
+  display: block;
   font-size: var(--text-sm);
   color: var(--color-muted);
+  line-height: 1.5;
 }
 
-.rowProgress {
-  display: block;
-  height: 3px;
-  border-radius: 999px;
-  background: rgba(228, 225, 240, 0.7);
-  overflow: hidden;
-  margin-top: 0.375rem;
+/* ── Learning goals ─────────────────────────────────────────────────────── */
+.goalList {
+  list-style: none;
+  padding: 0;
+  margin: 0.2rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
-.rowProgressFill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.goalItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  color: var(--color-text-soft);
+  line-height: 1.4;
 }
 
-.rowArrow {
+.checkIcon {
   flex-shrink: 0;
+  margin-top: 0.1em;
+  color: var(--color-primary);
+  opacity: 0.45;
+}
+
+.rowSelected .checkIcon,
+.learnItem .checkIcon {
+  opacity: 1;
+}
+
+/* ── Start button ───────────────────────────────────────────────────────── */
+.startBtn {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  white-space: nowrap;
+  margin-top: 0.5rem;
+  padding: 0.38em 1em;
+  border-radius: 999px;
+  font-size: 0.77rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--color-primary);
+  border: 1.5px solid rgba(91, 33, 182, 0.45);
+  transition: opacity 140ms ease;
+  user-select: none;
+}
+
+.startBtn:hover { opacity: 0.8; }
+
+.startBtnActive {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   RIGHT: white wave panel
+   margin-left: -56px lets the panel overlap 56px into the purple left column.
+   clip-path carves a smooth bezier wave on the left edge.
+   The bezier:
+     - starts at x=56 (top, aligned with the original grid boundary)
+     - curves toward x=6 at mid-height (50px into the purple area)
+     - returns to x=56 at the bottom
+   Everything to the right of that curve stays visible (white).
+   9999 is used for the right/bottom extents so any viewport is covered.
+───────────────────────────────────────────────────────────────────────── */
+.right {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  overflow: hidden;
+  background: white;
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Preview scroll area ────────────────────────────────────────────────── */
+.previewInner {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(108, 63, 255, 0.12) transparent;
+  padding: 2.25rem var(--preview-pad-h) 1.5rem var(--preview-pad-h);
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.previewLabel {
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.previewTitle {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  color: var(--color-text);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.previewDesc {
+  font-size: var(--text-sm);
   color: var(--color-muted);
-  opacity: 0.4;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  line-height: 1.6;
+  height: 3.2em;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* ── TintyFrame component ────────────────────────────────────────────────── */
+.tintyWrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+.tintyImg {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+}
+
+/* ── Section wrapper (LearnSection / AlltegSection) ─────────────────────── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.sectionDesc {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── LearnSection list ──────────────────────────────────────────────────── */
+.learnList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.learnItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--color-text-soft);
+  line-height: 1.4;
+}
+
+/* ── AlltegSection ──────────────────────────────────────────────────────── */
+.alltag {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.allt {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: white;
+}
+
+.allt + .allt {
+  border-top: 1px solid var(--color-border);
+}
+
+.alltLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+/* variant colours via data attribute */
+.alltLabel[data-variant="real"],
+.alltLabel[data-variant="fake"],
+.alltLabel[data-variant="neutral"] {
+  color: var(--color-primary);
+}
+
+.alltText {
+  font-size: 0.8rem;
+  color: var(--color-text-soft);
+  line-height: 1.5;
+}
+
+/* ── CTABlock ───────────────────────────────────────────────────────────── */
+.ctaWrap {
+  margin-top: auto;
+  padding-top: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.ctaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 52px;
+  border-radius: 12px;
+  font-size: var(--text-base);
+  font-weight: 800;
+  font-family: inherit;
+  color: white;
+  background: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  transition: filter 160ms ease;
+}
+
+.ctaBtn:hover { filter: brightness(1.08); }
+
+.ctaDuration {
+  text-align: center;
+  font-size: 0.73rem;
+  color: var(--color-muted);
+  margin: 0;
 }

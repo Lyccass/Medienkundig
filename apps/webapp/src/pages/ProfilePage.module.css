@@ -4,15 +4,14 @@
   min-height: 100vh;
 }
 
-/* ── Header — gradient like landing hero ── */
 .head {
-  padding: 2rem 1.5rem 2rem;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
+  padding: 2rem var(--app-page-padding-x) 2rem;
+  background: var(--color-primary);
   border-bottom: none;
 }
 
 .headInner {
-  max-width: 800px;
+  max-width: var(--app-page-max);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -93,10 +92,10 @@
 
 /* ── Content ── */
 .content {
-  max-width: 800px;
+  max-width: var(--app-page-outer-max);
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 1.5rem 5rem;
+  padding: 2rem var(--app-page-padding-x) 5rem;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
@@ -118,17 +117,28 @@
 
 /* ── Overall progress ── */
 .overallBar {
+  width: 100%;
   height: 8px;
   border-radius: 999px;
-  background: rgba(228, 225, 240, 0.7);
+  background: var(--color-border);
   overflow: hidden;
+  border: none;
+  appearance: none;
 }
 
-.overallFill {
-  height: 100%;
+.overallBar::-webkit-progress-bar {
+  background: var(--color-border);
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--color-primary), #9333ea);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overallBar::-webkit-progress-value {
+  background: var(--color-primary);
+  border-radius: 999px;
+}
+
+.overallBar::-moz-progress-bar {
+  background: var(--color-primary);
+  border-radius: 999px;
 }
 
 .overallLabel {
@@ -160,6 +170,19 @@
   flex-shrink: 0;
 }
 
+.radialTrack {
+  stroke: var(--color-border);
+}
+
+.radialFill {
+  stroke: var(--color-primary);
+  transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.radialText {
+  fill: var(--color-primary);
+}
+
 .categoryInfo {
   display: flex;
   align-items: center;
@@ -167,8 +190,10 @@
 }
 
 .categoryIcon {
+  display: flex;
   font-size: 1.25rem;
   flex-shrink: 0;
+  color: var(--color-primary);
 }
 
 .categoryTitle {
@@ -213,8 +238,10 @@
 }
 
 .badgeIcon {
+  display: flex;
   font-size: 1.5rem;
   flex-shrink: 0;
+  color: var(--color-primary);
 }
 
 .badgeLabel {
