@@ -84,6 +84,11 @@
   padding: 2rem 1.5rem;
 }
 
+.bodyCompact {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
 .exerciseCard {
   width: 100%;
   max-width: 600px;

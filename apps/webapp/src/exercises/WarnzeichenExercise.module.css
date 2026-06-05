@@ -63,6 +63,66 @@
   font-weight: 700;
 }
 
+.imagePreview {
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+}
+
+.emailImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.markerLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.imageMarker {
+  position: absolute;
+  z-index: 2;
+  width: 1.55rem;
+  height: 1.55rem;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(38, 15, 84, 0.18);
+  transform: translate(-50%, -50%);
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.imageMarker:hover:not(:disabled),
+.imageMarker:focus-visible {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.imageMarker:disabled {
+  cursor: default;
+}
+
+.imageMarker[aria-pressed="true"] {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary-dark);
+}
+
+.imageMarkerPos0 { left: 3.5%; top: 8.6%; }
+.imageMarkerPos1 { left: 3.5%; top: 16.6%; }
+.imageMarkerPos2 { left: 34%; top: 24.4%; }
+.imageMarkerPos3 { left: 49.8%; top: 34.6%; }
+.imageMarkerPos4 { left: 34.4%; top: 60.4%; }
+
 .document {
   display: flex;
   flex-direction: column;
@@ -225,7 +285,8 @@
 }
 
 .correct .marker,
-.correct .checkbox {
+.correct .checkbox,
+.correct.imageMarker {
   border-color: var(--color-success);
   background: var(--color-success);
   color: #fff;
@@ -239,8 +300,10 @@
 
 .wrong .marker,
 .wrong .checkbox,
+.wrong.imageMarker,
 .missed .marker,
-.missed .checkbox {
+.missed .checkbox,
+.missed.imageMarker {
   border-color: var(--color-danger);
   background: var(--color-danger);
   color: #fff;
@@ -272,6 +335,12 @@
 }
 
 @media (max-width: 600px) {
+  .imageMarker {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.65rem;
+  }
+
   .zone {
     grid-template-columns: 2rem 1fr;
     gap: 0.25rem;

@@ -83,6 +83,10 @@ export interface WarnzeichenData {
   type: "warnzeichen";
   question: string;
   scenarioType: ScenarioType;
+  image?: {
+    src: string;
+    alt: string;
+  };
   zones: WarnzeichenZone[];
   explanation?: string;
   glossarLinks?: string[];
@@ -360,47 +364,51 @@ export const categories: Category[] = [
             id: "scam-l1-phishing",
             data: {
               type: "warnzeichen",
-              question: "Markiere alle Warnzeichen in dieser E-Mail.",
+              question: "Welche nummerierten Stellen sind Warnzeichen in dieser E-Mail?",
               scenarioType: "email",
+              image: {
+                src: "/warnzeichen-dpd-email.png",
+                alt: "Screenshot einer angeblichen DPD-Zustellbenachrichtigung in einem E-Mail-Postfach.",
+              },
               zones: [
-                {
-                  id: "sender",
-                  label: "Von",
-                  text: "sparkasse-sicherheit@konto-verify.net",
-                  suspicious: true,
-                  explanation: "Die Domain nach dem @ gehört nicht zur Sparkasse.",
-                },
                 {
                   id: "subject",
                   label: "Betreff",
-                  text: "Ihr Konto wurde gesperrt – Sofortmaßnahme erforderlich",
+                  text: "Zustellbenachrichtigung für Sendung DPD_883221 / 5/19/2026",
                   suspicious: true,
-                  explanation: "Druck und angebliche Dringlichkeit sind typische Betrugszeichen.",
+                  explanation: "Der Betreff wirkt automatisch übersetzt und enthält ein ungewöhnliches Datum im US-Format.",
                 },
                 {
-                  id: "greeting",
-                  label: "Anrede",
-                  text: "Sehr geehrter Kunde,",
+                  id: "sender",
+                  label: "Absender",
+                  text: "INFO <info@iwyiwy.co.jp>",
+                  suspicious: true,
+                  explanation: "Die Absender-Domain passt nicht zu DPD. Genau die Domain nach dem @ ist entscheidend.",
+                },
+                {
+                  id: "logo",
+                  label: "DPD-Logo",
+                  text: "Logo und Gestaltung",
                   suspicious: false,
-                  explanation: "Eine allgemeine Anrede allein beweist noch keinen Betrug.",
+                  explanation: "Ein echtes Logo allein beweist keinen Betrug. Betrüger kopieren Logos sehr leicht.",
                 },
                 {
-                  id: "pressure",
-                  label: "Text",
-                  text: "Um eine dauerhafte Sperrung zu verhindern, bestätigen Sie Ihre Daten innerhalb von 24 Stunden.",
+                  id: "date",
+                  label: "Datum",
+                  text: "5/19/2026 - 16:41:36",
                   suspicious: true,
-                  explanation: "Die Nachricht erzeugt Zeitdruck, damit du unüberlegt klickst.",
+                  explanation: "Das Datumsformat und die eingeblendete Markierung wirken untypisch für eine deutsche Paketmail.",
                 },
                 {
-                  id: "link",
-                  label: "Link",
-                  text: "bit.ly/sparkasse-verify",
+                  id: "button",
+                  label: "Button",
+                  text: "Zustellung neu planen",
                   suspicious: true,
-                  explanation: "Kurzlinks verstecken das echte Ziel.",
+                  explanation: "Der Button soll zum Klicken verleiten. Vor dem Klick wäre die echte URL zu prüfen.",
                 },
               ],
               explanation:
-                "Die gefährliche Kombination ist: fremde Absender-Domain, Zeitdruck und ein verschleierter Link. Genau diese Muster solltest du zuerst markieren.",
+                "Richtig sind 1, 2, 4 und 5: verdächtiger Betreff, fremde Absender-Domain, auffälliges Datum und ein klickbarer Zustell-Button. 3 allein ist kein Beweis, weil Logos leicht kopiert werden.",
               glossarLinks: ["phishing", "domain", "url"],
             },
           },

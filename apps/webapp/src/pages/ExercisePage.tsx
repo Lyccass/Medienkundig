@@ -69,6 +69,9 @@ export function ExercisePage({
 
   const current = exercises[index];
   const isMemory = current?.data.type === "memory";
+  const isFlipMemory =
+    current?.data.type === "memory" &&
+    (current.data as { variant?: string }).variant === "flip";
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -185,7 +188,7 @@ export function ExercisePage({
       </header>
 
       {/* Body */}
-      <main className={styles.body}>
+      <main className={`${styles.body} ${isFlipMemory ? styles.bodyCompact : ""}`}>
         <div className={`${styles.exerciseCard} ${current.data.type === "lesson" ? styles.lessonMode : ""}`} key={current.id}>
           <p className={styles.catLabel}>{categoryTitle}</p>
 

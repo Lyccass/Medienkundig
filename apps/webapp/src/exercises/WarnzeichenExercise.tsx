@@ -54,36 +54,61 @@ export function WarnzeichenExercise({ data, onAnswer, disabled }: Props) {
         <span>{SCENARIO_LABELS[data.scenarioType]}</span>
       </div>
 
-      <div className={styles.preview}>
-        <div className={styles.previewHeader}>
-          <span className={styles.fakeLogo}>S</span>
-          <div>
-            <p className={styles.fakeBrand}>Sparkasse Sicherheit</p>
-            <p className={styles.fakeMeta}>Konto-Überprüfung</p>
+      {data.image ? (
+        <div className={styles.imagePreview}>
+          <img className={styles.emailImage} src={data.image.src} alt={data.image.alt} />
+          <div className={styles.markerLayer} aria-label="Markierte Stellen im Screenshot">
+            {data.zones.map((zone, i) => {
+              const state = getState(zone.id, zone.suspicious);
+              const active = includesValue(selected, zone.id);
+              return (
+                <button
+                  key={zone.id}
+                  type="button"
+                  className={`${styles.imageMarker} ${styles[`imageMarkerPos${i}`]} ${styles[state]}`}
+                  onClick={() => toggleZone(zone.id)}
+                  disabled={disabled || submitted}
+                  aria-pressed={active}
+                  aria-label={`${i + 1}: ${zone.label}`}
+                >
+                  {i + 1}
+                </button>
+              );
+            })}
           </div>
         </div>
+      ) : (
+        <div className={styles.preview}>
+          <div className={styles.previewHeader}>
+            <span className={styles.fakeLogo}>S</span>
+            <div>
+              <p className={styles.fakeBrand}>Sparkasse Sicherheit</p>
+              <p className={styles.fakeMeta}>Konto-Überprüfung</p>
+            </div>
+          </div>
 
-        <div className={styles.document}>
-          {data.zones.map((zone, i) => {
-            const state = getState(zone.id, zone.suspicious);
-            const active = includesValue(selected, zone.id);
-            return (
-              <button
-                key={zone.id}
-                type="button"
-                className={`${styles.zone} ${styles[state]}`}
-                onClick={() => toggleZone(zone.id)}
-                disabled={disabled || submitted}
-                aria-pressed={active}
-              >
-                <span className={styles.marker}>{i + 1}</span>
-                <span className={styles.zoneLabel}>{zone.label}</span>
-                <span className={styles.zoneText}>{zone.text}</span>
-              </button>
-            );
-          })}
+          <div className={styles.document}>
+            {data.zones.map((zone, i) => {
+              const state = getState(zone.id, zone.suspicious);
+              const active = includesValue(selected, zone.id);
+              return (
+                <button
+                  key={zone.id}
+                  type="button"
+                  className={`${styles.zone} ${styles[state]}`}
+                  onClick={() => toggleZone(zone.id)}
+                  disabled={disabled || submitted}
+                  aria-pressed={active}
+                >
+                  <span className={styles.marker}>{i + 1}</span>
+                  <span className={styles.zoneLabel}>{zone.label}</span>
+                  <span className={styles.zoneText}>{zone.text}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={styles.answerBlock}>
         <p className={styles.answerTitle}>Welche Nummern sind Warnzeichen?</p>
