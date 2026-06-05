@@ -34,12 +34,26 @@ function getNextLessonButtonLabel(exercises: Exercise[], index: number) {
   if (!next) return "Fertig";
   if (next.data.type === "lesson") return "Weiter";
 
-  const exerciseNumber = exercises
-    .slice(0, index + 2)
-    .filter((exercise) => exercise.data.type !== "lesson")
-    .length;
-
-  return `Weiter zu Übung ${exerciseNumber}`;
+  switch (next.data.type) {
+    case "fall":
+      return "Weiter zum Fall";
+    case "warnzeichen":
+      return "Weiter zur Warnzeichen-Übung";
+    case "nextStep":
+      return "Weiter zur Schritt-Übung";
+    case "urlTrainer":
+      return "Weiter zum URL-Training";
+    case "audioAuswahl":
+      return "Weiter zur Audio-Übung";
+    case "bildAuswahl":
+      return "Weiter zur Bild-Übung";
+    case "memory":
+      return "Weiter zum Memory";
+    case "vervollstaendigen":
+      return "Weiter zum Lückentext";
+    default:
+      return "Weiter zur Übung";
+  }
 }
 
 export function ExercisePage({

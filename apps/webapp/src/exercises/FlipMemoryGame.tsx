@@ -35,17 +35,22 @@ export function FlipMemoryGame({ data, onComplete }: Props) {
   const [blocked, setBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [matchedPairIds, setMatchedPairIds] = useState<number[]>([]);
-  const [revealedDefs, setRevealedDefs] = useState<Array<{ term: string; info: string }>>([]);
-  const [newestTerm, setNewestTerm] = useState<string | null>(null);
+  const [gamePhase, setGamePhase] = useState<"playing" | "complete">("playing");
+
+  const totalPairs = data.pairs.length;
 
   useEffect(() => {
-    if (matchedPairIds.length === data.pairs.length && data.pairs.length > 0) {
-      setTimeout(onComplete, 600);
+    if (matchedPairIds.length === totalPairs && totalPairs > 0) {
+      // Slight delay to let the last match animation settle, then show summary
+      setTimeout(() => {
+        setGamePhase("complete");
+        onComplete();
+      }, 500);
     }
-  }, [matchedPairIds, data.pairs.length, onComplete]);
+  }, [matchedPairIds, totalPairs, onComplete]);
 
   function handleClick(i: number) {
-    if (blocked || states[i] !== "hidden") return;
+    if (blocked || states[i] !== "hidden" || gamePhase !== "playing") return;
 
     const next = [...states];
     next[i] = "flipped";
@@ -58,30 +63,19 @@ export function FlipMemoryGame({ data, onComplete }: Props) {
       return;
     }
 
-    // Two cards selected — evaluate
     setSelected([]);
     setBlocked(true);
     setAttempts((a) => a + 1);
 
     const [a, b] = nextSelected;
     if (cards[a].pairId === cards[b].pairId) {
-      // Match
       const matched = [...next];
       matched[a] = "matched";
       matched[b] = "matched";
       setStates(matched);
       setMatchedPairIds((ids) => [...ids, cards[a].pairId]);
-
-      const pair = data.pairs[cards[a].pairId];
-      if (pair.info) {
-        const term = pair.term;
-        setRevealedDefs((r) => [...r, { term, info: pair.info! }]);
-        setNewestTerm(term);
-        setTimeout(() => setNewestTerm(null), 900);
-      }
       setBlocked(false);
     } else {
-      // Mismatch — flash red, then flip back
       const wrong = [...next];
       wrong[a] = "wrong";
       wrong[b] = "wrong";
@@ -99,8 +93,28 @@ export function FlipMemoryGame({ data, onComplete }: Props) {
     }
   }
 
+  // ── Complete phase: show all term definitions ──
+  if (gamePhase === "complete") {
+    const defsWithInfo = data.pairs.filter((p) => p.info);
+    return (
+      <div className={styles.complete}>
+        <p className={styles.completeHeader}>
+          Alle {totalPairs} Paare gefunden
+          {attempts > 0 && <span className={styles.completeSub}> · {attempts} Versuche</span>}
+        </p>
+        {defsWithInfo.length > 0 && (
+          <div className={styles.defsList}>
+            {defsWithInfo.map((pair) => (
+              <DefinitionCard key={pair.term} term={pair.term} info={pair.info!} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Playing phase ──
   const matchedCount = matchedPairIds.length;
-  const totalPairs = data.pairs.length;
 
   return (
     <div className={styles.root}>
@@ -155,22 +169,6 @@ export function FlipMemoryGame({ data, onComplete }: Props) {
           );
         })}
       </div>
-
-      {revealedDefs.length > 0 && (
-        <div className={styles.defs}>
-          <p className={styles.defsLabel}>Gefundene Begriffe</p>
-          <div className={styles.defsList}>
-            {revealedDefs.map(({ term, info }) => (
-              <DefinitionCard
-                key={term}
-                term={term}
-                info={info}
-                isNew={newestTerm === term}
-              />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
