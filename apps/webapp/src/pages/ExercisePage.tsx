@@ -5,6 +5,7 @@ import { MultipleChoice } from "../exercises/MultipleChoice";
 import { BildAuswahl } from "../exercises/BildAuswahl";
 import { AudioAuswahl } from "../exercises/AudioAuswahl";
 import { MemoryGame } from "../exercises/MemoryGame";
+import { FlipMemoryGame } from "../exercises/FlipMemoryGame";
 import { Vervollstaendigen } from "../exercises/Vervollstaendigen";
 import { FallExercise } from "../exercises/FallExercise";
 import { WarnzeichenExercise } from "../exercises/WarnzeichenExercise";
@@ -27,6 +28,19 @@ type Phase =
 
 const XP_CORRECT = 10;
 const XP_MEMORY = 20;
+
+function getNextLessonButtonLabel(exercises: Exercise[], index: number) {
+  const next = exercises[index + 1];
+  if (!next) return "Fertig";
+  if (next.data.type === "lesson") return "Weiter";
+
+  const exerciseNumber = exercises
+    .slice(0, index + 2)
+    .filter((exercise) => exercise.data.type !== "lesson")
+    .length;
+
+  return `Weiter zu Übung ${exerciseNumber}`;
+}
 
 export function ExercisePage({
   exercises,
@@ -182,27 +196,31 @@ export function ExercisePage({
                   ))}
                 </ul>
               )}
-              {current.data.sections && current.data.sections.map((section, i) => (
-                <div key={i} className={styles.lessonSection}>
-                  <p className={styles.lessonSectionHeading}>{section.heading}</p>
-                  {section.body && (
-                    <p className={styles.lessonSectionBody}>
-                      <HighlightTerms text={section.body} ids={current.data.glossarLinks} />
-                    </p>
-                  )}
-                  {section.bullets && (
-                    <ul className={styles.lessonSectionList}>
-                      {section.bullets.map((bullet, j) => (
-                        <li key={j}>
-                          <HighlightTerms text={bullet} ids={current.data.glossarLinks} />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+              {current.data.sections && (
+                <div className={styles.lessonSections}>
+                  {current.data.sections.map((section, i) => (
+                    <div key={i} className={styles.lessonSection}>
+                      <p className={styles.lessonSectionHeading}>{section.heading}</p>
+                      {section.body && (
+                        <p className={styles.lessonSectionBody}>
+                          <HighlightTerms text={section.body} ids={current.data.glossarLinks} />
+                        </p>
+                      )}
+                      {section.bullets && (
+                        <ul className={styles.lessonSectionList}>
+                          {section.bullets.map((bullet, j) => (
+                            <li key={j}>
+                              <HighlightTerms text={bullet} ids={current.data.glossarLinks} />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
               <button type="button" className={styles.lessonBtn} onClick={advance}>
-                {current.data.buttonLabel ?? "Weiter zur Übung"}
+                {getNextLessonButtonLabel(exercises, index)}
               </button>
             </div>
           )}
@@ -213,7 +231,9 @@ export function ExercisePage({
             <AudioAuswahl data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
           )}
           {current.data.type === "memory" && (
-            <MemoryGame data={current.data} onComplete={handleMemoryComplete} />
+            current.data.variant === "flip"
+              ? <FlipMemoryGame data={current.data} onComplete={handleMemoryComplete} />
+              : <MemoryGame data={current.data} onComplete={handleMemoryComplete} />
           )}
           {current.data.type === "vervollstaendigen" && (
             <Vervollstaendigen data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />

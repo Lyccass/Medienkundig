@@ -4,6 +4,7 @@ import { categories } from "../data/courses";
 import type { Exercise } from "../data/courses";
 import type { Progress } from "../store/useProgress";
 import { TYPE_ICONS, TYPE_LABELS } from "../constants/ui";
+import { isRealExercise } from "../utils/exercises";
 import styles from "./CategoryPage.module.css";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -18,8 +19,9 @@ const NODE_R = 30;           // radius of each node circle
 const STEP_H = 130;          // vertical distance between node centres
 const PAD_TOP = 50;
 const CONTAINER_W = 380;
+const MAX_PATH_CLASS_COUNT = 16;
 
-// x-centre for each of up to 8 exercises (fraction of CONTAINER_W)
+// Repeating x-centres for the path rhythm (fraction of CONTAINER_W)
 const X_FRACS = [0.62, 0.28, 0.64, 0.16, 0.50, 0.72, 0.32, 0.55];
 
 interface NodeDef {
@@ -67,26 +69,33 @@ function buildSvgPath(nodes: NodeDef[]): string {
 }
 
 function buildDonePath(nodes: NodeDef[]): string {
-  const done = nodes.filter((n) => n.state === "done");
-  if (done.length < 2) return "";
-  return buildSvgPath(done);
+  const doneChain: NodeDef[] = [];
+  for (const node of nodes) {
+    if (node.state !== "done") break;
+    doneChain.push(node);
+  }
+  if (doneChain.length < 2) return "";
+  return buildSvgPath(doneChain);
 }
 
 interface PathViewProps {
   exercises: Exercise[];
   completedIds: string[];
-  onNodeClick: (index: number) => void;
+  onNodeClick: (exerciseId: string) => void;
 }
 
 function PathView({ exercises, completedIds, onNodeClick }: PathViewProps) {
   const nodes = buildNodes(exercises, completedIds);
+  if (nodes.length === 0) return null;
+
+  const pathClassCount = Math.min(exercises.length, MAX_PATH_CLASS_COUNT);
   const totalH = PAD_TOP + (exercises.length - 1) * STEP_H + NODE_R + PAD_TOP;
   const fullPath = buildSvgPath(nodes);
   const donePath = buildDonePath(nodes);
 
   return (
     <div className={styles.pathOuter}>
-      <div className={`${styles.pathContainer} ${styles[`pathCount${Math.min(exercises.length, 8)}`]}`}>
+      <div className={`${styles.pathContainer} ${styles[`pathCount${pathClassCount}`]}`}>
         {/* SVG background path */}
         <svg
           className={styles.pathSvg}
@@ -123,8 +132,8 @@ function PathView({ exercises, completedIds, onNodeClick }: PathViewProps) {
             <button
               key={node.id}
               type="button"
-              className={`${styles.node} ${styles[`nodePos${i}`]} ${isDone ? styles.nodeDone : ""} ${isActive ? styles.nodeActive : ""} ${isLocked ? styles.nodeLocked : ""} ${isLast ? styles.nodeLast : ""}`}
-              onClick={() => onNodeClick(i)}
+              className={`${styles.node} ${styles[`nodePos${Math.min(i, MAX_PATH_CLASS_COUNT - 1)}`]} ${isDone ? styles.nodeDone : ""} ${isActive ? styles.nodeActive : ""} ${isLocked ? styles.nodeLocked : ""} ${isLast ? styles.nodeLast : ""}`}
+              onClick={() => onNodeClick(node.id)}
               disabled={isLocked}
               aria-label={`Übung ${i + 1}: ${"question" in node.exercise.data ? node.exercise.data.question : TYPE_LABELS[node.exercise.data.type] ?? node.exercise.data.type}`}
               aria-disabled={isLocked}
@@ -166,20 +175,44 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
   const category = categories.find((c) => c.id === categoryId);
   if (!category) return null;
 
-  const allIds = category.units.flatMap((u) => u.exercises.map((e) => e.id));
+  const allIds = category.units.flatMap((u) => u.exercises.filter(isRealExercise).map((e) => e.id));
   const done = allIds.filter((id) => progress.completedExercises.includes(id)).length;
   const total = allIds.length;
   const pct = total === 0 ? 0 : done / total;
 
-  function handleNodeClick(unitExercises: Exercise[], startIndex: number) {
+  function getStartIndexForExercise(unitExercises: Exercise[], exerciseId: string) {
+    const exerciseIndex = unitExercises.findIndex((exercise) => exercise.id === exerciseId);
+    if (exerciseIndex <= 0) return Math.max(exerciseIndex, 0);
+    return unitExercises[exerciseIndex - 1].data.type === "lesson" ? exerciseIndex - 1 : exerciseIndex;
+  }
+
+  function handleNodeClick(unitExercises: Exercise[], exerciseId: string) {
+    const startIndex = getStartIndexForExercise(unitExercises, exerciseId);
     onStartExercises(unitExercises.slice(startIndex), categoryId);
   }
 
   function handleUnitStart(unitExercises: Exercise[]) {
+    const realExercises = unitExercises.filter(isRealExercise);
+    const completedRealCount = realExercises.filter((exercise) =>
+      progress.completedExercises.includes(exercise.id),
+    ).length;
+
+    if (completedRealCount === realExercises.length) {
+      onStartExercises(unitExercises, categoryId);
+      return;
+    }
+
+    if (completedRealCount === 0) {
+      onStartExercises(unitExercises, categoryId);
+      return;
+    }
+
     const firstIncomplete = unitExercises.findIndex(
-      (e) => !progress.completedExercises.includes(e.id),
+      (e) => isRealExercise(e) && !progress.completedExercises.includes(e.id),
     );
-    const startIndex = firstIncomplete === -1 ? 0 : firstIncomplete;
+    const startIndex = firstIncomplete === -1
+      ? 0
+      : getStartIndexForExercise(unitExercises, unitExercises[firstIncomplete].id);
     onStartExercises(unitExercises.slice(startIndex), categoryId);
   }
 
@@ -223,11 +256,12 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
       {/* Units */}
       <div className={styles.units}>
         {category.units.map((unit, unitIndex) => {
-          const unitIds = unit.exercises.map((e) => e.id);
+          const pathExercises = unit.exercises.filter(isRealExercise);
+          const unitIds = pathExercises.map((e) => e.id);
           const unitDone = unitIds.filter((id) => progress.completedExercises.includes(id)).length;
           const unitTotal = unitIds.length;
           const allUnitDone = unitDone === unitTotal;
-          const firstIncomplete = unit.exercises.findIndex(
+          const firstIncomplete = pathExercises.findIndex(
             (e) => !progress.completedExercises.includes(e.id),
           );
           const btnLabel = allUnitDone ? "Wiederholen" : firstIncomplete > 0 ? "Fortsetzen" : "Starten";
@@ -252,9 +286,9 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
 
               {/* Exercise path */}
               <PathView
-                exercises={unit.exercises}
+                exercises={pathExercises}
                 completedIds={progress.completedExercises}
-                onNodeClick={(i) => handleNodeClick(unit.exercises, i)}
+                onNodeClick={(exerciseId) => handleNodeClick(unit.exercises, exerciseId)}
               />
             </div>
           );

@@ -30,6 +30,7 @@ export interface AudioAuswahlData {
 
 export interface MemoryData {
   type: "memory";
+  variant?: "flip";
   question: string;
   pairs: { term: string; definition: string; info?: string }[];
   explanation?: string;
@@ -323,8 +324,8 @@ export const categories: Category[] = [
               title: "Bist du fit gegen Betrug?",
               kicker: "Lektion 1 · Einstieg",
               body: "Ob am Telefon, per E-Mail oder an der Haustür – Betrugsversuche begegnen uns heute überall. Das Bundeskriminalamt zählte allein 2024 über 131.000 Cybercrime-Fälle in Deutschland – und erstmals kommen dabei KI-gestützte Methoden zum Einsatz. Das Gute daran: Schon ein einziges kurzes Training kann die Fähigkeit, echte von gefälschten Inhalten zu unterscheiden, erheblich verbessern.",
-              buttonLabel: "Weiter zu Fall 1",
               mediaType: "text",
+              glossarLinks: ["phishing", "ki"],
             },
           },
           {
@@ -351,9 +352,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing", "domain"],
+              glossarLinks: ["phishing", "domain", "url"],
             },
           },
           {
@@ -401,7 +401,7 @@ export const categories: Category[] = [
               ],
               explanation:
                 "Die gefährliche Kombination ist: fremde Absender-Domain, Zeitdruck und ein verschleierter Link. Genau diese Muster solltest du zuerst markieren.",
-              glossarLinks: ["phishing", "domain"],
+              glossarLinks: ["phishing", "domain", "url"],
             },
           },
           {
@@ -428,9 +428,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["smishing", "phishing", "domain", "malware"],
             },
           },
           {
@@ -453,7 +452,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Smishing-SMS enthalten Links zu gefälschten Seiten. Einzige sichere Reaktion: SMS löschen und die offizielle DHL-Website direkt im Browser aufrufen.",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["smishing", "phishing", "domain"],
             },
           },
           {
@@ -481,9 +480,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "audio",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["enkeltrick", "social-engineering", "ki"],
             },
           },
           {
@@ -503,7 +501,7 @@ export const categories: Category[] = [
               correct: 0,
               explanation:
                 "Betrüger nennen ihren Namen bewusst nicht, damit du ihn nennst – und sie die Identität übernehmen können. Das ist das klassische Muster des Enkeltricks.",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["enkeltrick", "social-engineering"],
             },
           },
           {
@@ -531,9 +529,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "audio",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["schockanruf", "social-engineering", "ki"],
             },
           },
           {
@@ -553,7 +550,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Krankenhäuser und Behörden fragen niemals telefonisch nach Bargeld. Auflegen und direkt bei der betroffenen Person anrufen – auf einer Nummer, die du selbst kennst.",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["schockanruf", "social-engineering"],
             },
           },
         ],
@@ -570,8 +567,8 @@ export const categories: Category[] = [
               title: "Lektion 2 – Noch besser geschützt",
               kicker: "Lektion 2 · Einstieg",
               body: "Du weißt jetzt, wie Phishing, Smishing, der Enkeltrick und der Schockanruf funktionieren. In dieser Lektion kommen vier weitere Maschen dazu – etwas komplexer, aber genauso wichtig. Du lernst, wie Betrüger gefälschte Telefonnummern nutzen, sich als Technik-Support ausgeben, über Wochen Vertrauen aufbauen und mit fingierten Gewinnen locken.",
-              buttonLabel: "Weiter zu Fall 5",
               mediaType: "text",
+              glossarLinks: ["phishing", "spoofing", "vishing", "love-scam", "gewinnbetrug"],
             },
           },
           {
@@ -598,9 +595,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["spoofing", "social-engineering"],
             },
           },
           {
@@ -623,7 +619,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Die Notrufnummer 110 wird nie für ausgehende Anrufe genutzt. Eine auf dem Display angezeigte Nummer beweist nicht, wer wirklich anruft – das nennt sich Spoofing.",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["spoofing", "social-engineering"],
             },
           },
           {
@@ -650,9 +646,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "audio",
-              glossarLinks: ["phishing", "social-engineering"],
+              glossarLinks: ["vishing", "phishing", "social-engineering", "malware"],
             },
           },
           {
@@ -672,7 +667,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Microsoft und andere Firmen rufen nie unaufgefordert an. Links wie »support-remote-fix.com« sind keine offiziellen Microsoft-Seiten. Sofort auflegen.",
-              glossarLinks: ["phishing", "social-engineering"],
+              glossarLinks: ["vishing", "phishing", "social-engineering"],
             },
           },
           {
@@ -700,9 +695,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["love-scam", "social-engineering", "ki", "deepfake"],
             },
           },
           {
@@ -725,7 +719,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Nie persönlich getroffen + erste Geldbitte nach emotionalem Aufbau = klassisches Love-Scam-Muster. Kein Geld überweisen. Erst mit einer Vertrauensperson sprechen.",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["love-scam", "social-engineering"],
             },
           },
           {
@@ -752,9 +746,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["gewinnbetrug", "social-engineering", "phishing"],
             },
           },
           {
@@ -778,7 +771,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Das Merkmal des Gewinnbetrugs: Erst zahlen, dann (angeblich) erhalten. Echte Gewinne kosten nichts im Voraus. Wer eine Gebühr verlangt, ist ein Betrüger.",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["gewinnbetrug", "social-engineering", "phishing"],
             },
           },
         ],
@@ -792,6 +785,7 @@ export const categories: Category[] = [
             id: "scam-memory-8",
             data: {
               type: "memory",
+              variant: "flip",
               question: "Ordne jeden Betrugstyp dem passenden Beispiel zu:",
               pairs: [
                 {
@@ -837,7 +831,7 @@ export const categories: Category[] = [
               ],
               explanation:
                 "Du kennst jetzt alle acht häufigsten Betrugsmaschen. Wer die Muster erkennt, ist deutlich besser geschützt – und kann auch andere warnen.",
-              glossarLinks: ["phishing", "social-engineering"],
+              glossarLinks: ["phishing", "smishing", "enkeltrick", "schockanruf", "spoofing", "vishing", "love-scam", "gewinnbetrug", "social-engineering"],
             },
           },
         ],

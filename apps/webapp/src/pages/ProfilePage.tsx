@@ -3,6 +3,7 @@ import { ShieldAlert, Newspaper, Smartphone, Lock, Flame, Zap, Sprout, Target, T
 import { categories } from "../data/courses";
 import type { Progress } from "../store/useProgress";
 import { PageHeader } from "../components/PageHeader";
+import { isRealExercise } from "../utils/exercises";
 import styles from "./ProfilePage.module.css";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -43,10 +44,11 @@ interface Props {
 }
 
 export function ProfilePage({ progress, onResetProgress }: Props) {
-  const totalExercises = categories.reduce(
-    (sum, cat) => sum + cat.units.reduce((s, u) => s + u.exercises.length, 0), 0,
+  const allExerciseIds = categories.flatMap((cat) =>
+    cat.units.flatMap((unit) => unit.exercises.filter(isRealExercise).map((exercise) => exercise.id)),
   );
-  const completedCount = progress.completedExercises.length;
+  const totalExercises = allExerciseIds.length;
+  const completedCount = allExerciseIds.filter((id) => progress.completedExercises.includes(id)).length;
   const overallPct = totalExercises === 0 ? 0 : Math.round((completedCount / totalExercises) * 100);
 
   const statsAction = (
@@ -98,7 +100,7 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
 
           <nav className={styles.catNav}>
             {categories.map((cat) => {
-              const catExercises = cat.units.flatMap((u) => u.exercises.map((e) => e.id));
+              const catExercises = cat.units.flatMap((u) => u.exercises.filter(isRealExercise).map((e) => e.id));
               const catCompleted = catExercises.filter((id) => progress.completedExercises.includes(id)).length;
               const done = catCompleted === catExercises.length && catExercises.length > 0;
               return (
@@ -123,7 +125,7 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
             <h2 className={styles.sectionTitle}>Kategorien</h2>
             <div className={styles.categoryGrid}>
               {categories.map((cat) => {
-                const catExercises = cat.units.flatMap((u) => u.exercises.map((e) => e.id));
+                const catExercises = cat.units.flatMap((u) => u.exercises.filter(isRealExercise).map((e) => e.id));
                 const catCompleted = catExercises.filter((id) => progress.completedExercises.includes(id)).length;
                 return (
                   <div key={cat.id} className={styles.categoryCard}>

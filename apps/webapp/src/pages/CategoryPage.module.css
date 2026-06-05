@@ -151,6 +151,14 @@
 .pathCount6 { height: 780px; }
 .pathCount7 { height: 910px; }
 .pathCount8 { height: 1040px; }
+.pathCount9 { height: 1170px; }
+.pathCount10 { height: 1300px; }
+.pathCount11 { height: 1430px; }
+.pathCount12 { height: 1560px; }
+.pathCount13 { height: 1690px; }
+.pathCount14 { height: 1820px; }
+.pathCount15 { height: 1950px; }
+.pathCount16 { height: 2080px; }
 
 .pathSvg {
   position: absolute;
@@ -196,6 +204,14 @@
 .nodePos5 { left: 244px; top: 670px; }
 .nodePos6 { left: 92px; top: 800px; }
 .nodePos7 { left: 179px; top: 930px; }
+.nodePos8 { left: 206px; top: 1060px; }
+.nodePos9 { left: 76px; top: 1190px; }
+.nodePos10 { left: 213px; top: 1320px; }
+.nodePos11 { left: 31px; top: 1450px; }
+.nodePos12 { left: 160px; top: 1580px; }
+.nodePos13 { left: 244px; top: 1710px; }
+.nodePos14 { left: 92px; top: 1840px; }
+.nodePos15 { left: 179px; top: 1970px; }
 
 .node:hover:not(:disabled) {
   transform: scale(1.12);

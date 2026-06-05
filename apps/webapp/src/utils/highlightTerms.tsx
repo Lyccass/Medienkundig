@@ -14,12 +14,13 @@ export function HighlightTerms({
   const terms = ids
     .map((id) => glossarTerms.find((t) => t.id === id))
     .filter((t): t is NonNullable<typeof t> => !!t)
-    .sort((a, b) => b.term.length - a.term.length); // longest match first
+    .flatMap((term) => [term.term, ...(term.aliases ?? [])].map((label) => ({ label, term })))
+    .sort((a, b) => b.label.length - a.label.length); // longest match first
 
   if (!terms.length) return <>{text}</>;
 
   const pattern = terms
-    .map((t) => t.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .map((t) => t.label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .join("|");
 
   const regex = new RegExp(`(${pattern})`, "gi");
@@ -28,10 +29,10 @@ export function HighlightTerms({
   return (
     <>
       {parts.map((part, i) => {
-        const match = terms.find((t) => t.term.toLowerCase() === part.toLowerCase());
+        const match = terms.find((t) => t.label.toLowerCase() === part.toLowerCase());
         if (match) {
           return (
-            <GlossarTerm key={i} id={match.id}>
+            <GlossarTerm key={i} id={match.term.id}>
               {part}
             </GlossarTerm>
           );

@@ -7,6 +7,7 @@ import {
   LEARNING_GOALS, PREVIEW_DESC, ALLTAG,
 } from "../data/learnPaths";
 import type { AlltegEntry, VisibleId } from "../data/learnPaths";
+import { isRealExercise } from "../utils/exercises";
 import styles from "./LearnPage.module.css";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -93,7 +94,7 @@ export function LearnPage({ progress, onNavigateToCategory }: Props) {
   const selected = visible.find((c) => c.id === selectedId) ?? visible[0];
 
   const getProgress = (cat: typeof categories[0]) => {
-    const allIds = cat.units.flatMap((u) => u.exercises.map((e) => e.id));
+    const allIds = cat.units.flatMap((u) => u.exercises.filter(isRealExercise).map((e) => e.id));
     const done   = allIds.filter((id) => progress.completedExercises.includes(id)).length;
     return { done, total: allIds.length };
   };
