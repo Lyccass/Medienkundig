@@ -8,8 +8,8 @@
 }
 
 .avatar {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   display: flex;
@@ -19,17 +19,18 @@
 }
 
 .pageTitle {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 900;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   color: #fff;
   line-height: 1;
+  margin: 0;
 }
 
 .pageSubtitle {
   font-size: var(--text-sm);
   color: rgba(255, 255, 255, 0.7);
-  margin-top: 0.25rem;
+  margin: var(--space-2) 0 0;
 }
 
 .headStats {

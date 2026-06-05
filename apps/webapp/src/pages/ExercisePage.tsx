@@ -7,6 +7,9 @@ import { AudioAuswahl } from "../exercises/AudioAuswahl";
 import { MemoryGame } from "../exercises/MemoryGame";
 import { Vervollstaendigen } from "../exercises/Vervollstaendigen";
 import { FallExercise } from "../exercises/FallExercise";
+import { WarnzeichenExercise } from "../exercises/WarnzeichenExercise";
+import { NextStepExercise } from "../exercises/NextStepExercise";
+import { UrlTrainerExercise } from "../exercises/UrlTrainerExercise";
 import { HighlightTerms } from "../utils/highlightTerms";
 import styles from "./ExercisePage.module.css";
 
@@ -55,9 +58,20 @@ export function ExercisePage({
       data.type === "bildAuswahl" ||
       data.type === "audioAuswahl" ||
       data.type === "vervollstaendigen" ||
-      data.type === "fall"
+      data.type === "fall" ||
+      data.type === "nextStep" ||
+      data.type === "urlTrainer"
     ) {
       const correct = selectedIndex === data.correct;
+      setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
+      if (correct) {
+        setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
+      }
+      setPhase({ type: "feedback", correct, explanation: data.explanation });
+    }
+
+    if (data.type === "warnzeichen") {
+      const correct = selectedIndex === 1;
       setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
       if (correct) {
         setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
@@ -153,7 +167,7 @@ export function ExercisePage({
           {current.data.type === "lesson" && (
             <div className={styles.lesson}>
               <p className={styles.lessonKicker}>
-                {current.data.mediaType === "audio" ? "Hören & verstehen" : current.data.mediaType === "video" ? "Ansehen & verstehen" : "Kurz erklärt"}
+                {current.data.kicker ?? (current.data.mediaType === "audio" ? "Hören & verstehen" : current.data.mediaType === "video" ? "Ansehen & verstehen" : "Kurz erklärt")}
               </p>
               <h1 className={styles.lessonTitle}>{current.data.title}</h1>
               <p className={styles.lessonBody}>
@@ -168,8 +182,27 @@ export function ExercisePage({
                   ))}
                 </ul>
               )}
+              {current.data.sections && current.data.sections.map((section, i) => (
+                <div key={i} className={styles.lessonSection}>
+                  <p className={styles.lessonSectionHeading}>{section.heading}</p>
+                  {section.body && (
+                    <p className={styles.lessonSectionBody}>
+                      <HighlightTerms text={section.body} ids={current.data.glossarLinks} />
+                    </p>
+                  )}
+                  {section.bullets && (
+                    <ul className={styles.lessonSectionList}>
+                      {section.bullets.map((bullet, j) => (
+                        <li key={j}>
+                          <HighlightTerms text={bullet} ids={current.data.glossarLinks} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
               <button type="button" className={styles.lessonBtn} onClick={advance}>
-                Weiter zur Übung
+                {current.data.buttonLabel ?? "Weiter zur Übung"}
               </button>
             </div>
           )}
@@ -187,6 +220,15 @@ export function ExercisePage({
           )}
           {current.data.type === "fall" && (
             <FallExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
+          )}
+          {current.data.type === "warnzeichen" && (
+            <WarnzeichenExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
+          )}
+          {current.data.type === "nextStep" && (
+            <NextStepExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
+          )}
+          {current.data.type === "urlTrainer" && (
+            <UrlTrainerExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
           )}
         </div>
       </main>

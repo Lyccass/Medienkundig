@@ -1,0 +1,125 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.question {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}
+
+.document {
+  display: flex;
+  flex-direction: column;
+  border-left: 3px solid var(--color-border-strong);
+}
+
+.zone {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0 0.7rem 0.875rem;
+  border: 0;
+  border-bottom: 1px solid rgba(228, 225, 240, 0.75);
+  background: transparent;
+  color: var(--color-text-soft);
+  text-align: left;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.zone:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--color-text);
+}
+
+.zone:disabled {
+  cursor: default;
+}
+
+.zoneLabel {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-muted);
+}
+
+.zoneText {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  white-space: pre-line;
+}
+
+.zoneHint {
+  grid-column: 2;
+  font-size: var(--text-xs);
+  color: inherit;
+  opacity: 0.78;
+}
+
+.selected {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.correct {
+  background: var(--color-success-soft);
+  color: var(--color-primary-dark);
+}
+
+.wrong,
+.missed {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.neutral {
+  opacity: 0.62;
+}
+
+.submit {
+  align-self: flex-start;
+  padding: 0.625rem 1.25rem;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  transition: opacity var(--transition-fast), background var(--transition-fast);
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.submit:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (max-width: 600px) {
+  .zone {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .zoneHint {
+    grid-column: 1;
+  }
+}

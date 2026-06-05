@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { MemoryData } from "../data/courses";
 import { HighlightTerms } from "../utils/highlightTerms";
+import { DefinitionCard } from "./DefinitionCard";
 import { shuffle } from "../utils/shuffle";
 import styles from "./MemoryGame.module.css";
 
@@ -16,6 +17,8 @@ export function MemoryGame({ data, onComplete }: Props) {
   const [selectedDef, setSelectedDef] = useState<string | null>(null);
   const [matched, setMatched] = useState<string[]>([]);
   const [shake, setShake] = useState<string[]>([]);
+  const [revealed, setRevealed] = useState<Array<{ term: string; info: string }>>([]);
+  const [newestTerm, setNewestTerm] = useState<string | null>(null);
 
   function isTermMatched(term: string) {
     return matched.includes(term);
@@ -30,6 +33,11 @@ export function MemoryGame({ data, onComplete }: Props) {
       const pair = data.pairs.find((p) => p.term === selectedTerm);
       if (pair && pair.definition === selectedDef) {
         setMatched((m) => [...m, selectedTerm]);
+        if (pair.info) {
+          setRevealed((r) => [...r, { term: pair.term, info: pair.info! }]);
+          setNewestTerm(pair.term);
+          setTimeout(() => setNewestTerm(null), 800);
+        }
         setSelectedTerm(null);
         setSelectedDef(null);
       } else {
@@ -58,6 +66,8 @@ export function MemoryGame({ data, onComplete }: Props) {
     if (isDefMatched(def) || shake.length > 0 || !selectedTerm) return;
     setSelectedDef(def);
   }
+
+  const hasInfo = data.pairs.some((p) => p.info);
 
   return (
     <div className={styles.root}>
@@ -112,6 +122,16 @@ export function MemoryGame({ data, onComplete }: Props) {
         {matched.length} von {data.pairs.length} Paaren gefunden
       </p>
 
+      {hasInfo && revealed.length > 0 && (
+        <div className={styles.revealed}>
+          <p className={styles.revealedLabel}>Gefundene Begriffe</p>
+          <div className={styles.revealedList}>
+            {revealed.map(({ term, info }) => (
+              <DefinitionCard key={term} term={term} info={info} isNew={newestTerm === term} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

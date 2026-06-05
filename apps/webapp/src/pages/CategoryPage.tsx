@@ -1,8 +1,9 @@
 import React from "react";
-import { ShieldAlert, Newspaper, Smartphone, Lock, HelpCircle, ImageIcon, Volume2, Shuffle, PenLine, Star, ChevronLeft } from "lucide-react";
+import { ShieldAlert, Newspaper, Smartphone, Lock, HelpCircle, Star, ChevronLeft } from "lucide-react";
 import { categories } from "../data/courses";
 import type { Exercise } from "../data/courses";
 import type { Progress } from "../store/useProgress";
+import { TYPE_ICONS, TYPE_LABELS } from "../constants/ui";
 import styles from "./CategoryPage.module.css";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -10,15 +11,6 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   news:        <Newspaper   size={22} strokeWidth={2} />,
   socialmedia: <Smartphone  size={22} strokeWidth={2} />,
   general:     <Lock        size={22} strokeWidth={2} />,
-};
-
-const TYPE_ICONS: Record<string, React.ReactNode> = {
-  multipleChoice:  <HelpCircle size={16} strokeWidth={2} />,
-  bildAuswahl:     <ImageIcon  size={16} strokeWidth={2} />,
-  audioAuswahl:    <Volume2    size={16} strokeWidth={2} />,
-  memory:          <Shuffle    size={16} strokeWidth={2} />,
-  vervollstaendigen: <PenLine  size={16} strokeWidth={2} />,
-  fall:            <ShieldAlert size={16} strokeWidth={2} />,
 };
 
 /* ── Path geometry ── */
@@ -134,7 +126,7 @@ function PathView({ exercises, completedIds, onNodeClick }: PathViewProps) {
               className={`${styles.node} ${styles[`nodePos${i}`]} ${isDone ? styles.nodeDone : ""} ${isActive ? styles.nodeActive : ""} ${isLocked ? styles.nodeLocked : ""} ${isLast ? styles.nodeLast : ""}`}
               onClick={() => onNodeClick(i)}
               disabled={isLocked}
-              aria-label={`Übung ${i + 1}: ${node.exercise.data.type === "memory" ? "Memory" : (node.exercise.data as { question: string }).question}`}
+              aria-label={`Übung ${i + 1}: ${"question" in node.exercise.data ? node.exercise.data.question : TYPE_LABELS[node.exercise.data.type] ?? node.exercise.data.type}`}
               aria-disabled={isLocked}
             >
               {isDone ? (
@@ -153,7 +145,7 @@ function PathView({ exercises, completedIds, onNodeClick }: PathViewProps) {
               )}
 
               <span className={styles.nodeLabel}>
-                {i + 1}. {node.exercise.data.type}
+                {i + 1}. {TYPE_LABELS[node.exercise.data.type] ?? node.exercise.data.type}
               </span>
             </button>
           );
@@ -230,7 +222,7 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
 
       {/* Units */}
       <div className={styles.units}>
-        {category.units.map((unit) => {
+        {category.units.map((unit, unitIndex) => {
           const unitIds = unit.exercises.map((e) => e.id);
           const unitDone = unitIds.filter((id) => progress.completedExercises.includes(id)).length;
           const unitTotal = unitIds.length;
@@ -245,7 +237,7 @@ export function CategoryPage({ categoryId, progress, onBack, onStartExercises }:
               {/* Unit header */}
               <div className={styles.unitHeader}>
                 <div className={styles.unitInfo}>
-                  <p className={styles.unitEyebrow}>Einheit 1</p>
+                  <p className={styles.unitEyebrow}>Einheit {unitIndex + 1}</p>
                   <h2 className={styles.unitTitle}>{unit.title}</h2>
                   <p className={styles.unitDesc}>{unit.description}</p>
                 </div>

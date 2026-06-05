@@ -94,19 +94,24 @@
   font-weight: 500;
 }
 
-.glossar {
+.revealed {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
   gap: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--color-border);
+  padding-top: 0.75rem;
+  border-top: 1.5px solid var(--color-border);
 }
 
-.glossarLabel {
+.revealedLabel {
   font-size: var(--text-xs);
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   color: var(--color-muted);
+}
+
+.revealedList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }

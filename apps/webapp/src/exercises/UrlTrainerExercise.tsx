@@ -1,16 +1,15 @@
 import { useState } from "react";
-import type { FallData } from "../data/courses";
+import type { UrlTrainerData } from "../data/courses";
 import { HighlightTerms } from "../utils/highlightTerms";
-import { ScenarioPreview } from "./ScenarioPreview";
-import styles from "./FallExercise.module.css";
+import styles from "./UrlTrainerExercise.module.css";
 
 interface Props {
-  data: FallData;
+  data: UrlTrainerData;
   onAnswer: (selectedIndex: number) => void;
   disabled?: boolean;
 }
 
-export function FallExercise({ data, onAnswer, disabled }: Props) {
+export function UrlTrainerExercise({ data, onAnswer, disabled }: Props) {
   const [picked, setPicked] = useState<number | null>(null);
 
   function handlePick(i: number) {
@@ -21,33 +20,34 @@ export function FallExercise({ data, onAnswer, disabled }: Props) {
 
   return (
     <div className={styles.root}>
-      <ScenarioPreview scenario={data.scenario} />
-
-      {/* Question */}
       <p className={styles.question}>
         <HighlightTerms text={data.question} ids={data.glossarLinks} />
       </p>
 
-      {/* Options */}
-      <ul className={styles.options}>
-        {data.options.map((opt, i) => {
+      {data.instruction && <p className={styles.instruction}>{data.instruction}</p>}
+
+      <ul className={styles.urls}>
+        {data.options.map((option, i) => {
           let state: "default" | "correct" | "wrong" = "default";
           if (picked !== null) {
             if (i === data.correct) state = "correct";
             else if (i === picked && picked !== data.correct) state = "wrong";
           }
+
           return (
-            <li key={i}>
+            <li key={option.url}>
               <button
                 type="button"
-                className={`${styles.option} ${styles[state]}`}
+                className={`${styles.urlOption} ${styles[state]}`}
                 onClick={() => handlePick(i)}
                 disabled={disabled || picked !== null}
               >
-                <span className={styles.letter}>{String.fromCharCode(65 + i)}</span>
-                <span className={styles.text}>{opt}</span>
+                <span className={styles.url}>{option.url}</span>
+                {picked !== null && option.note && (i === picked || i === data.correct) && (
+                  <span className={styles.note}>{option.note}</span>
+                )}
                 {state === "correct" && <span className={styles.mark}>✓</span>}
-                {state === "wrong"   && <span className={styles.mark}>✗</span>}
+                {state === "wrong" && <span className={styles.mark}>✗</span>}
               </button>
             </li>
           );

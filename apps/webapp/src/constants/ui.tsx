@@ -4,6 +4,7 @@ import {
   ImageIcon, Volume2, Shuffle, PenLine,
   Mail, MessageSquare, Globe, Share2,
   Route, ShoppingCart, UserPlus, Plane,
+  MousePointerClick, ListChecks, Link2,
 } from "lucide-react";
 import type { ScenarioType } from "../data/courses";
 import type { FallAdventure, FallTopic } from "../data/faelle";
@@ -44,6 +45,9 @@ export const TYPE_ICONS: Record<string, React.ReactNode> = {
   memory:            <Shuffle     size={16} strokeWidth={2} />,
   vervollstaendigen: <PenLine     size={16} strokeWidth={2} />,
   fall:              <ShieldAlert size={16} strokeWidth={2} />,
+  warnzeichen:       <MousePointerClick size={16} strokeWidth={2} />,
+  nextStep:          <ListChecks  size={16} strokeWidth={2} />,
+  urlTrainer:        <Link2       size={16} strokeWidth={2} />,
 };
 
 // ── Exercise type labels (RepeatPage) ────────────────────────────────────────
@@ -54,6 +58,9 @@ export const TYPE_LABELS: Record<string, string> = {
   memory:            "Memory",
   vervollstaendigen: "Lückentext",
   fall:              "Fall",
+  warnzeichen:       "Warnzeichen",
+  nextStep:          "Nächster Schritt",
+  urlTrainer:        "URL-Training",
 };
 
 // ── Fall scenario icons + labels (FallExercise) ──────────────────────────────

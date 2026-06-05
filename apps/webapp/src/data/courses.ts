@@ -31,7 +31,7 @@ export interface AudioAuswahlData {
 export interface MemoryData {
   type: "memory";
   question: string;
-  pairs: { term: string; definition: string }[];
+  pairs: { term: string; definition: string; info?: string }[];
   explanation?: string;
   glossarLinks?: string[];
 }
@@ -70,11 +70,62 @@ export interface FallData {
   glossarLinks?: string[];
 }
 
+export interface WarnzeichenZone {
+  id: string;
+  label: string;
+  text: string;
+  suspicious: boolean;
+  explanation?: string;
+}
+
+export interface WarnzeichenData {
+  type: "warnzeichen";
+  question: string;
+  scenarioType: ScenarioType;
+  zones: WarnzeichenZone[];
+  explanation?: string;
+  glossarLinks?: string[];
+}
+
+export interface NextStepData {
+  type: "nextStep";
+  question: string;
+  scenario: FallScenario;
+  options: string[];
+  correct: number;
+  explanation?: string;
+  glossarLinks?: string[];
+}
+
+export interface UrlTrainerOption {
+  url: string;
+  note?: string;
+}
+
+export interface UrlTrainerData {
+  type: "urlTrainer";
+  question: string;
+  instruction?: string;
+  options: UrlTrainerOption[];
+  correct: number;
+  explanation?: string;
+  glossarLinks?: string[];
+}
+
+export interface LessonSection {
+  heading: string;
+  body?: string;
+  bullets?: string[];
+}
+
 export interface LessonData {
   type: "lesson";
   title: string;
+  kicker?: string;
   body: string;
   bullets?: string[];
+  sections?: LessonSection[];
+  buttonLabel?: string;
   mediaType?: "text" | "audio" | "video";
   glossarLinks?: string[];
 }
@@ -86,7 +137,10 @@ export type ExerciseData =
   | AudioAuswahlData
   | MemoryData
   | VervollstaendigenData
-  | FallData;
+  | FallData
+  | WarnzeichenData
+  | NextStepData
+  | UrlTrainerData;
 
 export interface Exercise {
   id: string;
@@ -137,20 +191,28 @@ export const categories: Category[] = [
           {
             id: "gl-2",
             data: {
-              type: "fall",
-              question: "Welche Webseite ist echt?",
-              scenario: {
-                type: "web",
-                url: "medienkundig-login24.net",
-                content: "Sie erhalten eine E-Mail mit zwei Links: »medienkundig.de« und »medienkundig-login24.net«. Beide Seiten sehen ähnlich aus.",
-              },
+              type: "urlTrainer",
+              question: "Welche Adresse gehört wirklich zu medienkundig?",
+              instruction: "Achte auf die eigentliche Domain. Zusatzwörter, fremde Endungen und lange Anhängsel sind Warnzeichen.",
               options: [
-                "medienkundig-login24.net – weil sie einen Bindestrich hat",
-                "medienkundig.de – weil sie mit https:// beginnt und keine Zusatzwörter hat",
-                "Beide sind gleich sicher",
-                "Keine, weil alle Webseiten gefährlich sind",
+                {
+                  url: "medienkundig.de",
+                  note: "Das ist die kurze, echte Domain.",
+                },
+                {
+                  url: "medienkundig-login24.net",
+                  note: "Hier ist die eigentliche Domain »medienkundig-login24.net« – nicht medienkundig.de.",
+                },
+                {
+                  url: "medienkundig.de.sicherheit-login.net",
+                  note: "Die eigentliche Domain ist »sicherheit-login.net«. »medienkundig.de« steht nur davor.",
+                },
+                {
+                  url: "medienkundig-kundenservice.de",
+                  note: "Zusatzwörter können auf eine fremde Domain hinweisen.",
+                },
               ],
-              correct: 1,
+              correct: 0,
               explanation: "Die echte Seite hat eine kurze, klare Domain ohne Zusatzwörter und nutzt HTTPS.",
               glossarLinks: ["domain", "https"],
             },
@@ -251,106 +313,531 @@ export const categories: Category[] = [
     units: [
       {
         id: "scam-unit1",
-        title: "Betrug erkennen",
-        description: "Lerne die häufigsten Tricks von Betrügern im Internet und am Telefon zu erkennen.",
+        title: "Lektion 1: Vier häufige Maschen",
+        description: "Lerne Phishing, Smishing, den Enkeltrick und den Schockanruf kennen – und erkenne sie, bevor sie dir schaden.",
         exercises: [
           {
-            id: "scam-1",
+            id: "scam-l1-intro",
             data: {
-              type: "multipleChoice",
-              question: "Was bedeutet Phishing?",
-              options: [
-                "Eine Angelmethode im Internet",
-                "Gefälschte E-Mails oder Nachrichten, mit denen Daten gestohlen werden sollen",
-                "Ein Sicherheitsprogramm für E-Mails",
-                "Eine Art soziales Netzwerk",
+              type: "lesson",
+              title: "Bist du fit gegen Betrug?",
+              kicker: "Lektion 1 · Einstieg",
+              body: "Ob am Telefon, per E-Mail oder an der Haustür – Betrugsversuche begegnen uns heute überall. Das Bundeskriminalamt zählte allein 2024 über 131.000 Cybercrime-Fälle in Deutschland – und erstmals kommen dabei KI-gestützte Methoden zum Einsatz. Das Gute daran: Schon ein einziges kurzes Training kann die Fähigkeit, echte von gefälschten Inhalten zu unterscheiden, erheblich verbessern.",
+              buttonLabel: "Weiter zu Fall 1",
+              mediaType: "text",
+            },
+          },
+          {
+            id: "scam-l1-phishing-exp",
+            data: {
+              type: "lesson",
+              title: "Phishing – Die gefälschte Bank-E-Mail",
+              kicker: "Fall 1 · Phishing",
+              body: "Betrüger kopieren das Design echter Unternehmen täuschend genau – Logo, Schriftart, Farben. Der Link führt auf eine gefälschte Webseite, die genauso aussieht wie das echte Online-Banking. Wer dort seine Zugangsdaten eingibt, liefert sie direkt an die Täter.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Die Absenderadresse sieht merkwürdig aus – z.B. sparkasse@mail-service92.com statt sparkasse.de",
+                    "Echte Banken fragen nie per E-Mail nach deinen Zugangsdaten",
+                    "Die Sprache wirkt dringend und drohend – das ist Absicht",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Den Link nicht anklicken und die E-Mail löschen",
+                    "Im Zweifel direkt bei deiner Bank anrufen – die Nummer selbst eintippen, nie aus der E-Mail kopieren",
+                  ],
+                },
               ],
-              correct: 1,
+              buttonLabel: "Zur Übung",
+              mediaType: "text",
+              glossarLinks: ["phishing", "domain"],
+            },
+          },
+          {
+            id: "scam-l1-phishing",
+            data: {
+              type: "warnzeichen",
+              question: "Markiere alle Warnzeichen in dieser E-Mail.",
+              scenarioType: "email",
+              zones: [
+                {
+                  id: "sender",
+                  label: "Von",
+                  text: "sparkasse-sicherheit@konto-verify.net",
+                  suspicious: true,
+                  explanation: "Die Domain nach dem @ gehört nicht zur Sparkasse.",
+                },
+                {
+                  id: "subject",
+                  label: "Betreff",
+                  text: "Ihr Konto wurde gesperrt – Sofortmaßnahme erforderlich",
+                  suspicious: true,
+                  explanation: "Druck und angebliche Dringlichkeit sind typische Betrugszeichen.",
+                },
+                {
+                  id: "greeting",
+                  label: "Anrede",
+                  text: "Sehr geehrter Kunde,",
+                  suspicious: false,
+                  explanation: "Eine allgemeine Anrede allein beweist noch keinen Betrug.",
+                },
+                {
+                  id: "pressure",
+                  label: "Text",
+                  text: "Um eine dauerhafte Sperrung zu verhindern, bestätigen Sie Ihre Daten innerhalb von 24 Stunden.",
+                  suspicious: true,
+                  explanation: "Die Nachricht erzeugt Zeitdruck, damit du unüberlegt klickst.",
+                },
+                {
+                  id: "link",
+                  label: "Link",
+                  text: "bit.ly/sparkasse-verify",
+                  suspicious: true,
+                  explanation: "Kurzlinks verstecken das echte Ziel.",
+                },
+              ],
               explanation:
-                "Phishing ist ein Fachwort für gefälschte Nachrichten, die Passwörter oder andere persönliche Daten stehlen sollen.",
+                "Die gefährliche Kombination ist: fremde Absender-Domain, Zeitdruck und ein verschleierter Link. Genau diese Muster solltest du zuerst markieren.",
+              glossarLinks: ["phishing", "domain"],
+            },
+          },
+          {
+            id: "scam-l1-smishing-exp",
+            data: {
+              type: "lesson",
+              title: 'Smishing – Die Fake-SMS von „DHL"',
+              kicker: "Fall 2 · Smishing",
+              body: "Smishing bedeutet Phishing per SMS. Die Nachricht sieht aus wie eine echte Paketbenachrichtigung – mit Sendungsnummer, freundlichem Ton und einem Link. Wer klickt, landet auf einer gefälschten Seite oder lädt unbemerkt Schadsoftware auf sein Handy herunter.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Du erwartest gar kein Paket – oder die SMS kommt aus dem Nichts",
+                    "Der Link sieht seltsam aus – z.B. dhl-zustellung.info statt dhl.de",
+                    "Echte Paketdienste fragen nie per SMS nach Zahlungsdaten",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Nicht klicken und die SMS löschen",
+                    "Falls du ein Paket erwartest: direkt auf der offiziellen Website des Paketdienstes nachsehen",
+                  ],
+                },
+              ],
+              buttonLabel: "Zur Übung",
+              mediaType: "text",
               glossarLinks: ["phishing"],
             },
           },
           {
-            id: "scam-2",
+            id: "scam-l1-smishing",
             data: {
-              type: "fall",
-              question: "Was ist das wichtigste Warnsignal in dieser E-Mail?",
+              type: "nextStep",
+              question: "Was solltest du mit dieser SMS tun?",
               scenario: {
-                type: "email",
-                from: "sparkasse-sicherheit@konto-verify.net",
-                subject: "⚠️ Ihr Konto wurde gesperrt – Sofortmaßnahme erforderlich",
+                type: "sms",
+                sender: "DHL",
                 content:
-                  "Sehr geehrter Kunde,\n\nwir haben ungewöhnliche Aktivitäten auf Ihrem Konto festgestellt. Um eine dauerhafte Sperrung zu verhindern, bestätigen Sie Ihre Daten innerhalb von 24 Stunden.\n\nJetzt bestätigen: bit.ly/sparkasse-verify\n\nMit freundlichen Grüßen\nIhr Sicherheitsteam",
+                  "Ihr Paket konnte heute nicht zugestellt werden. Bitte bestätigen Sie Ihre Adresse innerhalb von 24h, sonst wird es zurückgeschickt:\ndhl-zustellung.info/re-deliver",
               },
               options: [
-                "Die E-Mail hat einen freundlichen Ton",
-                "Die Domain »konto-verify.net« gehört nicht zur Sparkasse",
-                "Die E-Mail enthält einen Link",
-                "Die E-Mail erwähnt ungewöhnliche Aktivitäten",
+                "Den Link anklicken, um das Paket zu erhalten",
+                "Die SMS ignorieren und löschen",
+                "Die SMS an die Familie weiterleiten, damit sie aufpassen",
+                "Auf den Link klicken, aber keine persönlichen Daten eingeben",
               ],
               correct: 1,
               explanation:
-                "Die echte Adresse der Sparkasse lautet sparkasse.de. »konto-verify.net« ist eine Fälschung und ein typisches Warnsignal.",
-              glossarLinks: ["phishing", "domain-spoofing", "domain"],
-            },
-          },
-          {
-            id: "scam-3",
-            data: {
-              type: "vervollstaendigen",
-              question: "Füllen Sie die Lücken mit den passenden Warnsignalen.",
-              before: "Beim ",
-              after:
-                " versuchen Kriminelle, durch gefälschte E-Mails an Ihre Passwörter zu gelangen.",
-              parts: [
-                "Beim ",
-                " wollen Kriminelle Daten stehlen. Häufig nutzen sie ",
-                " und eine fremde ",
-                ".",
-              ],
-              correctAnswers: ["Phishing", "Zeitdruck", "Domain"],
-              options: ["Phishing", "Zeitdruck", "Domain", "Surfen", "Newsletter"],
-              correct: 0,
-              explanation:
-                "Phishing ist ein Fachwort für solche gefälschten Nachrichten. Warnsignale sind fremde Internetadressen, falsche Absender und künstlicher Zeitdruck.",
+                "Smishing-SMS enthalten Links zu gefälschten Seiten. Einzige sichere Reaktion: SMS löschen und die offizielle DHL-Website direkt im Browser aufrufen.",
               glossarLinks: ["phishing"],
             },
           },
           {
-            id: "scam-4",
+            id: "scam-l1-enkeltrick-exp",
             data: {
-              type: "memory",
-              question: "Ordnen Sie die Begriffe den richtigen Erklärungen zu:",
-              pairs: [
-                { term: "Phishing", definition: "Gefälschte E-Mails zum Datendiebstahl" },
-                { term: "Spam", definition: "Unerwünschte Massen­nachrichten" },
-                { term: "Social Engineering", definition: "Psychologische Manipulation" },
-                { term: "Malware", definition: "Schädliche Software" },
+              type: "lesson",
+              title: "Enkeltrick – Der Notfall-Anruf",
+              kicker: "Fall 3 · Enkeltrick",
+              body: 'Der Anrufer setzt darauf, dass du in der Aufregung keine Fragen stellst. Er gibt sich als Verwandter aus, klingt gestresst oder ängstlich, und bittet um Bargeld – meist soll ein »Bote« es abholen. Heute nutzen Betrüger zunehmend KI-gestützte Stimmenkopie: Die Stimme klingt wirklich nach dem Menschen, den du liebst.',
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Der Anrufer nennt seinen Namen nicht von sich aus – er wartet, dass du ihn nennst",
+                    "Die Geschichte wird immer dramatischer, es geht immer um Bargeld und zwar schnell",
+                    "Auch wenn die Stimme vertraut klingt: Das allein ist heute kein sicherer Beweis mehr",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Auflegen und dann selbst bei dem Verwandten auf seiner bekannten Nummer anrufen",
+                    "Niemals Bargeld an Fremde übergeben",
+                    "Tipp: Vereinbare mit deiner Familie im Voraus ein geheimes Codewort",
+                  ],
+                },
               ],
-              explanation:
-                "Diese vier Begriffe beschreiben die häufigsten digitalen Bedrohungsformen. Wer sie kennt, erkennt Angriffe früher und reagiert sicherer.",
-              glossarLinks: ["phishing", "spam", "social-engineering", "malware"],
+              buttonLabel: "Zur Übung",
+              mediaType: "audio",
+              glossarLinks: ["social-engineering"],
             },
           },
           {
-            id: "scam-5",
+            id: "scam-l1-enkeltrick",
             data: {
               type: "audioAuswahl",
-              question: "Hören Sie die Nachricht. Um welche Art von Betrug handelt es sich?",
+              question: "Welches Warnsignal erkennst du in diesem Anruf?",
+              audioLabel: "Telefonanruf – 00:18",
+              transcript:
+                "»Oma, ich bin's – ich stecke in der Klemme! Ich hatte einen Unfall und muss sofort 2.000 Euro auftreiben. Sag das bitte noch niemandem, ein Bekannter kommt gleich bei dir vorbei.«",
+              options: [
+                "Der Anrufer nennt seinen Namen nicht – du musst ihn selbst erraten",
+                "Der Anrufer klingt aufgeregt und gestresst",
+                "Der Anrufer bittet um Hilfe",
+                "Der Anrufer kennt deine Telefonnummer",
+              ],
+              correct: 0,
+              explanation:
+                "Betrüger nennen ihren Namen bewusst nicht, damit du ihn nennst – und sie die Identität übernehmen können. Das ist das klassische Muster des Enkeltricks.",
+              glossarLinks: ["social-engineering"],
+            },
+          },
+          {
+            id: "scam-l1-schockanruf-exp",
+            data: {
+              type: "lesson",
+              title: "Schockanruf – Der gefälschte Notfall",
+              kicker: "Fall 4 · Schockanruf",
+              body: "Diese Masche funktioniert wie der Enkeltrick, ist aber noch emotionaler aufgeladen. Jemand gibt sich als Arzt, Polizist oder Anwalt aus und schildert eine dramatische Situation. Das Ziel: dich so aufzuwühlen, dass du nicht mehr klar denkst – und sofort zahlst. Manchmal ist kurz eine weinende Stimme zu hören, die per KI wie ein Familienmitglied klingt.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Der Anruf kommt unangekündigt mit einer dramatischen Nachricht",
+                    "Es wird sofortiges Handeln und Schweigen gefordert: »Sagen Sie niemandem etwas«",
+                    "Echte Behörden und Ärzte fragen nicht per Telefon nach Bargeld",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Ruhig bleiben – auch wenn es schwerfällt – und auflegen",
+                    "Den Angehörigen direkt auf seiner bekannten Nummer anrufen",
+                    "Danach mit jemandem sprechen, dem du vertraust – du musst das nicht alleine verarbeiten",
+                  ],
+                },
+              ],
+              buttonLabel: "Zur Übung",
+              mediaType: "audio",
+              glossarLinks: ["social-engineering"],
+            },
+          },
+          {
+            id: "scam-l1-schockanruf",
+            data: {
+              type: "audioAuswahl",
+              question: "Was ist das richtige Vorgehen bei diesem Anruf?",
+              audioLabel: "Telefonanruf – 00:27",
+              transcript:
+                "»Guten Tag, hier ist Dr. Müller vom Klinikum. Ihre Tochter hatte einen schweren Unfall und ist in der Notaufnahme. Die Operation ist dringend – wir brauchen 3.500 Euro bar, ein Bote kommt in 20 Minuten zu Ihnen.«",
+              options: [
+                "Sofort das Geld bereitstellen, damit der Bote es holen kann",
+                "Auflegen und die Tochter direkt auf ihrer eigenen Nummer anrufen",
+                "Den Arzt nach seiner Rückrufnummer fragen",
+                "Dem Boten das Geld geben und danach nachfragen",
+              ],
+              correct: 1,
+              explanation:
+                "Krankenhäuser und Behörden fragen niemals telefonisch nach Bargeld. Auflegen und direkt bei der betroffenen Person anrufen – auf einer Nummer, die du selbst kennst.",
+              glossarLinks: ["social-engineering"],
+            },
+          },
+        ],
+      },
+      {
+        id: "scam-unit2",
+        title: "Lektion 2: Noch besser geschützt",
+        description: "Vier weitere Maschen: Spoofing, Vishing, Love Scam und Gewinnbetrug – etwas komplexer, aber genauso wichtig.",
+        exercises: [
+          {
+            id: "scam-l2-intro",
+            data: {
+              type: "lesson",
+              title: "Lektion 2 – Noch besser geschützt",
+              kicker: "Lektion 2 · Einstieg",
+              body: "Du weißt jetzt, wie Phishing, Smishing, der Enkeltrick und der Schockanruf funktionieren. In dieser Lektion kommen vier weitere Maschen dazu – etwas komplexer, aber genauso wichtig. Du lernst, wie Betrüger gefälschte Telefonnummern nutzen, sich als Technik-Support ausgeben, über Wochen Vertrauen aufbauen und mit fingierten Gewinnen locken.",
+              buttonLabel: "Weiter zu Fall 5",
+              mediaType: "text",
+            },
+          },
+          {
+            id: "scam-l2-spoofing-exp",
+            data: {
+              type: "lesson",
+              title: "Spoofing – Die gefälschte Polizeinummer",
+              kicker: "Fall 5 · Spoofing",
+              body: "Betrüger können technisch jede beliebige Nummer auf deinem Display erscheinen lassen – auch 110 oder die Nummer deiner Bank. Das nennt sich Spoofing. Die echte Polizei ruft nicht unter 110 an – das ist ausschließlich eine Notrufnummer, von der aus keine ausgehenden Anrufe getätigt werden.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Die angezeigte Nummer sagt nichts darüber aus, wer wirklich anruft",
+                    "Jede Behörde oder Bank, die unaufgefordert anruft und nach Geld oder Daten fragt, ist verdächtig",
+                    "Die Polizei fordert am Telefon niemals Bargeld oder Überweisungen",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Auflegen und dann die Nummer selbst heraussuchen und zurückrufen",
+                    "Vertraue nie allein der angezeigten Nummer auf dem Display",
+                  ],
+                },
+              ],
+              buttonLabel: "Zur Übung",
+              mediaType: "text",
+              glossarLinks: ["phishing"],
+            },
+          },
+          {
+            id: "scam-l2-spoofing",
+            data: {
+              type: "fall",
+              question: "Auf deinem Display erscheint »110 – Polizei München«. Was verrät, dass es ein Betrug sein könnte?",
+              scenario: {
+                type: "chat",
+                sender: "110 – Polizei München",
+                content:
+                  "»Guten Tag, hier spricht Kriminalhauptkommissar Weber von der Polizei München. Auf Ihrem Konto wurden verdächtige Transaktionen festgestellt. Bringen Sie sofort Ihr Bargeld in Sicherheit – ein Kollege wird es bei Ihnen abholen.«",
+              },
+              options: [
+                "Der Anrufer klingt sehr professionell und offiziell",
+                "Die echte Polizei ruft nie unter der Notrufnummer 110 an",
+                "Der Anrufer nennt seinen Namen und seine Dienststelle",
+                "Eine angezeigte Behördennummer ist immer vertrauenswürdig",
+              ],
+              correct: 1,
+              explanation:
+                "Die Notrufnummer 110 wird nie für ausgehende Anrufe genutzt. Eine auf dem Display angezeigte Nummer beweist nicht, wer wirklich anruft – das nennt sich Spoofing.",
+              glossarLinks: ["phishing"],
+            },
+          },
+          {
+            id: "scam-l2-vishing-exp",
+            data: {
+              type: "lesson",
+              title: 'Vishing – Der »Microsoft Support«',
+              kicker: "Fall 6 · Vishing",
+              body: "Vishing steht für Voice-Phishing – Betrug am Telefon. Der Anrufer gibt sich als technischer Support aus und behauptet, dein Computer sei mit einem Virus infiziert oder dein Konto kompromittiert. Er bittet dich, eine Software zu installieren, mit der er dann auf deinen Computer zugreifen kann.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Microsoft, Apple oder andere Unternehmen rufen dich nicht unaufgefordert an",
+                    "Niemand vom echten Support verlangt Fernzugriff ohne vorherige Anfrage von dir",
+                    "Links zu Fernwartungssoftware wie »support-remote-fix.com« sind keine offiziellen Seiten",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Sofort auflegen und keine Software installieren",
+                    "Falls du bereits Zugriff gewährt hast: Computer sofort vom Internet trennen und echten Support kontaktieren",
+                  ],
+                },
+              ],
+              buttonLabel: "Zur Übung",
+              mediaType: "audio",
+              glossarLinks: ["phishing", "social-engineering"],
+            },
+          },
+          {
+            id: "scam-l2-vishing",
+            data: {
+              type: "audioAuswahl",
+              question: "Hören Sie den Anruf. Worum handelt es sich?",
               audioLabel: "Telefonanruf – 00:23",
               transcript:
-                "»Guten Tag, hier spricht die Sicherheitsabteilung Ihrer Bank. Wir haben verdächtige Aktivitäten auf Ihrem Konto festgestellt. Bitte teilen Sie uns sofort Ihre PIN mit, damit wir Ihr Konto schützen können.«",
+                "»Guten Tag, hier spricht der Microsoft Sicherheitsdienst. Wir haben festgestellt, dass Ihr Computer mit einem gefährlichen Virus infiziert ist. Bitte installieren Sie jetzt unser Sicherheitsprogramm, damit wir das Problem beheben können. Öffnen Sie dazu: support-remote-fix.com«",
               options: [
-                "Ein normaler Sicherheitshinweis der Bank",
-                "Vishing – Telefonbetrug durch Identitätsvortäuschung",
-                "Eine automatische Spam-Nachricht",
+                "Ein hilfreicher Anruf vom echten Microsoft-Support",
+                "Vishing – gefälschter Technik-Support will Zugang zu deinem Computer",
+                "Eine automatische Sicherheitswarnung des Betriebssystems",
                 "Ein seriöser Kundendienst-Anruf",
               ],
               correct: 1,
               explanation:
-                "Banken und Behörden fragen am Telefon niemals nach PIN oder Passwort. Legen Sie bei solchen Anrufen sofort auf und wählen Sie die offizielle Nummer selbst.",
-              glossarLinks: ["social-engineering", "phishing"],
+                "Microsoft und andere Firmen rufen nie unaufgefordert an. Links wie »support-remote-fix.com« sind keine offiziellen Microsoft-Seiten. Sofort auflegen.",
+              glossarLinks: ["phishing", "social-engineering"],
+            },
+          },
+          {
+            id: "scam-l2-lovescam-exp",
+            data: {
+              type: "lesson",
+              title: "Love Scam – Die Online-Bekanntschaft",
+              kicker: "Fall 7 · Love Scam",
+              body: "Beim Love Scam wird über Wochen und Monate echtes Vertrauen aufgebaut – tägliche Nachrichten, tiefe Gespräche, das Gefühl, jemanden wirklich zu kennen. Dann kommt die Bitte um Geld. Das Profil ist meist gefälscht. Heute erstellen Betrüger per KI völlig neue Gesichter – und Videoanrufe schützen nicht mehr, da KI-Deepfakes ein fremdes Gesicht live überlagern können.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Die Person will dich nie persönlich treffen – es gibt immer einen Grund",
+                    "Die Beziehung entwickelt sich ungewöhnlich schnell: sehr intensive Gefühle in kurzer Zeit",
+                    "Die erste Geldbitte klingt noch klein und plausibel",
+                    "Betrüger arbeiten bewusst daran, dich zu isolieren – »Sag niemandem davon«",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Kein Geld überweisen, bevor du die Person persönlich getroffen hast",
+                    "Mit jemandem sprechen, dem du vertraust, bevor du irgendetwas überweist",
+                  ],
+                },
+              ],
+              buttonLabel: "Zur Übung",
+              mediaType: "text",
+              glossarLinks: ["social-engineering"],
+            },
+          },
+          {
+            id: "scam-l2-lovescam",
+            data: {
+              type: "fall",
+              question: "Du chattest seit 3 Wochen mit »Thomas«. Heute kommt diese Nachricht. Was ist das Warnsignal?",
+              scenario: {
+                type: "chat",
+                sender: "Thomas W. ❤️",
+                content:
+                  "Hallo Liebste, ich vermisse dich so sehr. Ich bin gerade hier im Krankenhaus – eine wichtige Operation. Das Krankenhaus verlangt eine Vorauszahlung, aber mein Konto hier im Ausland ist gesperrt. Kannst du mir bitte 800€ schicken? Ich erstatte dir alles sofort zurück. Du bist der einzige Mensch, dem ich vertraue.",
+              },
+              options: [
+                "Thomas klingt wirklich verzweifelt und braucht Hilfe",
+                "Geldbitte nach wochenlangem Online-Kontakt ohne persönliches Treffen",
+                "Thomas schreibt auf Deutsch",
+                "Thomas kennt deinen Namen",
+              ],
+              correct: 1,
+              explanation:
+                "Nie persönlich getroffen + erste Geldbitte nach emotionalem Aufbau = klassisches Love-Scam-Muster. Kein Geld überweisen. Erst mit einer Vertrauensperson sprechen.",
+              glossarLinks: ["social-engineering"],
+            },
+          },
+          {
+            id: "scam-l2-gewinn-exp",
+            data: {
+              type: "lesson",
+              title: "Gewinnbetrug – Der Brief mit 50.000 €",
+              kicker: "Fall 8 · Gewinnbetrug",
+              body: "Der Brief sieht offiziell aus – Briefkopf, Siegel, Glückwünsche. Um den Gewinn zu erhalten, musst du angeblich eine kleine Bearbeitungsgebühr, Versandkosten oder Steuern vorab zahlen. Den Gewinn gibt es nicht. Wer zahlt, bekommt nichts zurück – und wird oft anschließend mit weiteren Forderungen kontaktiert.",
+              sections: [
+                {
+                  heading: "Woran du es erkennst",
+                  bullets: [
+                    "Du hast nie an einem Gewinnspiel teilgenommen",
+                    "Es wird eine Gebühr verlangt, bevor du etwas erhältst",
+                    "Eine Frist soll Druck machen",
+                  ],
+                },
+                {
+                  heading: "Was du tun sollst",
+                  bullets: [
+                    "Den Brief wegwerfen oder bei der Verbraucherzentrale melden",
+                    "Niemals vorab zahlen – echte Gewinne kosten dich vorher nichts",
+                  ],
+                },
+              ],
+              buttonLabel: "Zur Übung",
+              mediaType: "text",
+              glossarLinks: ["phishing"],
+            },
+          },
+          {
+            id: "scam-l2-gewinn",
+            data: {
+              type: "fall",
+              question: "Was ist das Hauptmerkmal dieses Gewinnbetrugs?",
+              scenario: {
+                type: "email",
+                from: "Europäisches Preiskomitee <gewinn@eu-prize-committee.net>",
+                subject: "🏆 Herzlichen Glückwunsch! Sie haben 50.000 € gewonnen!",
+                content:
+                  "Sehr geehrte Gewinnerin, sehr geehrter Gewinner,\n\nSie wurden als Gewinner unserer Europäischen Jahresverlosung ausgewählt. Ihr Preis: 50.000 €.\n\nUm Ihren Gewinn zu erhalten, überweisen Sie bitte die Bearbeitungsgebühr von 49,90 € auf folgendes Konto: ...\n\nFrist: 3 Tage. Nach Ablauf verfällt Ihr Gewinn.",
+              },
+              options: [
+                "Der Absender hat einen offiziell klingenden Namen",
+                "Es wird eine Vorabgebühr verlangt, bevor man den Gewinn erhält",
+                "Der Gewinnbetrag ist sehr hoch",
+                "Es gibt eine Frist von 3 Tagen",
+              ],
+              correct: 1,
+              explanation:
+                "Das Merkmal des Gewinnbetrugs: Erst zahlen, dann (angeblich) erhalten. Echte Gewinne kosten nichts im Voraus. Wer eine Gebühr verlangt, ist ein Betrüger.",
+              glossarLinks: ["phishing"],
+            },
+          },
+        ],
+      },
+      {
+        id: "scam-unit3",
+        title: "Abschluss: Alle 8 Begriffe",
+        description: "Ordne alle acht Betrugsmaschen ihren Beispielen zu – das Abschluss-Memory für beide Lektionen.",
+        exercises: [
+          {
+            id: "scam-memory-8",
+            data: {
+              type: "memory",
+              question: "Ordne jeden Betrugstyp dem passenden Beispiel zu:",
+              pairs: [
+                {
+                  term: "Phishing",
+                  definition: "Fake-E-Mail führt zu gefälschter Bankseite",
+                  info: "Betrüger verschicken gefälschte E-Mails, die täuschend echt wie Nachrichten von Banken, Paketdiensten oder Behörden aussehen. Der enthaltene Link führt auf eine gefälschte Webseite, auf der Zugangsdaten abgefangen werden.",
+                },
+                {
+                  term: "Enkeltrick",
+                  definition: "»Oma, ich bin's – ich brauche sofort Geld!«",
+                  info: "Ein Anrufer gibt sich als Enkel, Kind oder naher Verwandter aus und behauptet, in einer Notlage zu stecken. Er bittet dringend um Bargeld, das meist von einem »Boten« abgeholt wird.",
+                },
+                {
+                  term: "Schockanruf",
+                  definition: "»Ihr Kind hatte einen Unfall – zahlen Sie jetzt!«",
+                  info: "Ähnlich wie der Enkeltrick, aber noch emotionaler aufgeladen: Jemand meldet sich als Arzt oder Polizist und berichtet von einem schlimmen Unfall. Das Ziel ist Panik – damit du ohne Nachdenken zahlst.",
+                },
+                {
+                  term: "Smishing",
+                  definition: "Fake-SMS von »DHL« mit verdächtigem Link",
+                  info: "Das Wort setzt sich aus SMS und Phishing zusammen. Betrüger verschicken täuschend echte Textnachrichten mit einem Link, der auf eine Fake-Seite führt oder Schadsoftware auf das Handy lädt.",
+                },
+                {
+                  term: "Spoofing",
+                  definition: "Echte Polizeinummer erscheint – Anrufer ist Betrüger",
+                  info: "Betrüger manipulieren technisch die Absenderkennung, sodass auf dem Display eine echte, vertrauenswürdige Telefonnummer erscheint. Allein weil eine Nummer echt aussieht, bedeutet das nicht, dass der Anrufer auch echt ist.",
+                },
+                {
+                  term: "Love Scam",
+                  definition: "Online-Bekanntschaft bittet nach Wochen um Geld",
+                  info: "Jemand nimmt über Dating-Plattformen oder soziale Netzwerke Kontakt auf, baut über Wochen eine intensive emotionale Beziehung auf – und bittet dann um Geld wegen einer vorgetäuschten Notlage wie Krankheit oder einem Unfall im Ausland.",
+                },
+                {
+                  term: "Vishing",
+                  definition: "»Microsoft-Support«: angeblicher Virus auf deinem PC",
+                  info: "Voice-Phishing: Betrüger rufen an und geben sich als Microsoft-Mitarbeiter, Bankberater oder Behörde aus. Sie behaupten, es gebe ein dringendes Problem und versuchen, dich zur Herausgabe von Zugangsdaten oder zur Installation von Software zu bewegen.",
+                },
+                {
+                  term: "Gewinnbetrug",
+                  definition: "»Sie haben gewonnen!« – aber erst Gebühr zahlen",
+                  info: "Du erhältst eine Nachricht, dass du einen großen Preis gewonnen hast – obwohl du nie an einem Gewinnspiel teilgenommen hast. Um den Gewinn zu erhalten, sollst du angeblich eine Gebühr vorab bezahlen. Den Gewinn gibt es nicht.",
+                },
+              ],
+              explanation:
+                "Du kennst jetzt alle acht häufigsten Betrugsmaschen. Wer die Muster erkennt, ist deutlich besser geschützt – und kann auch andere warnen.",
+              glossarLinks: ["phishing", "social-engineering"],
             },
           },
         ],
