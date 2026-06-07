@@ -19,7 +19,7 @@ interface Props {
   categoryTitle: string;
   onComplete: (xpEarned: number, exerciseIds: string[]) => void;
   onClose: () => void;
-  onAttempt?: (exerciseId: string, correct: boolean, selectedIndex?: number) => void;
+  onAttempt?: (exerciseId: string, correct: boolean, answer?: number | { selectedZoneIds: string[] }) => void;
   completionVariant?: "learning" | "assessment";
   getAssessmentResult?: (correctCount: number, totalCount: number) => {
     level?: string;
@@ -135,15 +135,18 @@ export function ExercisePage({
       setPhase({ type: "feedback", correct, explanation: data.explanation });
     }
 
-    if (data.type === "warnzeichen") {
-      const correct = selectedIndex === 1;
-      setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
-      onAttempt?.(current.id, correct, selectedIndex);
-      if (correct) {
-        setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
-      }
-      setPhase({ type: "feedback", correct, explanation: data.explanation });
+  }
+
+  function handleWarnzeichenAnswer(result: { correct: boolean; selectedZoneIds: string[] }) {
+    const data = current.data;
+    if (data.type !== "warnzeichen") return;
+
+    setXpEarned((x) => x + (result.correct ? XP_CORRECT : 0));
+    onAttempt?.(current.id, result.correct, { selectedZoneIds: result.selectedZoneIds });
+    if (result.correct) {
+      setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
     }
+    setPhase({ type: "feedback", correct: result.correct, explanation: data.explanation });
   }
 
   const handleMemoryComplete = useCallback(() => {
@@ -309,7 +312,7 @@ export function ExercisePage({
             <FallExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
           )}
           {current.data.type === "warnzeichen" && (
-            <WarnzeichenExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
+            <WarnzeichenExercise data={current.data} onAnswer={handleWarnzeichenAnswer} disabled={isFeedback} />
           )}
           {current.data.type === "nextStep" && (
             <NextStepExercise data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />

@@ -4,6 +4,7 @@ import { getSupabaseClient } from "./client";
 
 export interface AuthState {
   loading: boolean;
+  userId: string | null;
   email: string | null;
   isRegistered: boolean;
 }
@@ -11,6 +12,7 @@ export interface AuthState {
 export function useAuthStatus(): AuthState {
   const [state, setState] = useState<AuthState>({
     loading: true,
+    userId: null,
     email: null,
     isRegistered: false,
   });
@@ -23,16 +25,17 @@ export function useAuthStatus(): AuthState {
       if (!alive) return;
       setState({
         loading: false,
+        userId: status.user?.id ?? null,
         email: status.user?.email ?? null,
         isRegistered: status.isRegistered,
       });
     }).catch(() => {
       if (!alive) return;
-      setState({ loading: false, email: null, isRegistered: false });
+      setState({ loading: false, userId: null, email: null, isRegistered: false });
     });
 
     if (!supabase) {
-      setState({ loading: false, email: null, isRegistered: false });
+      setState({ loading: false, userId: null, email: null, isRegistered: false });
       return () => {
         alive = false;
       };
@@ -42,6 +45,7 @@ export function useAuthStatus(): AuthState {
       const user = session?.user ?? null;
       setState({
         loading: false,
+        userId: user?.id ?? null,
         email: user?.email ?? null,
         isRegistered: isRegisteredUser(user),
       });

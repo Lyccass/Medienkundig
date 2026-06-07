@@ -176,6 +176,10 @@ export interface Database {
         };
         Returns: Database["public"]["Tables"]["user_stats"]["Row"];
       };
+      reset_learning_progress: {
+        Args: Record<string, never>;
+        Returns: Database["public"]["Tables"]["user_stats"]["Row"];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

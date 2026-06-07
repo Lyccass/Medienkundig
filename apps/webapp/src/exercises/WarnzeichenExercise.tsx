@@ -6,7 +6,7 @@ import styles from "./WarnzeichenExercise.module.css";
 
 interface Props {
   data: WarnzeichenData;
-  onAnswer: (selectedIndex: number) => void;
+  onAnswer: (result: { correct: boolean; selectedZoneIds: string[] }) => void;
   disabled?: boolean;
 }
 
@@ -25,7 +25,7 @@ export function WarnzeichenExercise({ data, onAnswer, disabled }: Props) {
     if (disabled || submitted || selected.length === 0) return;
     const correct = data.zones.every((zone) => selected.includes(zone.id) === zone.suspicious);
     setSubmitted(true);
-    onAnswer(correct ? 1 : 0);
+    onAnswer({ correct, selectedZoneIds: selected });
   }
 
   function getState(zoneId: string, suspicious: boolean) {

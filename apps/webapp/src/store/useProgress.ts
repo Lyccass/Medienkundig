@@ -2,9 +2,10 @@ import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import {
   fetchRemoteProgress,
   recordExerciseCompletion,
-  replaceRemoteProgress,
+  syncRemoteProgress,
   resetRemoteProgress,
 } from "../lib/learning/progressRepository";
+import { getExerciseXpReward } from "../lib/learning/exerciseIndex";
 
 export interface Progress {
   completedExercises: string[];
@@ -60,26 +61,35 @@ export function useProgress() {
   const [progress, setProgress] = useState<Progress>(load);
   const didLoadRemote = useRef(false);
 
-  useEffect(() => {
-    if (didLoadRemote.current) return;
-    didLoadRemote.current = true;
+  const applyServerStats = useCallback((stats: Pick<Progress, "xp" | "streak"> | null) => {
+    if (!stats) return;
+    setProgress((prev) => {
+      const updated = { ...prev, xp: stats.xp, streak: stats.streak };
+      if (isSameProgress(prev, updated)) return prev;
+      persist(updated);
+      return updated;
+    });
+  }, []);
 
-    let alive = true;
+  const refreshProgress = useCallback(() => {
     void fetchRemoteProgress().then((remote) => {
-      if (!alive || !remote) return;
+      if (!remote) return;
       setProgress((local) => {
         const merged = mergeProgress(local, remote);
         if (isSameProgress(local, merged)) return local;
         persist(merged);
-        void replaceRemoteProgress(merged);
+        void syncRemoteProgress(merged).then(applyServerStats);
         return merged;
       });
     });
+  }, [applyServerStats]);
 
-    return () => {
-      alive = false;
-    };
-  }, []);
+  useEffect(() => {
+    if (didLoadRemote.current) return;
+    didLoadRemote.current = true;
+
+    refreshProgress();
+  }, [refreshProgress]);
 
   // O(1) lookups — derived once per progress change
   const completedSet = useMemo(
@@ -87,19 +97,23 @@ export function useProgress() {
     [progress.completedExercises],
   );
 
-  const completeExercises = useCallback((ids: string[], xpGained: number) => {
+  const completeExercises = useCallback((ids: string[]) => {
     setProgress((prev) => {
       const prevSet = new Set(prev.completedExercises);
       const newCompleted = [...prev.completedExercises];
+      let awardedXp = 0;
       for (const id of ids) {
-        if (!prevSet.has(id)) newCompleted.push(id);
+        if (!prevSet.has(id)) {
+          newCompleted.push(id);
+          awardedXp += getExerciseXpReward(id);
+        }
       }
-      const updated: Progress = { ...prev, completedExercises: newCompleted, xp: prev.xp + xpGained };
+      const updated: Progress = { ...prev, completedExercises: newCompleted, xp: prev.xp + awardedXp };
       persist(updated);
-      void recordExerciseCompletion(ids);
+      void recordExerciseCompletion(ids).then(applyServerStats);
       return updated;
     });
-  }, []);
+  }, [applyServerStats]);
 
   const isCompleted = useCallback(
     (id: string) => completedSet.has(id),
@@ -114,13 +128,13 @@ export function useProgress() {
   const resetProgress = useCallback(() => {
     const fresh: Progress = { completedExercises: [], xp: 0, streak: 1 };
     persist(fresh);
-    void resetRemoteProgress();
+    void resetRemoteProgress().then(applyServerStats);
     setProgress(fresh);
-  }, []);
+  }, [applyServerStats]);
 
   const syncProgress = useCallback(() => {
-    void replaceRemoteProgress(progress);
-  }, [progress]);
+    void syncRemoteProgress(progress).then(applyServerStats);
+  }, [applyServerStats, progress]);
 
-  return { progress, completeExercises, isCompleted, getUnitProgress, resetProgress, syncProgress };
+  return { progress, completeExercises, isCompleted, getUnitProgress, resetProgress, syncProgress, refreshProgress };
 }

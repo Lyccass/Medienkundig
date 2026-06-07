@@ -49,7 +49,7 @@ function getInitialView(): View {
 
 export default function App() {
   const [view, setView] = useState<View>(getInitialView);
-  const { progress, completeExercises, resetProgress, syncProgress } = useProgressContext();
+  const { progress, completeExercises, resetProgress, refreshProgress } = useProgressContext();
   const auth = useAuthStatus();
 
   const goLearn    = useCallback(() => setView({ type: "learn" }),    []);
@@ -72,6 +72,12 @@ export default function App() {
     }
   }, [auth.loading, auth.isRegistered, view.type, goAuth]);
 
+  useEffect(() => {
+    if (!auth.loading && auth.userId) {
+      refreshProgress();
+    }
+  }, [auth.loading, auth.userId, refreshProgress]);
+
   const goExercise = useCallback(
     (exercises: Exercise[], categoryId: string, opts?: { returnToCategory?: string; returnToFaelle?: boolean }) =>
       setView({ type: "exercise", exercises, categoryId, ...opts }),
@@ -79,8 +85,8 @@ export default function App() {
   );
 
   const handleExerciseComplete = useCallback(
-    (xpEarned: number, exerciseIds: string[]) => {
-      completeExercises(exerciseIds, xpEarned);
+    (_xpEarned: number, exerciseIds: string[]) => {
+      completeExercises(exerciseIds);
       if (view.type !== "exercise") return;
       if (view.returnToFaelle) goFaelle();
       else if (view.returnToCategory) goCategory(view.returnToCategory);
@@ -137,7 +143,7 @@ export default function App() {
     return (
       <GlossarProvider>
         <ErrorBoundary>
-          <AuthPage auth={auth} onBack={goLearn} onAuthSuccess={syncProgress} />
+          <AuthPage auth={auth} onBack={goLearn} onAuthSuccess={refreshProgress} />
         </ErrorBoundary>
         <GlossarModal />
       </GlossarProvider>

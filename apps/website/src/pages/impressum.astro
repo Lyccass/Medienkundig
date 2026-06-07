@@ -1,0 +1,104 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Impressum – medienkundig"
+  description="Angaben gemäß § 5 TMG"
+>
+  <div class="legal-head">
+    <div class="container">
+      <span class="label-eyebrow">Rechtliches</span>
+      <h1 class="legal-head__title">Impressum</h1>
+    </div>
+  </div>
+
+  <div class="container legal-body">
+
+    <section class="legal-section">
+      <h2>Angaben gemäß § 5 TMG</h2>
+      <p>
+        Luka Sandvoß &amp; Jacquline Lehmann<br />
+        [Straße und Hausnummer]<br />
+        [PLZ] [Stadt]<br />
+        Deutschland
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Kontakt</h2>
+      <p>
+        E-Mail: [E-Mail-Adresse]
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+      <p>
+        Luka Sandvoß &amp; Jacquline Lehmann<br />
+        [Adresse wie oben]
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Hinweis</h2>
+      <p>
+        Diese Website ist ein Hochschulprojekt im Rahmen einer Bachelorarbeit an der [Hochschule],
+        Studiengang Mediendesign, 2026. Sie verfolgt keine kommerziellen Zwecke.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Haftungsausschluss</h2>
+      <p>
+        Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit
+        und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Für externe Links sind
+        ausschließlich deren Betreiber verantwortlich.
+      </p>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .legal-head {
+    background: var(--color-primary-soft);
+    padding-block: var(--space-14) var(--space-12);
+  }
+
+  .legal-head__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-top: var(--space-3);
+  }
+
+  .legal-body {
+    padding-block: var(--space-12) var(--space-20);
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .legal-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .legal-section h2 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: var(--text-sm);
+  }
+
+  .legal-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+  }
+</style>

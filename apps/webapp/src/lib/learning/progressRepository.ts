@@ -5,9 +5,12 @@ import type { Json } from "../supabase/types";
 import { getKnownExerciseIds } from "./exerciseIndex";
 
 export async function fetchRemoteProgress(): Promise<Progress | null> {
-  const user = await ensureSupabaseUser();
   const supabase = getSupabaseClient();
-  if (!user || !supabase) return null;
+  if (!supabase) return null;
+
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = sessionData.session?.user;
+  if (!user) return null;
 
   const [{ data: progressRows, error: progressError }, { data: statsRow, error: statsError }] = await Promise.all([
     supabase
@@ -52,51 +55,47 @@ export async function recordExerciseAttempt(
 
 export async function recordExerciseCompletion(
   exerciseIds: string[],
-): Promise<void> {
-  if (exerciseIds.length === 0) return;
+): Promise<Pick<Progress, "xp" | "streak"> | null> {
+  if (exerciseIds.length === 0) return null;
 
   const user = await ensureSupabaseUser();
   const supabase = getSupabaseClient();
-  if (!user || !supabase) return;
+  if (!user || !supabase) return null;
 
-  const { error } = await supabase.rpc("complete_learning_exercises", {
+  const { data, error } = await supabase.rpc("complete_learning_exercises", {
     p_exercise_ids: getKnownExerciseIds(exerciseIds),
   });
   if (error) console.warn("[progress] complete_learning_exercises failed:", error.message);
+  if (!data || error) return null;
+  return { xp: data.xp, streak: data.streak };
 }
 
-export async function replaceRemoteProgress(progress: Progress): Promise<void> {
+export async function syncRemoteProgress(progress: Progress): Promise<Pick<Progress, "xp" | "streak"> | null> {
   const user = await ensureSupabaseUser();
   const supabase = getSupabaseClient();
-  if (!user || !supabase) return;
+  if (!user || !supabase) return null;
 
   const exerciseIds = getKnownExerciseIds(progress.completedExercises);
 
   if (exerciseIds.length > 0) {
-    const { error } = await supabase.rpc("complete_learning_exercises", {
+    const { data, error } = await supabase.rpc("complete_learning_exercises", {
       p_exercise_ids: exerciseIds,
     });
-    if (error) console.warn("[progress] replaceRemoteProgress RPC failed:", error.message);
+    if (error) console.warn("[progress] syncRemoteProgress RPC failed:", error.message);
+    if (!data || error) return null;
+    return { xp: data.xp, streak: data.streak };
   }
+
+  return null;
 }
 
-export async function resetRemoteProgress(): Promise<void> {
+export async function resetRemoteProgress(): Promise<Pick<Progress, "xp" | "streak"> | null> {
   const user = await ensureSupabaseUser();
   const supabase = getSupabaseClient();
-  if (!user || !supabase) return;
+  if (!user || !supabase) return null;
 
-  await Promise.all([
-    supabase.from("learning_progress").delete().eq("user_id", user.id),
-    supabase.from("exercise_attempts").delete().eq("user_id", user.id),
-  ]);
-
-  await supabase.from("user_stats").upsert(
-    {
-      user_id: user.id,
-      xp: 0,
-      streak: 1,
-      last_activity_date: null,
-    },
-    { onConflict: "user_id" },
-  );
+  const { data, error } = await supabase.rpc("reset_learning_progress", {});
+  if (error) console.warn("[progress] reset_learning_progress failed:", error.message);
+  if (!data || error) return null;
+  return { xp: data.xp, streak: data.streak };
 }

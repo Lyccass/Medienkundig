@@ -1,12 +1,12 @@
 services:
-  landing:
+  website:
     image: node:20-alpine
     working_dir: /app
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/apps/landing/node_modules
-    command: sh -c "corepack enable pnpm && pnpm install && pnpm --filter landing run dev -- --host 0.0.0.0 --port 4321"
+      - /app/apps/website/node_modules
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm --filter website run dev -- --host 0.0.0.0 --port 4321"
     expose:
       - "4321"
 
@@ -31,7 +31,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - landing
+      - website
       - webapp
 
 volumes:

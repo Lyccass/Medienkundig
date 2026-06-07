@@ -1,0 +1,253 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Button from "@/components/Button.astro";
+
+const appUrl = "http://app.medienkundig.local";
+
+const categories = [
+  {
+    number: "01",
+    title: "Digitale Grundlagen",
+    description: "Was ist eine Domain? Woran erkenne ich einen seriösen Link? Wie sieht ein sicheres Passwort aus? Hier fangen wir an.",
+    color: "rgba(108,63,255,0.08)",
+    accent: "var(--color-primary)",
+  },
+  {
+    number: "02",
+    title: "Betrug erkennen",
+    description: "Phishing-Mails, gefälschte Anrufe, Fake-Shops – die Maschen sind vielfältig. Wer die Muster kennt, schützt sich besser.",
+    color: "rgba(239,68,68,0.07)",
+    accent: "#e53e3e",
+  },
+  {
+    number: "03",
+    title: "News & Quellen prüfen",
+    description: "Nicht alles, was viral geht, stimmt auch. Hier lernst du, wie man eine Quelle einschätzt und Falschmeldungen erkennt.",
+    color: "rgba(16,185,129,0.08)",
+    accent: "#059669",
+  },
+  {
+    number: "04",
+    title: "Social Media verstehen",
+    description: "Algorithmen, Filterblase, Datenschutz – was passiert eigentlich hinter den Kulissen der Plattformen, die wir täglich nutzen?",
+    color: "rgba(245,158,11,0.08)",
+    accent: "#d97706",
+  },
+];
+---
+
+<BaseLayout
+  title="Lernpfade – medienkundig"
+  description="Vier Themenbereiche, interaktive Übungen und ein kurzer Selbsttest – so funktioniert medienkundig."
+>
+
+  <!-- Page header -->
+  <div class="lp-head">
+    <div class="container lp-head__inner">
+      <span class="label-eyebrow">Wie es funktioniert</span>
+      <h1 class="lp-head__title">Lernen, was im Alltag zählt</h1>
+      <p class="lp-head__sub">
+        Starte mit einem kurzen Einstufungstest. Du bekommst sofort ein Level und wirst direkt zum passenden Thema weitergeleitet.
+        Kein Raten, wo du anfangen sollst.
+      </p>
+      <div class="lp-head__actions">
+        <Button href={appUrl} variant="primary" size="lg">Einstufungstest starten</Button>
+        <Button href="/glossar" variant="secondary" size="lg">Zum Glossar</Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <section class="section container">
+    <div class="lp-cats">
+      {categories.map((cat) => (
+        <div class="lp-cat" style={`background: ${cat.color}; border-color: ${cat.accent}22;`}>
+          <span class="lp-cat__number" style={`color: ${cat.accent};`}>{cat.number}</span>
+          <h2 class="lp-cat__title">{cat.title}</h2>
+          <p class="lp-cat__desc">{cat.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section container lp-how">
+    <h2 class="lp-how__title">So läuft eine Lerneinheit ab</h2>
+    <ol class="lp-steps">
+      <li class="lp-step">
+        <span class="lp-step__num">1</span>
+        <div>
+          <strong>Einstufung</strong>
+          <p>20 Fragen, keine Vorkenntnisse nötig. Du bekommst danach ein Level – Einsteiger, Fortgeschritten oder Sicher.</p>
+        </div>
+      </li>
+      <li class="lp-step">
+        <span class="lp-step__num">2</span>
+        <div>
+          <strong>Lernpfad</strong>
+          <p>Basierend auf deinem Ergebnis empfehlen wir einen Startpunkt. Du kannst aber auch frei zwischen den Themen wählen.</p>
+        </div>
+      </li>
+      <li class="lp-step">
+        <span class="lp-step__num">3</span>
+        <div>
+          <strong>Übungen</strong>
+          <p>Multiple Choice, URL-Trainer, Szenarien, Memory – jede Lektion kombiniert verschiedene Formate, damit es nicht eintönig wird.</p>
+        </div>
+      </li>
+      <li class="lp-step">
+        <span class="lp-step__num">4</span>
+        <div>
+          <strong>Wiederholen</strong>
+          <p>Bereits abgeschlossene Übungen kannst du jederzeit wiederholen. XP und eine Tages-Serie zeigen, wie regelmäßig du lernst.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="lp-how__cta">
+      <Button href={appUrl} variant="primary" size="lg">Jetzt loslegen</Button>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ── Header ── */
+  .lp-head {
+    background: var(--color-primary-soft);
+    padding-block: var(--space-20) var(--space-16);
+  }
+
+  .lp-head__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+    max-width: 680px;
+  }
+
+  .lp-head__title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-top: var(--space-1);
+  }
+
+  .lp-head__sub {
+    font-size: var(--text-md);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+    max-width: 56ch;
+  }
+
+  .lp-head__actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+  }
+
+  /* ── Categories ── */
+  .lp-cats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+    padding-block: var(--space-16);
+  }
+
+  .lp-cat {
+    border: 1.5px solid;
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-7);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .lp-cat__number {
+    font-size: var(--text-sm);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lp-cat__title {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+
+  .lp-cat__desc {
+    font-size: var(--text-base);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+  }
+
+  /* ── How it works ── */
+  .lp-how {
+    padding-block: var(--space-4) var(--space-20);
+    max-width: 720px;
+  }
+
+  .lp-how__title {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-8);
+  }
+
+  .lp-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    counter-reset: none;
+  }
+
+  .lp-step {
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+  }
+
+  .lp-step__num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .lp-step strong {
+    display: block;
+    font-weight: 700;
+    font-size: var(--text-base);
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+  }
+
+  .lp-step p {
+    font-size: var(--text-base);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+  }
+
+  .lp-how__cta {
+    margin-top: var(--space-10);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    .lp-cats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

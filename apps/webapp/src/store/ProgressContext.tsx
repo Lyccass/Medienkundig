@@ -4,11 +4,12 @@ import type { Progress } from "./useProgress";
 
 interface ProgressContextValue {
   progress: Progress;
-  completeExercises: (ids: string[], xpGained: number) => void;
+  completeExercises: (ids: string[]) => void;
   isCompleted: (id: string) => boolean;
   getUnitProgress: (exerciseIds: string[]) => number;
   resetProgress: () => void;
   syncProgress: () => void;
+  refreshProgress: () => void;
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);

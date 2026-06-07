@@ -48,7 +48,7 @@ Das Projekt ist als pnpm-Monorepo organisiert:
 ```
 medienkundig/
 ├── apps/
-│   ├── landing/     # Öffentliche Landingpage (Astro)
+│   ├── website/     # Öffentliche Landingpage (Astro)
 │   └── webapp/      # Lern-App (React + Vite)
 ├── packages/
 │   ├── theme/       # Geteilte CSS-Design-Tokens

@@ -1,0 +1,198 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const sources = [
+  {
+    category: "Sicherheit & Cyberkriminalität",
+    items: [
+      {
+        title: "BSI – Bundesamt für Sicherheit in der Informationstechnik",
+        desc: "Offizielle Empfehlungen zu Phishing, Passwörtern, sicherem Surfen und Schadprogrammen.",
+        url: "https://www.bsi.bund.de",
+      },
+      {
+        title: "Bundeskriminalamt – Cybercrime-Lagebild 2024",
+        desc: "Statistiken und Analysen zu Cybercrime-Fällen in Deutschland.",
+        url: "https://www.bka.de/DE/AktuelleInformationen/StatistikenLagebilder/Lagebilder/Cybercrime/cybercrime_node.html",
+      },
+      {
+        title: "Bundesnetzagentur – Spam und unerwünschte Anrufe",
+        desc: "Informationen zu Spam, Abzockanrufen und Meldemöglichkeiten.",
+        url: "https://www.bundesnetzagentur.de",
+      },
+    ],
+  },
+  {
+    category: "Medienkompetenz & Desinformation",
+    items: [
+      {
+        title: "Bundeszentrale für politische Bildung",
+        desc: "Hintergründe zu Fake News, Deepfakes, Filterblase und Künstlicher Intelligenz.",
+        url: "https://www.bpb.de",
+      },
+      {
+        title: "Klicksafe",
+        desc: "EU-Initiative zur Förderung digitaler Kompetenz – mit Materialien zu Fake News, Datenschutz und Online-Sicherheit.",
+        url: "https://www.klicksafe.de",
+      },
+    ],
+  },
+  {
+    category: "Datenschutz & Verbraucherrechte",
+    items: [
+      {
+        title: "Verbraucherzentrale – Digitale Welt",
+        desc: "Ratgeber zu Datenschutz, Cookies, Abofallen und sicherem Online-Shopping.",
+        url: "https://www.verbraucherzentrale.de/digitale-welt",
+      },
+      {
+        title: "Bundesbeauftragter für den Datenschutz (BfDI)",
+        desc: "Grundlagen der DSGVO und Rechte als Verbraucher im Umgang mit personenbezogenen Daten.",
+        url: "https://www.bfdi.bund.de",
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Quellen – medienkundig"
+  description="Vertrauenswürdige Quellen und Weiterführendes zu den Themen Cybersicherheit, Medienkompetenz und Datenschutz."
+>
+
+  <div class="qu-head">
+    <div class="container qu-head__inner">
+      <span class="label-eyebrow">Weiterführendes</span>
+      <h1 class="qu-head__title">Quellen</h1>
+      <p class="qu-head__sub">
+        Alle Inhalte auf medienkundig basieren auf vertrauenswürdigen, öffentlich zugänglichen Quellen.
+        Hier findest du sie gesammelt – zum Nachschlagen und Weiterlesen.
+      </p>
+    </div>
+  </div>
+
+  <div class="container qu-body">
+    {sources.map((group) => (
+      <section class="qu-group">
+        <h2 class="qu-group__heading">{group.category}</h2>
+        <ul class="qu-list" role="list">
+          {group.items.map((item) => (
+            <li class="qu-item">
+              <a href={item.url} class="qu-item__link" target="_blank" rel="noopener noreferrer">
+                <div class="qu-item__text">
+                  <span class="qu-item__title">{item.title}</span>
+                  <span class="qu-item__desc">{item.desc}</span>
+                </div>
+                <svg class="qu-item__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+</BaseLayout>
+
+<style>
+  .qu-head {
+    background: var(--color-primary-soft);
+    padding-block: var(--space-16) var(--space-14);
+  }
+
+  .qu-head__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 680px;
+  }
+
+  .qu-head__title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .qu-head__sub {
+    font-size: var(--text-base);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+    max-width: 60ch;
+  }
+
+  .qu-body {
+    padding-block: var(--space-14) var(--space-20);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    max-width: 800px;
+  }
+
+  .qu-group__heading {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .qu-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .qu-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .qu-item__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding: var(--space-4) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: background 0.12s;
+    text-decoration: none;
+  }
+
+  .qu-item__link:hover {
+    background: var(--color-surface-soft);
+  }
+
+  .qu-item__link:hover .qu-item__arrow {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+
+  .qu-item__text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .qu-item__title {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .qu-item__desc {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    line-height: var(--leading-relaxed);
+  }
+
+  .qu-item__arrow {
+    color: var(--color-primary);
+    opacity: 0.3;
+    flex-shrink: 0;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+</style>

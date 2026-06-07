@@ -239,7 +239,7 @@ create or replace function public.record_learning_attempt(
 )
 returns public.exercise_attempts
 language plpgsql
-security invoker
+security definer
 set search_path = public
 as $$
 declare
@@ -288,7 +288,7 @@ $$;
 create or replace function public.complete_learning_exercises(p_exercise_ids text[])
 returns public.user_stats
 language plpgsql
-security invoker
+security definer
 set search_path = public
 as $$
 declare
@@ -362,11 +362,58 @@ begin
 end;
 $$;
 
+create or replace function public.reset_learning_progress()
+returns public.user_stats
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_user_id uuid := (select auth.uid());
+  result public.user_stats;
+begin
+  if current_user_id is null then
+    raise exception 'Authentication required';
+  end if;
+
+  delete from public.exercise_attempts
+  where user_id = current_user_id;
+
+  delete from public.learning_progress
+  where user_id = current_user_id;
+
+  insert into public.user_stats (
+    user_id,
+    xp,
+    streak,
+    last_activity_date
+  )
+  values (
+    current_user_id,
+    0,
+    1,
+    null
+  )
+  on conflict (user_id) do update
+  set
+    xp = 0,
+    streak = 1,
+    last_activity_date = null
+  returning * into result;
+
+  return result;
+end;
+$$;
+
 grant usage on schema public to authenticated;
 grant select, insert, update on public.profiles to authenticated;
-grant select, insert, update on public.user_stats to authenticated;
+revoke insert, update on public.user_stats from authenticated;
+grant select on public.user_stats to authenticated;
 grant select on public.learning_exercises to authenticated;
-grant select, insert, update, delete on public.learning_progress to authenticated;
-grant select, insert, delete on public.exercise_attempts to authenticated;
+revoke insert, update, delete on public.learning_progress from authenticated;
+grant select on public.learning_progress to authenticated;
+revoke insert, update, delete on public.exercise_attempts from authenticated;
+grant select on public.exercise_attempts to authenticated;
 grant execute on function public.record_learning_attempt(text, boolean, jsonb) to authenticated;
 grant execute on function public.complete_learning_exercises(text[]) to authenticated;
+grant execute on function public.reset_learning_progress() to authenticated;

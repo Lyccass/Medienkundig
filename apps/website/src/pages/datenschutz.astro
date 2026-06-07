@@ -1,0 +1,117 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Datenschutz – medienkundig"
+  description="Datenschutzerklärung gemäß DSGVO"
+>
+  <div class="legal-head">
+    <div class="container">
+      <span class="label-eyebrow">Rechtliches</span>
+      <h1 class="legal-head__title">Datenschutz</h1>
+    </div>
+  </div>
+
+  <div class="container legal-body">
+
+    <section class="legal-section">
+      <h2>Verantwortliche Stelle</h2>
+      <p>
+        Luka Sandvoß &amp; Jacquline Lehmann<br />
+        [Adresse]<br />
+        E-Mail: [E-Mail-Adresse]
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Welche Daten wir speichern</h2>
+      <p>
+        Auf der öffentlichen Website (diese Seite) werden keine personenbezogenen Daten aktiv erfasst.
+        Es werden keine Tracking-Cookies oder Analysetools eingesetzt.
+      </p>
+      <p>
+        In der Lern-App (app.medienkundig.de) wird Lernfortschritt gespeichert. Ohne Konto geschieht das
+        ausschließlich lokal im Browser (localStorage) – es werden keine Daten an unsere Server übertragen.
+        Wer ein Konto anlegt, stimmt der Speicherung von E-Mail-Adresse und Lernfortschritt bei unserem
+        Dienstleister Supabase zu (Server in der EU).
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Hosting</h2>
+      <p>
+        Diese Website wird auf [Hosting-Anbieter] gehostet. Bei jedem Seitenaufruf werden vom Hoster
+        automatisch Verbindungsdaten wie IP-Adresse, Datum und Uhrzeit im Serverlog gespeichert.
+        Dies ist technisch notwendig und entspricht dem berechtigten Interesse gemäß Art. 6 Abs. 1 lit. f DSGVO.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Externe Links</h2>
+      <p>
+        Diese Seite enthält Links zu externen Websites (z.B. BSI, BPB, Klicksafe). Für deren Datenschutzpraktiken
+        sind ausschließlich deren Betreiber verantwortlich.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Deine Rechte</h2>
+      <p>
+        Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten
+        (Art. 15–18 DSGVO). Für Anfragen wende dich per E-Mail an uns (Adresse im Impressum).
+      </p>
+    </section>
+
+    <p class="legal-date">Stand: Juni 2026</p>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .legal-head {
+    background: var(--color-primary-soft);
+    padding-block: var(--space-14) var(--space-12);
+  }
+
+  .legal-head__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-top: var(--space-3);
+  }
+
+  .legal-body {
+    padding-block: var(--space-12) var(--space-20);
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .legal-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .legal-section h2 {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .legal-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+  }
+
+  .legal-date {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin-top: var(--space-4);
+  }
+</style>

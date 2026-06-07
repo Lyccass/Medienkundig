@@ -6,24 +6,14 @@ const columns = [
     heading: "Lernen",
     links: [
       { label: "Lernpfade", href: "/lernen" },
-      { label: "Selbsttest", href: "/selbsttest" },
-      { label: "Für Schulen", href: "/schulen" },
-    ],
-  },
-  {
-    heading: "Wissen",
-    links: [
       { label: "Glossar", href: "/glossar" },
-      { label: "Wiki", href: "/wiki" },
       { label: "Quellen", href: "/quellen" },
     ],
   },
   {
     heading: "Über uns",
     links: [
-      { label: "Team", href: "/team" },
-      { label: "Partner", href: "/partner" },
-      { label: "Kontakt", href: "/kontakt" },
+      { label: "Über das Projekt", href: "/ueber-uns" },
     ],
   },
   {
@@ -31,7 +21,6 @@ const columns = [
     links: [
       { label: "Impressum", href: "/impressum" },
       { label: "Datenschutz", href: "/datenschutz" },
-      { label: "Barrierefreiheit", href: "/barrierefreiheit" },
     ],
   },
 ];
@@ -104,7 +93,7 @@ const columns = [
 
   .site-footer__nav {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-6);
   }
 
