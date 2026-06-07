@@ -5,7 +5,7 @@
 http://medienkundig.local,
 http://medienkundig,
 http://localhost {
-  reverse_proxy landing:4321
+  reverse_proxy website:4321
 }
 
 http://app.medienkundig.local,
