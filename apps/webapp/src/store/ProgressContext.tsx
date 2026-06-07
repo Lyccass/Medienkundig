@@ -8,6 +8,7 @@ interface ProgressContextValue {
   isCompleted: (id: string) => boolean;
   getUnitProgress: (exerciseIds: string[]) => number;
   resetProgress: () => void;
+  syncProgress: () => void;
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);

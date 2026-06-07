@@ -2,11 +2,15 @@
 import Logo from "./Logo.astro";
 import Button from "./Button.astro";
 
+const appUrl = "http://app.medienkundig.local";
+const loginUrl = `${appUrl}?auth=login`;
+const onboardingUrl = `${appUrl}?onboarding=1`;
+
 const navLinks = [
   { label: "Lernen", href: "/lernen" },
   { label: "Glossar", href: "/glossar" },
   { label: "Wiki", href: "/wiki" },
-  { label: "App", href: "http://app.medienkundig.local" },
+  { label: "App", href: appUrl },
   { label: "Über uns", href: "/ueber-uns" },
 ];
 ---
@@ -26,8 +30,8 @@ const navLinks = [
     </nav>
 
     <div class="site-header__actions">
-      <a href="/einloggen" class="site-header__login">Einloggen</a>
-      <Button href="/loslegen" variant="primary" size="sm">Loslegen</Button>
+      <a href={loginUrl} class="site-header__login">Einloggen</a>
+      <Button href={onboardingUrl} variant="primary" size="sm">Loslegen</Button>
     </div>
 
     <button
@@ -52,9 +56,9 @@ const navLinks = [
           </li>
         ))}
         <li class="mobile-menu__divider" aria-hidden="true"></li>
-        <li><a href="/einloggen" class="mobile-menu__link">Einloggen</a></li>
+        <li><a href={loginUrl} class="mobile-menu__link">Einloggen</a></li>
         <li>
-          <Button href="/loslegen" variant="primary" size="md" class="mobile-menu__cta">
+          <Button href={onboardingUrl} variant="primary" size="md" class="mobile-menu__cta">
             Loslegen
           </Button>
         </li>

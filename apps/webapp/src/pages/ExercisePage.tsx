@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { X, Check, RotateCcw } from "lucide-react";
-import type { Exercise } from "../data/courses";
+import type { Exercise, MemoryData } from "../data/courses";
 import { MultipleChoice } from "../exercises/MultipleChoice";
 import { BildAuswahl } from "../exercises/BildAuswahl";
 import { AudioAuswahl } from "../exercises/AudioAuswahl";
@@ -19,6 +19,13 @@ interface Props {
   categoryTitle: string;
   onComplete: (xpEarned: number, exerciseIds: string[]) => void;
   onClose: () => void;
+  onAttempt?: (exerciseId: string, correct: boolean, selectedIndex?: number) => void;
+  completionVariant?: "learning" | "assessment";
+  getAssessmentResult?: (correctCount: number, totalCount: number) => {
+    title: string;
+    description: string;
+    recommendedLabel: string;
+  };
 }
 
 type Phase =
@@ -61,6 +68,9 @@ export function ExercisePage({
   categoryTitle,
   onComplete,
   onClose,
+  onAttempt,
+  completionVariant = "learning",
+  getAssessmentResult,
 }: Props) {
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>({ type: "question" });
@@ -71,7 +81,17 @@ export function ExercisePage({
   const isMemory = current?.data.type === "memory";
   const isFlipMemory =
     current?.data.type === "memory" &&
-    (current.data as { variant?: string }).variant === "flip";
+    (current.data as MemoryData).variant === "flip";
+
+  const advance = useCallback(() => {
+    const next = index + 1;
+    if (next >= exercises.length) {
+      setPhase({ type: "complete", xp: xpEarned });
+    } else {
+      setIndex(next);
+      setPhase({ type: "question" });
+    }
+  }, [index, exercises.length, xpEarned]);
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -80,7 +100,7 @@ export function ExercisePage({
     }
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [onClose, phase]);
+  }, [onClose, phase, advance]);
 
   function handleAnswer(selectedIndex: number) {
     const data = current.data;
@@ -95,6 +115,7 @@ export function ExercisePage({
     ) {
       const correct = selectedIndex === data.correct;
       setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
+      onAttempt?.(current.id, correct, selectedIndex);
       if (correct) {
         setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
       }
@@ -104,6 +125,7 @@ export function ExercisePage({
     if (data.type === "warnzeichen") {
       const correct = selectedIndex === 1;
       setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
+      onAttempt?.(current.id, correct, selectedIndex);
       if (correct) {
         setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
       }
@@ -113,20 +135,11 @@ export function ExercisePage({
 
   const handleMemoryComplete = useCallback(() => {
     setXpEarned((x) => x + XP_MEMORY);
+    onAttempt?.(current.id, true);
     setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
     const explanation = current.data.type === "memory" ? current.data.explanation : undefined;
     setPhase({ type: "feedback", correct: true, explanation });
-  }, [current]);
-
-  function advance() {
-    const next = index + 1;
-    if (next >= exercises.length) {
-      setPhase({ type: "complete", xp: xpEarned });
-    } else {
-      setIndex(next);
-      setPhase({ type: "question" });
-    }
-  }
+  }, [current, onAttempt]);
 
   const progress = (index + (phase.type !== "question" ? 1 : 0)) / exercises.length;
   const scoredExercises = exercises.filter((exercise) => exercise.data.type !== "lesson");
@@ -136,22 +149,41 @@ export function ExercisePage({
     const maxXp = scoredExercises.length * XP_CORRECT;
     const correctCount = correctExerciseIds.length;
     const perfect = correctCount === scoredExercises.length;
+    const isAssessment = completionVariant === "assessment";
+    const assessmentResult = isAssessment
+      ? getAssessmentResult?.(correctCount, scoredExercises.length)
+      : null;
     return (
       <div className={styles.page}>
         <div className={styles.completeWrap}>
           <div className={`${styles.completeCircle} ${perfect ? styles.completePerfect : ""}`}>
             <Check className={styles.iconOnDark} size={40} strokeWidth={2.5} />
           </div>
-          <h2 className={styles.completeTitle}>{perfect ? "Perfekt! 🎉" : "Gut gemacht!"}</h2>
-          <p className={styles.completeSub}>Einheit abgeschlossen</p>
+          <h2 className={styles.completeTitle}>
+            {assessmentResult?.title ?? (perfect ? "Perfekt!" : "Gut gemacht!")}
+          </h2>
+          <p className={styles.completeSub}>
+            {isAssessment ? "Einstufung abgeschlossen" : "Einheit abgeschlossen"}
+          </p>
 
-          <div className={styles.xpBubble}>
-            <span className={styles.xpIcon}>⚡</span>
-            <span className={styles.xpNum}>+{phase.xp}</span>
-            <span className={styles.xpLabel}>XP</span>
-          </div>
+          {isAssessment ? (
+            <div className={styles.xpBubble}>
+              <span className={styles.xpNum}>{correctCount}/{scoredExercises.length}</span>
+              <span className={styles.xpLabel}>richtig</span>
+            </div>
+          ) : (
+            <div className={styles.xpBubble}>
+              <span className={styles.xpIcon}>⚡</span>
+              <span className={styles.xpNum}>+{phase.xp}</span>
+              <span className={styles.xpLabel}>XP</span>
+            </div>
+          )}
 
-          {!perfect && (
+          {assessmentResult && (
+            <p className={styles.completeTip}>{assessmentResult.description}</p>
+          )}
+
+          {!isAssessment && !perfect && (
             <p className={styles.completeTip}>
               {correctCount} von {scoredExercises.length} Übungen richtig beantwortet
             </p>
@@ -162,7 +194,7 @@ export function ExercisePage({
             className={styles.doneBtn}
             onClick={() => onComplete(phase.xp, correctExerciseIds)}
           >
-            WEITER
+            {assessmentResult?.recommendedLabel ?? "WEITER"}
           </button>
         </div>
       </div>

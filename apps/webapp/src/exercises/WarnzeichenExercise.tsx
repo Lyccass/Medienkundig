@@ -10,32 +10,26 @@ interface Props {
   disabled?: boolean;
 }
 
-function includesValue(values: string[], value: string) {
-  return values.includes(value);
-}
-
 export function WarnzeichenExercise({ data, onAnswer, disabled }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
 
   function toggleZone(id: string) {
     if (disabled || submitted) return;
-    setSelected((current) =>
-      includesValue(current, id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   }
 
   function submit() {
     if (disabled || submitted || selected.length === 0) return;
-    const correct = data.zones.every((zone) => includesValue(selected, zone.id) === zone.suspicious);
+    const correct = data.zones.every((zone) => selected.includes(zone.id) === zone.suspicious);
     setSubmitted(true);
     onAnswer(correct ? 1 : 0);
   }
 
   function getState(zoneId: string, suspicious: boolean) {
-    const isSelected = includesValue(selected, zoneId);
+    const isSelected = selected.includes(zoneId);
     if (!submitted) return isSelected ? "selected" : "default";
     if (isSelected && suspicious) return "correct";
     if (isSelected && !suspicious) return "wrong";
@@ -60,7 +54,7 @@ export function WarnzeichenExercise({ data, onAnswer, disabled }: Props) {
           <div className={styles.markerLayer} aria-label="Markierte Stellen im Screenshot">
             {data.zones.map((zone, i) => {
               const state = getState(zone.id, zone.suspicious);
-              const active = includesValue(selected, zone.id);
+              const active = selected.includes(zone.id);
               return (
                 <button
                   key={zone.id}
@@ -90,7 +84,7 @@ export function WarnzeichenExercise({ data, onAnswer, disabled }: Props) {
           <div className={styles.document}>
             {data.zones.map((zone, i) => {
               const state = getState(zone.id, zone.suspicious);
-              const active = includesValue(selected, zone.id);
+              const active = selected.includes(zone.id);
               return (
                 <button
                   key={zone.id}
@@ -115,7 +109,7 @@ export function WarnzeichenExercise({ data, onAnswer, disabled }: Props) {
         <ul className={styles.choices}>
           {data.zones.map((zone, i) => {
             const state = getState(zone.id, zone.suspicious);
-            const active = includesValue(selected, zone.id);
+            const active = selected.includes(zone.id);
             return (
               <li key={zone.id}>
                 <button

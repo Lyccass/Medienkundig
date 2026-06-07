@@ -1,5 +1,7 @@
 ---
 import Button from "./Button.astro";
+
+const onboardingUrl = "http://app.medienkundig.local?onboarding=1";
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -19,8 +21,8 @@ import Button from "./Button.astro";
       </p>
 
       <div class="hero__actions">
-        <Button href="/selbsttest" variant="primary" size="lg">Zum Selbsttest</Button>
-        <Button href="/erste-schritte" variant="secondary" size="lg">Erste Schritte</Button>
+        <Button href={onboardingUrl} variant="primary" size="lg">Zum Selbsttest</Button>
+        <Button href={onboardingUrl} variant="secondary" size="lg">Erste Schritte</Button>
       </div>
 
       <div class="hero__rating" aria-label="4,9 von 5 Sternen – Von über 12.000 Lernenden empfohlen">

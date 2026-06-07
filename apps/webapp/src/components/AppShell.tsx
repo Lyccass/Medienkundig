@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BookOpen, RefreshCw, User, FolderSearch, BookMarked, Flame, Zap } from "lucide-react";
+import { BookOpen, RefreshCw, User, FolderSearch, BookMarked, Flame, Zap, LogIn } from "lucide-react";
 import styles from "./AppShell.module.css";
 
 export type Page = "learn" | "repeat" | "profile" | "faelle" | "glossar";
@@ -21,12 +21,18 @@ const NAV_ITEMS: NavItemDef[] = [
 interface Props {
   activePage: Page;
   onNavigate: (page: Page) => void;
+  isRegistered: boolean;
+  onOpenAuth: () => void;
   xp: number;
   streak: number;
   children: ReactNode;
 }
 
-export function AppShell({ activePage, onNavigate, xp, streak, children }: Props) {
+export function AppShell({ activePage, onNavigate, isRegistered, onOpenAuth, xp, streak, children }: Props) {
+  const navItems = isRegistered
+    ? NAV_ITEMS
+    : NAV_ITEMS.filter((item) => item.id !== "profile");
+
   return (
     <div className={styles.shell}>
       {/* Sidebar */}
@@ -37,7 +43,7 @@ export function AppShell({ activePage, onNavigate, xp, streak, children }: Props
           </a>
 
           <ul className={styles.navList}>
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <li key={item.id}>
                 <button
                   type="button"
@@ -50,6 +56,18 @@ export function AppShell({ activePage, onNavigate, xp, streak, children }: Props
                 </button>
               </li>
             ))}
+            {!isRegistered && (
+              <li>
+                <button
+                  type="button"
+                  className={styles.navItem}
+                  onClick={onOpenAuth}
+                >
+                  <span className={styles.navIcon}><LogIn size={22} strokeWidth={1.8} /></span>
+                  <span className={styles.navLabel}>Einloggen / Registrieren</span>
+                </button>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -67,7 +85,7 @@ export function AppShell({ activePage, onNavigate, xp, streak, children }: Props
 
       {/* Bottom nav mobile */}
       <nav className={styles.bottomNav} aria-label="Mobile Navigation">
-        {NAV_ITEMS.map((item) => (
+        {navItems.map((item) => (
           <button
             key={item.id}
             type="button"
@@ -79,6 +97,16 @@ export function AppShell({ activePage, onNavigate, xp, streak, children }: Props
             <span className={styles.bottomNavLabel}>{item.label}</span>
           </button>
         ))}
+        {!isRegistered && (
+          <button
+            type="button"
+            className={styles.bottomNavItem}
+            onClick={onOpenAuth}
+          >
+            <span className={styles.bottomNavIcon}><LogIn size={22} strokeWidth={1.8} /></span>
+            <span className={styles.bottomNavLabel}>Konto</span>
+          </button>
+        )}
       </nav>
     </div>
   );
