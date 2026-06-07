@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { ArrowLeft, CheckCircle2, Lock, LogOut, Mail, User } from "lucide-react";
-import { loginWithPassword, registerWithPassword, requestPasswordReset, signOut } from "../lib/supabase/auth";
+import {
+  loginWithPassword,
+  registerWithPassword,
+  requestPasswordReset,
+  signOut,
+  updatePassword,
+} from "../lib/supabase/auth";
 import type { AuthState } from "../lib/supabase/useAuthStatus";
 import styles from "./AuthPage.module.css";
 
@@ -10,10 +16,17 @@ interface Props {
   onAuthSuccess: () => void;
 }
 
-type AuthMode = "login" | "register" | "reset";
+type AuthMode = "login" | "register" | "reset" | "updatePassword";
+
+function getInitialMode(): AuthMode {
+  const authIntent = new URLSearchParams(window.location.search).get("auth");
+  if (authIntent === "register") return "register";
+  if (authIntent === "reset-password") return "updatePassword";
+  return "login";
+}
 
 export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
-  const [mode, setMode] = useState<AuthMode>("login");
+  const [mode, setMode] = useState<AuthMode>(getInitialMode);
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,9 +57,24 @@ export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
       return;
     }
 
-    if (mode === "register" && password !== passwordRepeat) {
+    if ((mode === "register" || mode === "updatePassword") && password !== passwordRepeat) {
       setStatus("error");
       setMessage("Die Passwörter stimmen nicht überein.");
+      return;
+    }
+
+    if (mode === "updatePassword") {
+      const result = await updatePassword(password);
+      if (!result.ok) {
+        setStatus("error");
+        setMessage(result.message);
+        return;
+      }
+
+      setStatus("sent");
+      setMessage("Passwort gespeichert.");
+      onAuthSuccess();
+      onBack();
       return;
     }
 
@@ -84,7 +112,9 @@ export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
     onBack();
   }
 
-  if (auth.isRegistered) {
+  const isPasswordUpdate = mode === "updatePassword";
+
+  if (auth.isRegistered && !isPasswordUpdate) {
     return (
       <main className={styles.page}>
         <section className={styles.intro}>
@@ -121,10 +151,22 @@ export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
           <ArrowLeft size={18} strokeWidth={2.2} />
           Zur App
         </button>
-        <p className={styles.eyebrow}>{isRegister ? "Registrieren" : isReset ? "Passwort" : "Einloggen"}</p>
-        <h1 className={styles.title}>{isRegister ? "Konto erstellen" : isReset ? "Passwort zurücksetzen" : "Willkommen zurück"}</h1>
+        <p className={styles.eyebrow}>
+          {isRegister ? "Registrieren" : isReset || isPasswordUpdate ? "Passwort" : "Einloggen"}
+        </p>
+        <h1 className={styles.title}>
+          {isRegister
+            ? "Konto erstellen"
+            : isPasswordUpdate
+            ? "Neues Passwort setzen"
+            : isReset
+            ? "Passwort zurücksetzen"
+            : "Willkommen zurück"}
+        </h1>
         <p className={styles.copy}>
-          {isReset
+          {isPasswordUpdate
+            ? "Vergib ein neues Passwort für dein Medienkundig Konto."
+            : isReset
             ? "Gib deine E-Mail-Adresse ein. Wir senden dir einen Link zum Zurücksetzen."
             : isRegister
             ? "Lege ein Konto mit E-Mail und Passwort an. Nach der Bestätigung wird dein Fortschritt synchronisiert."
@@ -133,29 +175,33 @@ export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
       </section>
 
       <section className={styles.panel}>
-        <div className={styles.modeSwitch} role="tablist" aria-label="Kontoaktion">
-          <button
-            type="button"
-            className={`${styles.modeButton} ${mode === "login" ? styles.modeButtonActive : ""}`}
-            onClick={() => setMode("login")}
-            role="tab"
-            aria-selected={mode === "login"}
-          >
-            Einloggen
-          </button>
-          <button
-            type="button"
-            className={`${styles.modeButton} ${mode === "register" ? styles.modeButtonActive : ""}`}
-            onClick={() => setMode("register")}
-            role="tab"
-            aria-selected={mode === "register"}
-          >
-            Registrieren
-          </button>
-        </div>
+        {!isPasswordUpdate && (
+          <div className={styles.modeSwitch} role="tablist" aria-label="Kontoaktion">
+            <button
+              type="button"
+              className={`${styles.modeButton} ${mode === "login" ? styles.modeButtonActive : ""}`}
+              onClick={() => setMode("login")}
+              role="tab"
+              aria-selected={mode === "login"}
+            >
+              Einloggen
+            </button>
+            <button
+              type="button"
+              className={`${styles.modeButton} ${mode === "register" ? styles.modeButtonActive : ""}`}
+              onClick={() => setMode("register")}
+              role="tab"
+              aria-selected={mode === "register"}
+            >
+              Registrieren
+            </button>
+          </div>
+        )}
 
         <p className={styles.panelEyebrow}>Konto</p>
-        <h2 className={styles.panelTitle}>{isReset ? "Reset-Link anfordern" : isRegister ? "Neue Zugangsdaten" : "Zugangsdaten"}</h2>
+        <h2 className={styles.panelTitle}>
+          {isPasswordUpdate ? "Passwort erneuern" : isReset ? "Reset-Link anfordern" : isRegister ? "Neue Zugangsdaten" : "Zugangsdaten"}
+        </h2>
 
         <form className={styles.form} onSubmit={submit}>
           {isRegister && (
@@ -176,43 +222,45 @@ export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
             </label>
           )}
 
-          <label className={styles.field}>
-            <span className={styles.label}>E-Mail-Adresse</span>
-            <span className={styles.inputWrap}>
-              <Mail size={18} strokeWidth={2.2} className={styles.inputIcon} />
-              <input
-                className={styles.input}
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="name@example.com"
-                required
-              />
-            </span>
-          </label>
-
-          {!isReset && (
-          <label className={styles.field}>
-            <span className={styles.label}>Passwort</span>
-            <span className={styles.inputWrap}>
-              <Lock size={18} strokeWidth={2.2} className={styles.inputIcon} />
-              <input
-                className={styles.input}
-                type="password"
-                autoComplete={isRegister ? "new-password" : "current-password"}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                minLength={8}
-                required
-              />
-            </span>
-          </label>
+          {!isPasswordUpdate && (
+            <label className={styles.field}>
+              <span className={styles.label}>E-Mail-Adresse</span>
+              <span className={styles.inputWrap}>
+                <Mail size={18} strokeWidth={2.2} className={styles.inputIcon} />
+                <input
+                  className={styles.input}
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="name@example.com"
+                  required
+                />
+              </span>
+            </label>
           )}
 
-          {isRegister && !isReset && (
+          {!isReset && (
             <label className={styles.field}>
-              <span className={styles.label}>Passwort wiederholen</span>
+              <span className={styles.label}>{isPasswordUpdate ? "Neues Passwort" : "Passwort"}</span>
+              <span className={styles.inputWrap}>
+                <Lock size={18} strokeWidth={2.2} className={styles.inputIcon} />
+                <input
+                  className={styles.input}
+                  type="password"
+                  autoComplete={isRegister || isPasswordUpdate ? "new-password" : "current-password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  minLength={8}
+                  required
+                />
+              </span>
+            </label>
+          )}
+
+          {(isRegister || isPasswordUpdate) && !isReset && (
+            <label className={styles.field}>
+              <span className={styles.label}>{isPasswordUpdate ? "Neues Passwort wiederholen" : "Passwort wiederholen"}</span>
               <span className={styles.inputWrap}>
                 <Lock size={18} strokeWidth={2.2} className={styles.inputIcon} />
                 <input
@@ -233,19 +281,29 @@ export function AuthPage({ auth, onBack, onAuthSuccess }: Props) {
           )}
 
           <button type="submit" className={styles.primaryAction} disabled={status === "sending"}>
-            {status === "sending" ? "Prüfen ..." : isReset ? "Reset-Link senden" : isRegister ? "Konto erstellen" : "Einloggen"}
+            {status === "sending"
+              ? "Prüfen ..."
+              : isPasswordUpdate
+              ? "Passwort speichern"
+              : isReset
+              ? "Reset-Link senden"
+              : isRegister
+              ? "Konto erstellen"
+              : "Einloggen"}
           </button>
         </form>
 
-        {!isRegister && (
+        {!isRegister && !isPasswordUpdate && (
           <button type="button" className={styles.textAction} onClick={() => setMode(isReset ? "login" : "reset")}>
             {isReset ? "Zurück zum Login" : "Passwort vergessen?"}
           </button>
         )}
 
-        <p className={styles.note}>
-          Nach der Registrierung musst du deine E-Mail-Adresse bestätigen.
-        </p>
+        {!isPasswordUpdate && (
+          <p className={styles.note}>
+            Nach der Registrierung musst du deine E-Mail-Adresse bestätigen.
+          </p>
+        )}
       </section>
     </main>
   );

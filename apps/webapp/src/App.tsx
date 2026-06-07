@@ -36,7 +36,12 @@ function getInitialView(): View {
   const authIntent = params.get("auth");
   const onboardingIntent = params.get("onboarding");
 
-  if (authIntent === "login" || authIntent === "register" || authIntent === "callback") return { type: "auth" };
+  if (
+    authIntent === "login" ||
+    authIntent === "register" ||
+    authIntent === "callback" ||
+    authIntent === "reset-password"
+  ) return { type: "auth" };
   if (onboardingIntent === "1") return { type: "onboarding" };
   if (!hasCompletedOnboarding()) return { type: "onboarding" };
   return { type: "learn" };

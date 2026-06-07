@@ -91,8 +91,20 @@ export async function requestPasswordReset(email: string): Promise<AuthSuccess |
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/?auth=login`,
+    redirectTo: `${window.location.origin}/?auth=reset-password`,
   });
+
+  if (error) return { ok: false, message: error.message };
+  return { ok: true };
+}
+
+export async function updatePassword(password: string): Promise<AuthSuccess | AuthFailure> {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return { ok: false, message: "Supabase ist noch nicht konfiguriert." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
 
   if (error) return { ok: false, message: error.message };
   return { ok: true };

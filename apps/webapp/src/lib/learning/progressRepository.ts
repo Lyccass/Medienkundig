@@ -1,6 +1,7 @@
 import type { Progress } from "../../store/useProgress";
 import { ensureSupabaseUser } from "../supabase/auth";
 import { getSupabaseClient } from "../supabase/client";
+import type { Json } from "../supabase/types";
 import { getKnownExerciseIds } from "./exerciseIndex";
 
 export async function fetchRemoteProgress(): Promise<Progress | null> {
@@ -32,7 +33,7 @@ export async function fetchRemoteProgress(): Promise<Progress | null> {
 export async function recordExerciseAttempt(
   exerciseId: string,
   correct: boolean,
-  answer?: unknown,
+  answer?: Json,
 ): Promise<void> {
   const [knownExerciseId] = getKnownExerciseIds([exerciseId]);
   if (!knownExerciseId) return;

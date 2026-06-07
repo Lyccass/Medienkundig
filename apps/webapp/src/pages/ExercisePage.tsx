@@ -146,7 +146,6 @@ export function ExercisePage({
 
   /* ── Complete screen ── */
   if (phase.type === "complete") {
-    const maxXp = scoredExercises.length * XP_CORRECT;
     const correctCount = correctExerciseIds.length;
     const perfect = correctCount === scoredExercises.length;
     const isAssessment = completionVariant === "assessment";
