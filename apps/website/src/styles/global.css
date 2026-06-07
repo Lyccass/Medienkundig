@@ -33,7 +33,7 @@ body.is-overlay-open {
 
 /* sections that scroll below the hero sit on white */
 main > *:not(.hero):not(.ph) {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 img, svg, video {
@@ -124,4 +124,4 @@ h1, h2, h3, h4 {
   transition: background 0.15s;
   display: inline;
 }
-.glossar-inline:hover { background: #ddd6fe; }
+.glossar-inline:hover { background: var(--color-border); }

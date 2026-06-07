@@ -1,5 +1,5 @@
 .directory-shell {
-  background: #fff;
+  background: var(--color-surface);
 }
 
 .directory {
@@ -229,10 +229,6 @@
 
 .directory-action {
   padding-top: var(--space-6);
-}
-
-.lp-head-cta {
-  margin-top: var(--space-2);
 }
 
 @media (max-width: 900px) {
