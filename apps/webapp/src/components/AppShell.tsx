@@ -71,13 +71,15 @@ export function AppShell({ activePage, onNavigate, isRegistered, onOpenAuth, xp,
           </ul>
         </div>
 
-        <div className={styles.sidebarBottom}>
-          <div className={styles.statPill}>
-            <span title="Tage-Serie" className={styles.statItem}><Flame size={13} strokeWidth={2} /> {streak}</span>
-            <span className={styles.statDivider} />
-            <span title="XP" className={styles.statItem}><Zap size={13} strokeWidth={2} /> {xp}</span>
+        {isRegistered && (
+          <div className={styles.sidebarBottom}>
+            <div className={styles.statPill}>
+              <span title="Tage-Serie" className={styles.statItem}><Flame size={13} strokeWidth={2} /> {streak}</span>
+              <span className={styles.statDivider} />
+              <span title="XP" className={styles.statItem}><Zap size={13} strokeWidth={2} /> {xp}</span>
+            </div>
           </div>
-        </div>
+        )}
       </nav>
 
       {/* Main */}
