@@ -1,8 +1,10 @@
 import React from "react";
-import { ShieldAlert, Newspaper, Smartphone, Lock, Flame, Zap, Sprout, Target, Trophy } from "lucide-react";
+import { ShieldAlert, Newspaper, Smartphone, Lock, Flame, Zap, Sprout, Target, Trophy, Mail, CheckCircle2 } from "lucide-react";
 import { categories } from "../data/courses";
 import type { Progress } from "../store/useProgress";
 import { PageHeader } from "../components/PageHeader";
+import type { AuthState } from "../lib/supabase/useAuthStatus";
+import { isRealExercise } from "../utils/exercises";
 import styles from "./ProfilePage.module.css";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -39,14 +41,17 @@ function RadialProgress({ value, max }: { value: number; max: number }) {
 
 interface Props {
   progress: Progress;
+  auth: AuthState;
+  onOpenAuth: () => void;
   onResetProgress: () => void;
 }
 
-export function ProfilePage({ progress, onResetProgress }: Props) {
-  const totalExercises = categories.reduce(
-    (sum, cat) => sum + cat.units.reduce((s, u) => s + u.exercises.length, 0), 0,
+export function ProfilePage({ progress, auth, onOpenAuth, onResetProgress }: Props) {
+  const allExerciseIds = categories.flatMap((cat) =>
+    cat.units.flatMap((unit) => unit.exercises.filter(isRealExercise).map((exercise) => exercise.id)),
   );
-  const completedCount = progress.completedExercises.length;
+  const totalExercises = allExerciseIds.length;
+  const completedCount = allExerciseIds.filter((id) => progress.completedExercises.includes(id)).length;
   const overallPct = totalExercises === 0 ? 0 : Math.round((completedCount / totalExercises) * 100);
 
   const statsAction = (
@@ -98,7 +103,7 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
 
           <nav className={styles.catNav}>
             {categories.map((cat) => {
-              const catExercises = cat.units.flatMap((u) => u.exercises.map((e) => e.id));
+              const catExercises = cat.units.flatMap((u) => u.exercises.filter(isRealExercise).map((e) => e.id));
               const catCompleted = catExercises.filter((id) => progress.completedExercises.includes(id)).length;
               const done = catCompleted === catExercises.length && catExercises.length > 0;
               return (
@@ -118,12 +123,36 @@ export function ProfilePage({ progress, onResetProgress }: Props) {
 
         {/* Main content */}
         <main className={styles.main}>
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Konto</h2>
+            <div className={styles.accountBlock}>
+              <span className={styles.accountIcon}>
+                {auth.isRegistered ? <CheckCircle2 size={22} strokeWidth={2.2} /> : <Mail size={22} strokeWidth={2.2} />}
+              </span>
+              <div className={styles.accountText}>
+                <p className={styles.accountTitle}>
+                  {auth.isRegistered ? "Angemeldet" : "Konto erstellen"}
+                </p>
+                <p className={styles.accountCopy}>
+                  {auth.isRegistered
+                    ? auth.email ?? "Du bist mit deinem Medienkundig Konto angemeldet."
+                    : "Ohne Konto bleibt der Fortschritt auf diesem Gerät. Mit Konto kannst du später weiterlernen."}
+                </p>
+              </div>
+              {!auth.isRegistered && (
+                <button type="button" className={styles.accountAction} onClick={onOpenAuth}>
+                  Registrieren
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Per-category cards */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Kategorien</h2>
             <div className={styles.categoryGrid}>
               {categories.map((cat) => {
-                const catExercises = cat.units.flatMap((u) => u.exercises.map((e) => e.id));
+                const catExercises = cat.units.flatMap((u) => u.exercises.filter(isRealExercise).map((e) => e.id));
                 const catCompleted = catExercises.filter((id) => progress.completedExercises.includes(id)).length;
                 return (
                   <div key={cat.id} className={styles.categoryCard}>

@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { X, Check, RotateCcw } from "lucide-react";
-import type { Exercise } from "../data/courses";
+import type { Exercise, MemoryData } from "../data/courses";
 import { MultipleChoice } from "../exercises/MultipleChoice";
 import { BildAuswahl } from "../exercises/BildAuswahl";
 import { AudioAuswahl } from "../exercises/AudioAuswahl";
 import { MemoryGame } from "../exercises/MemoryGame";
+import { FlipMemoryGame } from "../exercises/FlipMemoryGame";
 import { Vervollstaendigen } from "../exercises/Vervollstaendigen";
 import { FallExercise } from "../exercises/FallExercise";
 import { WarnzeichenExercise } from "../exercises/WarnzeichenExercise";
@@ -18,6 +19,14 @@ interface Props {
   categoryTitle: string;
   onComplete: (xpEarned: number, exerciseIds: string[]) => void;
   onClose: () => void;
+  onAttempt?: (exerciseId: string, correct: boolean, selectedIndex?: number) => void;
+  completionVariant?: "learning" | "assessment";
+  getAssessmentResult?: (correctCount: number, totalCount: number) => {
+    level?: string;
+    title: string;
+    description: string;
+    recommendedLabel: string;
+  };
 }
 
 type Phase =
@@ -28,11 +37,53 @@ type Phase =
 const XP_CORRECT = 10;
 const XP_MEMORY = 20;
 
+const LEVEL_STYLE: Record<string, string> = {
+  starter: styles.levelStarter,
+  basis:   styles.levelBasis,
+  sicher:  styles.levelSicher,
+};
+
+const LEVEL_LABEL: Record<string, string> = {
+  starter: "Einsteiger",
+  basis:   "Fortgeschritten",
+  sicher:  "Sicher",
+};
+
+function getNextLessonButtonLabel(exercises: Exercise[], index: number) {
+  const next = exercises[index + 1];
+  if (!next) return "Fertig";
+  if (next.data.type === "lesson") return "Weiter";
+
+  switch (next.data.type) {
+    case "fall":
+      return "Weiter zum Fall";
+    case "warnzeichen":
+      return "Weiter zur Warnzeichen-Übung";
+    case "nextStep":
+      return "Weiter zur Schritt-Übung";
+    case "urlTrainer":
+      return "Weiter zum URL-Training";
+    case "audioAuswahl":
+      return "Weiter zur Audio-Übung";
+    case "bildAuswahl":
+      return "Weiter zur Bild-Übung";
+    case "memory":
+      return "Weiter zum Memory";
+    case "vervollstaendigen":
+      return "Weiter zum Lückentext";
+    default:
+      return "Weiter zur Übung";
+  }
+}
+
 export function ExercisePage({
   exercises,
   categoryTitle,
   onComplete,
   onClose,
+  onAttempt,
+  completionVariant = "learning",
+  getAssessmentResult,
 }: Props) {
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>({ type: "question" });
@@ -41,6 +92,19 @@ export function ExercisePage({
 
   const current = exercises[index];
   const isMemory = current?.data.type === "memory";
+  const isFlipMemory =
+    current?.data.type === "memory" &&
+    (current.data as MemoryData).variant === "flip";
+
+  const advance = useCallback(() => {
+    const next = index + 1;
+    if (next >= exercises.length) {
+      setPhase({ type: "complete", xp: xpEarned });
+    } else {
+      setIndex(next);
+      setPhase({ type: "question" });
+    }
+  }, [index, exercises.length, xpEarned]);
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -49,7 +113,7 @@ export function ExercisePage({
     }
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [onClose, phase]);
+  }, [onClose, phase, advance]);
 
   function handleAnswer(selectedIndex: number) {
     const data = current.data;
@@ -64,6 +128,7 @@ export function ExercisePage({
     ) {
       const correct = selectedIndex === data.correct;
       setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
+      onAttempt?.(current.id, correct, selectedIndex);
       if (correct) {
         setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
       }
@@ -73,6 +138,7 @@ export function ExercisePage({
     if (data.type === "warnzeichen") {
       const correct = selectedIndex === 1;
       setXpEarned((x) => x + (correct ? XP_CORRECT : 0));
+      onAttempt?.(current.id, correct, selectedIndex);
       if (correct) {
         setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
       }
@@ -82,45 +148,60 @@ export function ExercisePage({
 
   const handleMemoryComplete = useCallback(() => {
     setXpEarned((x) => x + XP_MEMORY);
+    onAttempt?.(current.id, true);
     setCorrectExerciseIds((ids) => ids.includes(current.id) ? ids : [...ids, current.id]);
     const explanation = current.data.type === "memory" ? current.data.explanation : undefined;
     setPhase({ type: "feedback", correct: true, explanation });
-  }, [current]);
-
-  function advance() {
-    const next = index + 1;
-    if (next >= exercises.length) {
-      setPhase({ type: "complete", xp: xpEarned });
-    } else {
-      setIndex(next);
-      setPhase({ type: "question" });
-    }
-  }
+  }, [current, onAttempt]);
 
   const progress = (index + (phase.type !== "question" ? 1 : 0)) / exercises.length;
   const scoredExercises = exercises.filter((exercise) => exercise.data.type !== "lesson");
 
   /* ── Complete screen ── */
   if (phase.type === "complete") {
-    const maxXp = scoredExercises.length * XP_CORRECT;
     const correctCount = correctExerciseIds.length;
     const perfect = correctCount === scoredExercises.length;
+    const isAssessment = completionVariant === "assessment";
+    const assessmentResult = isAssessment
+      ? getAssessmentResult?.(correctCount, scoredExercises.length)
+      : null;
     return (
       <div className={styles.page}>
         <div className={styles.completeWrap}>
-          <div className={`${styles.completeCircle} ${perfect ? styles.completePerfect : ""}`}>
+          <div className={`${styles.completeCircle} ${(!isAssessment && perfect) ? styles.completePerfect : ""}`}>
             <Check className={styles.iconOnDark} size={40} strokeWidth={2.5} />
           </div>
-          <h2 className={styles.completeTitle}>{perfect ? "Perfekt! 🎉" : "Gut gemacht!"}</h2>
-          <p className={styles.completeSub}>Einheit abgeschlossen</p>
+          <h2 className={styles.completeTitle}>
+            {assessmentResult?.title ?? (perfect ? "Perfekt!" : "Gut gemacht!")}
+          </h2>
+          <p className={styles.completeSub}>
+            {isAssessment ? "Einstufung abgeschlossen" : "Einheit abgeschlossen"}
+          </p>
 
-          <div className={styles.xpBubble}>
-            <span className={styles.xpIcon}>⚡</span>
-            <span className={styles.xpNum}>+{phase.xp}</span>
-            <span className={styles.xpLabel}>XP</span>
-          </div>
+          {isAssessment && assessmentResult?.level && (
+            <span className={`${styles.levelBadge} ${LEVEL_STYLE[assessmentResult.level] ?? ""}`}>
+              {LEVEL_LABEL[assessmentResult.level] ?? assessmentResult.level}
+            </span>
+          )}
 
-          {!perfect && (
+          {isAssessment ? (
+            <div className={styles.scoreBubble}>
+              <span className={styles.scoreNum}>{correctCount}</span>
+              <span className={styles.scoreLabel}>/ {scoredExercises.length} richtig</span>
+            </div>
+          ) : (
+            <div className={styles.xpBubble}>
+              <span className={styles.xpIcon}>⚡</span>
+              <span className={styles.xpNum}>+{phase.xp}</span>
+              <span className={styles.xpLabel}>XP</span>
+            </div>
+          )}
+
+          {assessmentResult && (
+            <p className={styles.completeTip}>{assessmentResult.description}</p>
+          )}
+
+          {!isAssessment && !perfect && (
             <p className={styles.completeTip}>
               {correctCount} von {scoredExercises.length} Übungen richtig beantwortet
             </p>
@@ -131,7 +212,7 @@ export function ExercisePage({
             className={styles.doneBtn}
             onClick={() => onComplete(phase.xp, correctExerciseIds)}
           >
-            WEITER
+            {assessmentResult?.recommendedLabel ?? "WEITER"}
           </button>
         </div>
       </div>
@@ -157,7 +238,7 @@ export function ExercisePage({
       </header>
 
       {/* Body */}
-      <main className={styles.body}>
+      <main className={`${styles.body} ${isFlipMemory ? styles.bodyCompact : ""}`}>
         <div className={`${styles.exerciseCard} ${current.data.type === "lesson" ? styles.lessonMode : ""}`} key={current.id}>
           <p className={styles.catLabel}>{categoryTitle}</p>
 
@@ -182,27 +263,31 @@ export function ExercisePage({
                   ))}
                 </ul>
               )}
-              {current.data.sections && current.data.sections.map((section, i) => (
-                <div key={i} className={styles.lessonSection}>
-                  <p className={styles.lessonSectionHeading}>{section.heading}</p>
-                  {section.body && (
-                    <p className={styles.lessonSectionBody}>
-                      <HighlightTerms text={section.body} ids={current.data.glossarLinks} />
-                    </p>
-                  )}
-                  {section.bullets && (
-                    <ul className={styles.lessonSectionList}>
-                      {section.bullets.map((bullet, j) => (
-                        <li key={j}>
-                          <HighlightTerms text={bullet} ids={current.data.glossarLinks} />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+              {current.data.sections && (
+                <div className={styles.lessonSections}>
+                  {current.data.sections.map((section, i) => (
+                    <div key={i} className={styles.lessonSection}>
+                      <p className={styles.lessonSectionHeading}>{section.heading}</p>
+                      {section.body && (
+                        <p className={styles.lessonSectionBody}>
+                          <HighlightTerms text={section.body} ids={current.data.glossarLinks} />
+                        </p>
+                      )}
+                      {section.bullets && (
+                        <ul className={styles.lessonSectionList}>
+                          {section.bullets.map((bullet, j) => (
+                            <li key={j}>
+                              <HighlightTerms text={bullet} ids={current.data.glossarLinks} />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
               <button type="button" className={styles.lessonBtn} onClick={advance}>
-                {current.data.buttonLabel ?? "Weiter zur Übung"}
+                {getNextLessonButtonLabel(exercises, index)}
               </button>
             </div>
           )}
@@ -213,7 +298,9 @@ export function ExercisePage({
             <AudioAuswahl data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />
           )}
           {current.data.type === "memory" && (
-            <MemoryGame data={current.data} onComplete={handleMemoryComplete} />
+            current.data.variant === "flip"
+              ? <FlipMemoryGame data={current.data} onComplete={handleMemoryComplete} />
+              : <MemoryGame data={current.data} onComplete={handleMemoryComplete} />
           )}
           {current.data.type === "vervollstaendigen" && (
             <Vervollstaendigen data={current.data} onAnswer={handleAnswer} disabled={isFeedback} />

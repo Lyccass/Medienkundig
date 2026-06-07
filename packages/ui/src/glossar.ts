@@ -12,6 +12,7 @@ export interface GlossarSource {
 export interface GlossarTerm {
   id: string;
   term: string;
+  aliases?: string[];
   category: string;
   short: string;
   full: string;
@@ -31,6 +32,71 @@ export const glossarTerms: GlossarTerm[] = [
     related: ["spam", "social-engineering", "domain-spoofing"],
     example: "Eine E-Mail von »sparkasse-sicherheit@konto-verify.net« fordert Sie auf, Ihr Konto innerhalb von 24 Stunden zu bestätigen – die Domain gehört nicht zur Sparkasse.",
     source: { label: "BSI – Phishing", url: "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Cyber-Sicherheitslage/Methoden-der-Cyber-Kriminalitaet/Phishing/phishing_node.html" },
+  },
+  {
+    id: "smishing",
+    term: "Smishing",
+    category: "Betrug & Manipulation",
+    short: "Phishing per SMS oder Messenger-Nachricht.",
+    full: "Smishing ist Phishing über SMS oder kurze Nachrichten. Die Nachricht wirkt oft wie eine Paketinfo, Bankwarnung oder Behördennachricht und führt über einen Link auf eine gefälschte Seite.",
+    related: ["phishing", "domain", "url"],
+    example: "Eine SMS behauptet, ein Paket könne nur zugestellt werden, wenn Sie über einen Link Ihre Adresse bestätigen.",
+  },
+  {
+    id: "vishing",
+    term: "Vishing",
+    aliases: ["Voice-Phishing"],
+    category: "Betrug & Manipulation",
+    short: "Phishing am Telefon, oft durch falsche Support- oder Behördenanrufe.",
+    full: "Vishing bedeutet Voice-Phishing. Betrüger rufen an, geben sich etwa als Bank, Polizei oder Technik-Support aus und versuchen, Druck aufzubauen oder Zugriff auf Geräte und Daten zu bekommen.",
+    related: ["phishing", "social-engineering"],
+    example: "Ein angeblicher Microsoft-Mitarbeiter ruft an und fordert Sie auf, Fernwartungssoftware zu installieren.",
+  },
+  {
+    id: "spoofing",
+    term: "Spoofing",
+    category: "Betrug & Manipulation",
+    short: "Technische Fälschung von Absendern, Nummern oder Identitäten.",
+    full: "Spoofing bedeutet, dass eine technische Kennung gefälscht wird, zum Beispiel eine Telefonnummer, E-Mail-Adresse oder Webseite. Dadurch wirkt ein Kontakt vertraut, obwohl er es nicht ist.",
+    related: ["domain-spoofing", "phishing", "social-engineering"],
+    example: "Auf dem Display steht scheinbar die Nummer der Polizei, tatsächlich wurde die Anzeige manipuliert.",
+  },
+  {
+    id: "love-scam",
+    term: "Love Scam",
+    aliases: ["Romance Scam"],
+    category: "Betrug & Manipulation",
+    short: "Online-Beziehungsbetrug, bei dem Vertrauen aufgebaut und später Geld verlangt wird.",
+    full: "Beim Love Scam bauen Betrüger über Dating-Plattformen, Messenger oder soziale Netzwerke eine emotionale Beziehung auf. Nach einiger Zeit folgt eine erfundene Notlage und die Bitte um Geld.",
+    related: ["social-engineering", "deepfake"],
+    example: "Eine Online-Bekanntschaft schreibt wochenlang liebevoll und bittet dann wegen einer angeblichen Operation um eine Überweisung.",
+  },
+  {
+    id: "gewinnbetrug",
+    term: "Gewinnbetrug",
+    category: "Betrug & Manipulation",
+    short: "Angeblicher Gewinn, der erst nach einer Vorauszahlung ausgezahlt werden soll.",
+    full: "Beim Gewinnbetrug erhalten Personen eine Nachricht über einen angeblichen Preis. Um den Gewinn zu bekommen, sollen sie vorher Gebühren, Steuern oder Versandkosten zahlen. Den Gewinn gibt es nicht.",
+    related: ["phishing", "social-engineering", "spam"],
+    example: "Ein Brief verspricht 50.000 Euro, verlangt aber zuerst eine Bearbeitungsgebühr.",
+  },
+  {
+    id: "enkeltrick",
+    term: "Enkeltrick",
+    category: "Betrug & Manipulation",
+    short: "Betrugsanruf, bei dem sich jemand als Verwandter in Not ausgibt.",
+    full: "Beim Enkeltrick geben sich Betrüger als Enkel, Kind oder nahestehende Person aus. Sie behaupten, dringend Geld zu brauchen, und setzen ihr Opfer emotional unter Druck.",
+    related: ["social-engineering", "vishing"],
+    example: "Ein Anrufer sagt: »Oma, ich bin's. Ich hatte einen Unfall und brauche sofort Geld.«",
+  },
+  {
+    id: "schockanruf",
+    term: "Schockanruf",
+    category: "Betrug & Manipulation",
+    short: "Dramatischer Betrugsanruf, der Panik erzeugen und schnelles Zahlen erzwingen soll.",
+    full: "Ein Schockanruf arbeitet mit einer angeblichen Notsituation, zum Beispiel einem Unfall eines Angehörigen. Die Täter geben sich als Polizei, Arzt oder Anwalt aus und verlangen sofort Geld.",
+    related: ["social-engineering", "vishing", "enkeltrick"],
+    example: "Ein angeblicher Arzt behauptet, Ihre Tochter brauche sofort eine Operation und dafür Bargeld.",
   },
   {
     id: "deepfake",
@@ -125,6 +191,7 @@ export const glossarTerms: GlossarTerm[] = [
   {
     id: "zwei-faktor",
     term: "Zwei-Faktor-Authentifizierung",
+    aliases: ["2FA", "Zwei-Faktor"],
     category: "Sicherheit",
     short: "Zusätzliche Sicherheitsstufe beim Login über einen zweiten Bestätigungsschritt.",
     full: "Die Zwei-Faktor-Authentifizierung (2FA) ergänzt das Passwort um einen zweiten Faktor – z.B. einen per SMS gesendeten Code oder eine Authenticator-App. Selbst wenn das Passwort gestohlen wird, bleibt der Account geschützt.",
@@ -185,6 +252,7 @@ export const glossarTerms: GlossarTerm[] = [
   {
     id: "ki",
     term: "Künstliche Intelligenz (KI)",
+    aliases: ["KI", "Künstliche Intelligenz"],
     category: "KI & Manipulation",
     short: "Computersysteme, die menschliche Intelligenz nachahmen – mit wachsendem Einfluss.",
     full: "Künstliche Intelligenz beschreibt Systeme, die menschliche Aufgaben ausführen können: Sprache verstehen, Bilder erkennen, Entscheidungen treffen. Im Kontext der Medienkompetenz ist besonders relevant, wie KI zur Erstellung von Deepfakes, automatisierten Falschnachrichten oder Profilerstellung eingesetzt wird.",

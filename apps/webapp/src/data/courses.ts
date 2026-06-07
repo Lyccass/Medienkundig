@@ -30,6 +30,7 @@ export interface AudioAuswahlData {
 
 export interface MemoryData {
   type: "memory";
+  variant?: "flip";
   question: string;
   pairs: { term: string; definition: string; info?: string }[];
   explanation?: string;
@@ -82,6 +83,10 @@ export interface WarnzeichenData {
   type: "warnzeichen";
   question: string;
   scenarioType: ScenarioType;
+  image?: {
+    src: string;
+    alt: string;
+  };
   zones: WarnzeichenZone[];
   explanation?: string;
   glossarLinks?: string[];
@@ -323,8 +328,8 @@ export const categories: Category[] = [
               title: "Bist du fit gegen Betrug?",
               kicker: "Lektion 1 · Einstieg",
               body: "Ob am Telefon, per E-Mail oder an der Haustür – Betrugsversuche begegnen uns heute überall. Das Bundeskriminalamt zählte allein 2024 über 131.000 Cybercrime-Fälle in Deutschland – und erstmals kommen dabei KI-gestützte Methoden zum Einsatz. Das Gute daran: Schon ein einziges kurzes Training kann die Fähigkeit, echte von gefälschten Inhalten zu unterscheiden, erheblich verbessern.",
-              buttonLabel: "Weiter zu Fall 1",
               mediaType: "text",
+              glossarLinks: ["phishing", "ki"],
             },
           },
           {
@@ -351,57 +356,60 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing", "domain"],
+              glossarLinks: ["phishing", "domain", "url"],
             },
           },
           {
             id: "scam-l1-phishing",
             data: {
               type: "warnzeichen",
-              question: "Markiere alle Warnzeichen in dieser E-Mail.",
+              question: "Welche nummerierten Stellen sind Warnzeichen in dieser E-Mail?",
               scenarioType: "email",
+              image: {
+                src: "/warnzeichen-dpd-email.png",
+                alt: "Screenshot einer angeblichen DPD-Zustellbenachrichtigung in einem E-Mail-Postfach.",
+              },
               zones: [
-                {
-                  id: "sender",
-                  label: "Von",
-                  text: "sparkasse-sicherheit@konto-verify.net",
-                  suspicious: true,
-                  explanation: "Die Domain nach dem @ gehört nicht zur Sparkasse.",
-                },
                 {
                   id: "subject",
                   label: "Betreff",
-                  text: "Ihr Konto wurde gesperrt – Sofortmaßnahme erforderlich",
+                  text: "Zustellbenachrichtigung für Sendung DPD_883221 / 5/19/2026",
                   suspicious: true,
-                  explanation: "Druck und angebliche Dringlichkeit sind typische Betrugszeichen.",
+                  explanation: "Der Betreff wirkt automatisch übersetzt und enthält ein ungewöhnliches Datum im US-Format.",
                 },
                 {
-                  id: "greeting",
-                  label: "Anrede",
-                  text: "Sehr geehrter Kunde,",
+                  id: "sender",
+                  label: "Absender",
+                  text: "INFO <info@iwyiwy.co.jp>",
+                  suspicious: true,
+                  explanation: "Die Absender-Domain passt nicht zu DPD. Genau die Domain nach dem @ ist entscheidend.",
+                },
+                {
+                  id: "logo",
+                  label: "DPD-Logo",
+                  text: "Logo und Gestaltung",
                   suspicious: false,
-                  explanation: "Eine allgemeine Anrede allein beweist noch keinen Betrug.",
+                  explanation: "Ein echtes Logo allein beweist keinen Betrug. Betrüger kopieren Logos sehr leicht.",
                 },
                 {
-                  id: "pressure",
-                  label: "Text",
-                  text: "Um eine dauerhafte Sperrung zu verhindern, bestätigen Sie Ihre Daten innerhalb von 24 Stunden.",
+                  id: "date",
+                  label: "Datum",
+                  text: "5/19/2026 - 16:41:36",
                   suspicious: true,
-                  explanation: "Die Nachricht erzeugt Zeitdruck, damit du unüberlegt klickst.",
+                  explanation: "Das Datumsformat und die eingeblendete Markierung wirken untypisch für eine deutsche Paketmail.",
                 },
                 {
-                  id: "link",
-                  label: "Link",
-                  text: "bit.ly/sparkasse-verify",
+                  id: "button",
+                  label: "Button",
+                  text: "Zustellung neu planen",
                   suspicious: true,
-                  explanation: "Kurzlinks verstecken das echte Ziel.",
+                  explanation: "Der Button soll zum Klicken verleiten. Vor dem Klick wäre die echte URL zu prüfen.",
                 },
               ],
               explanation:
-                "Die gefährliche Kombination ist: fremde Absender-Domain, Zeitdruck und ein verschleierter Link. Genau diese Muster solltest du zuerst markieren.",
-              glossarLinks: ["phishing", "domain"],
+                "Richtig sind 1, 2, 4 und 5: verdächtiger Betreff, fremde Absender-Domain, auffälliges Datum und ein klickbarer Zustell-Button. 3 allein ist kein Beweis, weil Logos leicht kopiert werden.",
+              glossarLinks: ["phishing", "domain", "url"],
             },
           },
           {
@@ -428,9 +436,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["smishing", "phishing", "domain", "malware"],
             },
           },
           {
@@ -453,7 +460,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Smishing-SMS enthalten Links zu gefälschten Seiten. Einzige sichere Reaktion: SMS löschen und die offizielle DHL-Website direkt im Browser aufrufen.",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["smishing", "phishing", "domain"],
             },
           },
           {
@@ -481,9 +488,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "audio",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["enkeltrick", "social-engineering", "ki"],
             },
           },
           {
@@ -503,7 +509,7 @@ export const categories: Category[] = [
               correct: 0,
               explanation:
                 "Betrüger nennen ihren Namen bewusst nicht, damit du ihn nennst – und sie die Identität übernehmen können. Das ist das klassische Muster des Enkeltricks.",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["enkeltrick", "social-engineering"],
             },
           },
           {
@@ -531,9 +537,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "audio",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["schockanruf", "social-engineering", "ki"],
             },
           },
           {
@@ -553,7 +558,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Krankenhäuser und Behörden fragen niemals telefonisch nach Bargeld. Auflegen und direkt bei der betroffenen Person anrufen – auf einer Nummer, die du selbst kennst.",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["schockanruf", "social-engineering"],
             },
           },
         ],
@@ -570,8 +575,8 @@ export const categories: Category[] = [
               title: "Lektion 2 – Noch besser geschützt",
               kicker: "Lektion 2 · Einstieg",
               body: "Du weißt jetzt, wie Phishing, Smishing, der Enkeltrick und der Schockanruf funktionieren. In dieser Lektion kommen vier weitere Maschen dazu – etwas komplexer, aber genauso wichtig. Du lernst, wie Betrüger gefälschte Telefonnummern nutzen, sich als Technik-Support ausgeben, über Wochen Vertrauen aufbauen und mit fingierten Gewinnen locken.",
-              buttonLabel: "Weiter zu Fall 5",
               mediaType: "text",
+              glossarLinks: ["phishing", "spoofing", "vishing", "love-scam", "gewinnbetrug"],
             },
           },
           {
@@ -598,9 +603,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["spoofing", "social-engineering"],
             },
           },
           {
@@ -623,7 +627,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Die Notrufnummer 110 wird nie für ausgehende Anrufe genutzt. Eine auf dem Display angezeigte Nummer beweist nicht, wer wirklich anruft – das nennt sich Spoofing.",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["spoofing", "social-engineering"],
             },
           },
           {
@@ -650,9 +654,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "audio",
-              glossarLinks: ["phishing", "social-engineering"],
+              glossarLinks: ["vishing", "phishing", "social-engineering", "malware"],
             },
           },
           {
@@ -672,7 +675,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Microsoft und andere Firmen rufen nie unaufgefordert an. Links wie »support-remote-fix.com« sind keine offiziellen Microsoft-Seiten. Sofort auflegen.",
-              glossarLinks: ["phishing", "social-engineering"],
+              glossarLinks: ["vishing", "phishing", "social-engineering"],
             },
           },
           {
@@ -700,9 +703,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["love-scam", "social-engineering", "ki", "deepfake"],
             },
           },
           {
@@ -725,7 +727,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Nie persönlich getroffen + erste Geldbitte nach emotionalem Aufbau = klassisches Love-Scam-Muster. Kein Geld überweisen. Erst mit einer Vertrauensperson sprechen.",
-              glossarLinks: ["social-engineering"],
+              glossarLinks: ["love-scam", "social-engineering"],
             },
           },
           {
@@ -752,9 +754,8 @@ export const categories: Category[] = [
                   ],
                 },
               ],
-              buttonLabel: "Zur Übung",
               mediaType: "text",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["gewinnbetrug", "social-engineering", "phishing"],
             },
           },
           {
@@ -778,7 +779,7 @@ export const categories: Category[] = [
               correct: 1,
               explanation:
                 "Das Merkmal des Gewinnbetrugs: Erst zahlen, dann (angeblich) erhalten. Echte Gewinne kosten nichts im Voraus. Wer eine Gebühr verlangt, ist ein Betrüger.",
-              glossarLinks: ["phishing"],
+              glossarLinks: ["gewinnbetrug", "social-engineering", "phishing"],
             },
           },
         ],
@@ -792,6 +793,7 @@ export const categories: Category[] = [
             id: "scam-memory-8",
             data: {
               type: "memory",
+              variant: "flip",
               question: "Ordne jeden Betrugstyp dem passenden Beispiel zu:",
               pairs: [
                 {
@@ -837,7 +839,7 @@ export const categories: Category[] = [
               ],
               explanation:
                 "Du kennst jetzt alle acht häufigsten Betrugsmaschen. Wer die Muster erkennt, ist deutlich besser geschützt – und kann auch andere warnen.",
-              glossarLinks: ["phishing", "social-engineering"],
+              glossarLinks: ["phishing", "smishing", "enkeltrick", "schockanruf", "spoofing", "vishing", "love-scam", "gewinnbetrug", "social-engineering"],
             },
           },
         ],

@@ -1,5 +1,7 @@
 ---
 import Button from "./Button.astro";
+
+const onboardingUrl = "http://app.medienkundig.local?onboarding=1";
 ---
 
 <section class="section app-teaser" aria-labelledby="app-teaser-heading">
@@ -16,7 +18,7 @@ import Button from "./Button.astro";
           Die medienkundig App begleitet Sie mit kurzen Übungen, Fortschritt und
           Wiederholungen – am Smartphone, Tablet oder Desktop.
         </p>
-        <Button href="http://app.medienkundig.local" variant="primary" size="lg">
+        <Button href={onboardingUrl} variant="primary" size="lg">
           Zur App
         </Button>
       </div>

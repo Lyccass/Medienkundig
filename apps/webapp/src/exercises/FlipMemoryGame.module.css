@@ -1,0 +1,212 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  width: 100%;
+}
+
+/* ── Score bar ── */
+.scoreBar {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.scoreBar strong {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dotTerm    { background: #86efac; }
+.dotDef     { background: #fcd34d; }
+.dotMatched { background: #4ade80; }
+
+/* ── Card grid ──
+   Square: width = min(content width, viewport-height minus fixed chrome).
+   With 4×4 square cards the grid height ≈ grid width → fits without scrolling. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 0.5rem;
+  width: min(100%, calc(100dvh - 290px));
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+/* ── Card shell ── */
+.card {
+  width: 100%;
+  height: 100%;
+  perspective: 900px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.card.matched {
+  cursor: default;
+}
+
+/* ── 3D inner wrapper ── */
+.inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-md);
+}
+
+.flipped .inner,
+.matched .inner,
+.wrong   .inner {
+  transform: rotateY(180deg);
+}
+
+/* ── Shared face styles ── */
+.back,
+.front {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  font-family: inherit;
+  font-size: clamp(8px, 1.4vw, var(--text-xs));
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.25;
+  border: 2px solid transparent;
+  overflow: hidden;
+}
+
+/* ── Back face (hidden) ── */
+.back {
+  background: var(--color-primary);
+  color: #fff;
+  font-size: clamp(14px, 2.5vw, 1.5rem);
+  font-weight: 900;
+  border-color: #4c1d95;
+  transition: opacity 0.15s ease;
+}
+
+.card.hidden:hover .back {
+  opacity: 0.8;
+}
+
+/* ── Front face ── */
+.front {
+  transform: rotateY(180deg);
+}
+
+/* Term cards — green */
+.term .front {
+  background: #dcfce7;
+  color: #14532d;
+  border-color: #86efac;
+}
+
+/* Definition cards — amber (declared after term) */
+.definition .front {
+  background: #fef3c7;
+  color: #78350f;
+  border-color: #fcd34d;
+}
+
+/* Matched — overrides term & definition (declared after both) */
+.matched .front {
+  background: var(--color-success-soft);
+  color: var(--color-primary-dark);
+  border-color: var(--color-success);
+}
+
+/* Wrong — red flash, declared last */
+.wrong .front {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+  animation: wrongFlash 0.85s ease;
+}
+
+@keyframes wrongFlash {
+  0%   { opacity: 1; }
+  40%  { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* ── Completion summary ── */
+.complete {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.completeHeader {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0;
+}
+
+.completeSub {
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.defsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    gap: 0.25rem;
+    width: min(100%, calc(100dvh - 260px));
+  }
+}

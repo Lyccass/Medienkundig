@@ -188,6 +188,63 @@
   letter-spacing: -0.01em;
 }
 
+.accountBlock {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(228, 225, 240, 0.6);
+  border-bottom: 1px solid rgba(228, 225, 240, 0.6);
+}
+
+.accountIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.accountText {
+  min-width: 0;
+}
+
+.accountTitle {
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.accountCopy {
+  max-width: 52ch;
+  margin-top: 0.2rem;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.accountAction {
+  min-height: 40px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  padding: 0.6rem 1rem;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast);
+}
+
+.accountAction:hover {
+  opacity: 0.8;
+}
+
 /* ── Category cards ──────────────────────────────────────────────────────── */
 .categoryGrid {
   display: flex;
@@ -246,3 +303,14 @@
 .badgeIcon  { display: flex; flex-shrink: 0; color: var(--color-primary); }
 .badgeLabel { font-size: var(--text-sm); font-weight: 600; color: var(--color-text-soft); }
 .badge.badgeUnlocked .badgeLabel { color: var(--color-text); }
+
+@media (max-width: 700px) {
+  .accountBlock {
+    grid-template-columns: 36px 1fr;
+  }
+
+  .accountAction {
+    grid-column: 1 / -1;
+    justify-self: flex-start;
+  }
+}
