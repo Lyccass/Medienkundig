@@ -161,8 +161,8 @@ export default function App() {
             categoryTitle={cat?.title ?? (isFallRun ? "Fall" : "Wiederholen")}
             onComplete={handleExerciseComplete}
             onClose={handleExerciseClose}
-            onAttempt={(exerciseId, correct, selectedIndex) => {
-              void recordExerciseAttempt(exerciseId, correct, selectedIndex);
+            onAttempt={(exerciseId, correct, answer) => {
+              void recordExerciseAttempt(exerciseId, correct, answer);
             }}
           />
         </ErrorBoundary>

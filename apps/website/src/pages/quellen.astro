@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
 
 const sources = [
   {
@@ -11,7 +12,7 @@ const sources = [
         url: "https://www.bsi.bund.de",
       },
       {
-        title: "Bundeskriminalamt – Cybercrime-Lagebild 2024",
+        title: "Bundeskriminalamt – Cybercrime-Lagebild",
         desc: "Statistiken und Analysen zu Cybercrime-Fällen in Deutschland.",
         url: "https://www.bka.de/DE/AktuelleInformationen/StatistikenLagebilder/Lagebilder/Cybercrime/cybercrime_node.html",
       },
@@ -26,13 +27,13 @@ const sources = [
     category: "Medienkompetenz & Desinformation",
     items: [
       {
-        title: "Bundeszentrale für politische Bildung",
+        title: "Bundeszentrale für politische Bildung (bpb)",
         desc: "Hintergründe zu Fake News, Deepfakes, Filterblase und Künstlicher Intelligenz.",
         url: "https://www.bpb.de",
       },
       {
         title: "Klicksafe",
-        desc: "EU-Initiative zur Förderung digitaler Kompetenz – mit Materialien zu Fake News, Datenschutz und Online-Sicherheit.",
+        desc: "EU-Initiative zur Förderung digitaler Kompetenz – Materialien zu Fake News, Datenschutz und Online-Sicherheit.",
         url: "https://www.klicksafe.de",
       },
     ],
@@ -57,19 +58,13 @@ const sources = [
 
 <BaseLayout
   title="Quellen – medienkundig"
-  description="Vertrauenswürdige Quellen und Weiterführendes zu den Themen Cybersicherheit, Medienkompetenz und Datenschutz."
+  description="Vertrauenswürdige Quellen zu Cybersicherheit, Medienkompetenz und Datenschutz."
 >
-
-  <div class="qu-head">
-    <div class="container qu-head__inner">
-      <span class="label-eyebrow">Weiterführendes</span>
-      <h1 class="qu-head__title">Quellen</h1>
-      <p class="qu-head__sub">
-        Alle Inhalte auf medienkundig basieren auf vertrauenswürdigen, öffentlich zugänglichen Quellen.
-        Hier findest du sie gesammelt – zum Nachschlagen und Weiterlesen.
-      </p>
-    </div>
-  </div>
+  <PageHeader
+    eyebrow="Weiterführendes"
+    title="Quellen"
+    subtitle={`Alle Inhalte auf medienkundig basieren auf öffentlich zugänglichen, vertrauenswürdigen Quellen. Hier findest du sie gesammelt.`}
+  />
 
   <div class="container qu-body">
     {sources.map((group) => (
@@ -93,42 +88,15 @@ const sources = [
       </section>
     ))}
   </div>
-
 </BaseLayout>
 
 <style>
-  .qu-head {
-    background: var(--color-primary-soft);
-    padding-block: var(--space-16) var(--space-14);
-  }
-
-  .qu-head__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    max-width: 680px;
-  }
-
-  .qu-head__title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-  }
-
-  .qu-head__sub {
-    font-size: var(--text-base);
-    color: var(--color-text-soft);
-    line-height: var(--leading-relaxed);
-    max-width: 60ch;
-  }
-
   .qu-body {
-    padding-block: var(--space-14) var(--space-20);
+    padding-block: var(--space-12) var(--space-20);
+    max-width: 800px;
     display: flex;
     flex-direction: column;
     gap: var(--space-12);
-    max-width: 800px;
   }
 
   .qu-group__heading {
@@ -142,8 +110,6 @@ const sources = [
 
   .qu-list {
     list-style: none;
-    display: flex;
-    flex-direction: column;
     border-top: 1px solid var(--color-border);
   }
 
@@ -156,7 +122,7 @@ const sources = [
     align-items: center;
     justify-content: space-between;
     gap: var(--space-6);
-    padding: var(--space-4) var(--space-2);
+    padding: var(--space-5) var(--space-2);
     border-radius: var(--radius-sm);
     transition: background 0.12s;
     text-decoration: none;
@@ -181,6 +147,7 @@ const sources = [
     font-size: var(--text-base);
     font-weight: 700;
     color: var(--color-text);
+    line-height: var(--leading-snug);
   }
 
   .qu-item__desc {

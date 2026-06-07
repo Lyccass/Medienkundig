@@ -305,9 +305,36 @@ import { glossarTerms } from "@medienkundig/ui";
     document.getElementById("glossar-term-data")!.textContent!
   );
 
-  const modal    = document.getElementById("glossar-modal") as HTMLElement;
-  const backdrop = modal.querySelector<HTMLElement>(".gm__backdrop")!;
-  const closeBtn = modal.querySelector<HTMLButtonElement>(".gm__close")!;
+	  const modal    = document.getElementById("glossar-modal") as HTMLElement;
+	  const backdrop = modal.querySelector<HTMLElement>(".gm__backdrop")!;
+	  const closeBtn = modal.querySelector<HTMLButtonElement>(".gm__close")!;
+
+	  function getSafeExternalUrl(rawUrl: string) {
+	    try {
+	      const url = new URL(rawUrl, window.location.origin);
+	      return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+	    } catch {
+	      return null;
+	    }
+	  }
+
+	  function createExternalIcon() {
+	    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	    svg.setAttribute("width", "12");
+	    svg.setAttribute("height", "12");
+	    svg.setAttribute("viewBox", "0 0 12 12");
+	    svg.setAttribute("fill", "none");
+
+	    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	    path.setAttribute("d", "M2 10L10 2M10 2H5M10 2v5");
+	    path.setAttribute("stroke", "currentColor");
+	    path.setAttribute("stroke-width", "1.5");
+	    path.setAttribute("stroke-linecap", "round");
+	    path.setAttribute("stroke-linejoin", "round");
+	    svg.append(path);
+
+	    return svg;
+	  }
 
   function open(id: string) {
     const t = terms.find((t) => t.id === id);
@@ -328,54 +355,73 @@ import { glossarTerms } from "@medienkundig/ui";
       exEl.hidden = true;
     }
 
-    // Media
-    const mediaEl = modal.querySelector("#gm-media") as HTMLElement;
-    if (t.media) {
-      if (t.media.type === "youtube") {
-        mediaEl.innerHTML = `
-          <iframe src="https://www.youtube-nocookie.com/embed/${t.media.src}" allowfullscreen loading="lazy" title="${t.term}"></iframe>
-          ${t.media.caption ? `<p class="gm__media-caption">${t.media.caption}</p>` : ""}
-        `;
-      } else {
-        mediaEl.innerHTML = `
-          <img src="${t.media.src}" alt="${t.term}" loading="lazy" />
-          ${t.media.caption ? `<p class="gm__media-caption">${t.media.caption}</p>` : ""}
-        `;
-      }
-      mediaEl.hidden = false;
-    } else {
-      mediaEl.hidden = true;
-      mediaEl.innerHTML = "";
-    }
+	    // Media
+	    const mediaEl = modal.querySelector("#gm-media") as HTMLElement;
+	    mediaEl.replaceChildren();
+	    if (t.media) {
+	      if (t.media.type === "youtube") {
+	        const iframe = document.createElement("iframe");
+	        iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(t.media.src)}`;
+	        iframe.allowFullscreen = true;
+	        iframe.loading = "lazy";
+	        iframe.title = t.term;
+	        mediaEl.append(iframe);
+	      } else {
+	        const image = document.createElement("img");
+	        image.src = t.media.src;
+	        image.alt = t.term;
+	        image.loading = "lazy";
+	        mediaEl.append(image);
+	      }
+	      if (t.media.caption) {
+	        const caption = document.createElement("p");
+	        caption.className = "gm__media-caption";
+	        caption.textContent = t.media.caption;
+	        mediaEl.append(caption);
+	      }
+	      mediaEl.hidden = false;
+	    } else {
+	      mediaEl.hidden = true;
+	    }
 
-    // Related terms
-    const relEl = modal.querySelector("#gm-related") as HTMLElement;
-    if (t.related.length > 0) {
-      const related = t.related
-        .map((rid) => terms.find((x) => x.id === rid))
-        .filter(Boolean) as Term[];
-      relEl.innerHTML =
-        `<span class="gm__related-label">Verwandt</span>` +
-        related.map((r) =>
-          `<button class="gm__related-chip" data-glossar="${r.id}" type="button">${r.term}</button>`
-        ).join("");
-    } else {
-      relEl.innerHTML = "";
-    }
+	    // Related terms
+	    const relEl = modal.querySelector("#gm-related") as HTMLElement;
+	    relEl.replaceChildren();
+	    if (t.related.length > 0) {
+	      const related = t.related
+	        .map((rid) => terms.find((x) => x.id === rid))
+	        .filter(Boolean) as Term[];
+	      const label = document.createElement("span");
+	      label.className = "gm__related-label";
+	      label.textContent = "Verwandt";
+	      relEl.append(label);
+	      related.forEach((r) => {
+	        const button = document.createElement("button");
+	        button.className = "gm__related-chip";
+	        button.dataset.glossar = r.id;
+	        button.type = "button";
+	        button.textContent = r.term;
+	        relEl.append(button);
+	      });
+	    }
 
-    // Source in footer
-    const footerEl = modal.querySelector(".gm__footer") as HTMLElement;
-    const srcEl    = footerEl.querySelector(".gm__source") as HTMLElement | null;
-    if (t.source) {
-      const html = `<a class="gm__source" href="${t.source.url}" target="_blank" rel="noopener" title="Quelle öffnen">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        ${t.source.label}
-      </a>`;
-      if (srcEl) srcEl.outerHTML = html;
-      else footerEl.insertAdjacentHTML("afterbegin", html);
-    } else if (srcEl) {
-      srcEl.remove();
-    }
+	    // Source in footer
+	    const footerEl = modal.querySelector(".gm__footer") as HTMLElement;
+	    const srcEl    = footerEl.querySelector(".gm__source") as HTMLElement | null;
+	    const safeSourceUrl = t.source ? getSafeExternalUrl(t.source.url) : null;
+	    if (t.source && safeSourceUrl) {
+	      const sourceLink = document.createElement("a");
+	      sourceLink.className = "gm__source";
+	      sourceLink.href = safeSourceUrl;
+	      sourceLink.target = "_blank";
+	      sourceLink.rel = "noopener";
+	      sourceLink.title = "Quelle öffnen";
+	      sourceLink.append(createExternalIcon(), document.createTextNode(t.source.label));
+	      if (srcEl) srcEl.replaceWith(sourceLink);
+	      else footerEl.prepend(sourceLink);
+	    } else if (srcEl) {
+	      srcEl.remove();
+	    }
 
     modal.hidden = false;
     document.body.style.overflow = "hidden";

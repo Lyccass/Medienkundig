@@ -11,7 +11,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   scamming:    <ShieldAlert size={20} strokeWidth={2} />,
   news:        <Newspaper   size={20} strokeWidth={2} />,
   socialmedia: <Smartphone  size={20} strokeWidth={2} />,
-  general:     <Lock        size={20} strokeWidth={2} />,
+  grundlagen:  <Lock        size={20} strokeWidth={2} />,
 };
 
 function RadialProgress({ value, max }: { value: number; max: number }) {

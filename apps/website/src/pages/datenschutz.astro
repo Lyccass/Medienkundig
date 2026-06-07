@@ -1,22 +1,18 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
 ---
 
 <BaseLayout
   title="Datenschutz – medienkundig"
   description="Datenschutzerklärung gemäß DSGVO"
 >
-  <div class="legal-head">
-    <div class="container">
-      <span class="label-eyebrow">Rechtliches</span>
-      <h1 class="legal-head__title">Datenschutz</h1>
-    </div>
-  </div>
+  <PageHeader eyebrow="Rechtliches" title="Datenschutz" />
 
   <div class="container legal-body">
 
     <section class="legal-section">
-      <h2>Verantwortliche Stelle</h2>
+      <h2 class="legal-h2">Verantwortliche Stelle</h2>
       <p>
         Luka Sandvoß &amp; Jacquline Lehmann<br />
         [Adresse]<br />
@@ -25,21 +21,21 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     </section>
 
     <section class="legal-section">
-      <h2>Welche Daten wir speichern</h2>
+      <h2 class="legal-h2">Was wir speichern</h2>
       <p>
-        Auf der öffentlichen Website (diese Seite) werden keine personenbezogenen Daten aktiv erfasst.
+        Auf der öffentlichen Website werden keine personenbezogenen Daten aktiv erfasst.
         Es werden keine Tracking-Cookies oder Analysetools eingesetzt.
       </p>
       <p>
-        In der Lern-App (app.medienkundig.de) wird Lernfortschritt gespeichert. Ohne Konto geschieht das
-        ausschließlich lokal im Browser (localStorage) – es werden keine Daten an unsere Server übertragen.
-        Wer ein Konto anlegt, stimmt der Speicherung von E-Mail-Adresse und Lernfortschritt bei unserem
-        Dienstleister Supabase zu (Server in der EU).
+        In der Lern-App wird Lernfortschritt gespeichert. Ohne Konto geschieht das ausschließlich
+        lokal im Browser (localStorage) – es werden keine Daten an unsere Server übertragen.
+        Wer ein Konto anlegt, stimmt der Speicherung von E-Mail-Adresse und Lernfortschritt bei
+        unserem Dienstleister Supabase zu (Server in der EU).
       </p>
     </section>
 
     <section class="legal-section">
-      <h2>Hosting</h2>
+      <h2 class="legal-h2">Hosting</h2>
       <p>
         Diese Website wird auf [Hosting-Anbieter] gehostet. Bei jedem Seitenaufruf werden vom Hoster
         automatisch Verbindungsdaten wie IP-Adresse, Datum und Uhrzeit im Serverlog gespeichert.
@@ -48,18 +44,18 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     </section>
 
     <section class="legal-section">
-      <h2>Externe Links</h2>
+      <h2 class="legal-h2">Externe Links</h2>
       <p>
-        Diese Seite enthält Links zu externen Websites (z.B. BSI, BPB, Klicksafe). Für deren Datenschutzpraktiken
-        sind ausschließlich deren Betreiber verantwortlich.
+        Diese Seite enthält Links zu externen Websites (z.B. BSI, bpb, Klicksafe). Für deren
+        Datenschutzpraktiken sind ausschließlich deren Betreiber verantwortlich.
       </p>
     </section>
 
     <section class="legal-section">
-      <h2>Deine Rechte</h2>
+      <h2 class="legal-h2">Deine Rechte</h2>
       <p>
-        Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten
-        (Art. 15–18 DSGVO). Für Anfragen wende dich per E-Mail an uns (Adresse im Impressum).
+        Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung
+        deiner Daten (Art. 15–18 DSGVO). Für Anfragen wende dich per E-Mail an uns (Adresse im Impressum).
       </p>
     </section>
 
@@ -69,38 +65,35 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 </BaseLayout>
 
 <style>
-  .legal-head {
-    background: var(--color-primary-soft);
-    padding-block: var(--space-14) var(--space-12);
-  }
-
-  .legal-head__title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    margin-top: var(--space-3);
-  }
-
   .legal-body {
-    padding-block: var(--space-12) var(--space-20);
     max-width: 680px;
+    padding-block: var(--space-12) var(--space-20);
     display: flex;
     flex-direction: column;
-    gap: var(--space-10);
   }
 
   .legal-section {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    padding-block: var(--space-8);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .legal-section h2 {
+  .legal-section:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .legal-section:last-child {
+    border-bottom: none;
+  }
+
+  .legal-h2 {
     font-size: var(--text-sm);
     font-weight: 700;
-    color: var(--color-text);
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    color: var(--color-muted);
   }
 
   .legal-section p {
@@ -112,6 +105,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   .legal-date {
     font-size: var(--text-sm);
     color: var(--color-muted);
-    margin-top: var(--space-4);
+    padding-top: var(--space-6);
   }
 </style>

@@ -12,21 +12,6 @@ importers:
         specifier: ^5.5.0
         version: 5.9.3
 
-  apps/landing:
-    dependencies:
-      '@fontsource-variable/ubuntu-sans':
-        specifier: ^5.2.10
-        version: 5.2.10
-      '@medienkundig/theme':
-        specifier: workspace:*
-        version: link:../../packages/theme
-      '@medienkundig/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      astro:
-        specifier: ^4.16.0
-        version: 4.16.19(rollup@4.61.0)(typescript@5.9.3)
-
   apps/webapp:
     dependencies:
       '@fontsource-variable/ubuntu-sans':
@@ -66,6 +51,21 @@ importers:
       vite:
         specifier: ^5.4.0
         version: 5.4.21
+
+  apps/website:
+    dependencies:
+      '@fontsource-variable/ubuntu-sans':
+        specifier: ^5.2.10
+        version: 5.2.10
+      '@medienkundig/theme':
+        specifier: workspace:*
+        version: link:../../packages/theme
+      '@medienkundig/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      astro:
+        specifier: ^4.16.0
+        version: 4.16.19(rollup@4.61.0)(typescript@5.9.3)
 
   packages/theme: {}
 

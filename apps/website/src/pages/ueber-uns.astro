@@ -1,72 +1,74 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
 ---
 
 <BaseLayout
   title="Über uns – medienkundig"
-  description="medienkundig ist ein Hochschulprojekt von Jacquline Lehmann und Luka Sandvoß im Studiengang Mediendesign."
+  description="medienkundig ist eine Bachelorarbeit von Jacquline Lehmann und Luka Sandvoß im Studiengang Mediendesign, 2026."
 >
-
-  <div class="ou-head">
-    <div class="container ou-head__inner">
-      <span class="label-eyebrow">Hinter dem Projekt</span>
-      <h1 class="ou-head__title">Über uns</h1>
-    </div>
-  </div>
+  <PageHeader
+    eyebrow="Das Projekt"
+    title="Über medienkundig"
+  />
 
   <div class="container ou-body">
 
     <section class="ou-section">
-      <h2>Das Projekt</h2>
+      <h2 class="ou-h2">Worum es geht</h2>
       <p>
-        medienkundig ist eine interaktive Lernplattform zur digitalen Medienkompetenz – entstanden als Bachelorarbeit
-        im Studiengang <strong>Mediendesign</strong> an der <strong>[Hochschule]</strong>, eingereicht im Jahr 2026.
+        medienkundig ist eine interaktive Lernplattform zur digitalen Medienkompetenz.
+        Sie entstand als Bachelorarbeit im Studiengang Mediendesign an der <strong>[Hochschule]</strong> und wurde 2026 eingereicht.
       </p>
       <p>
-        Ausgangspunkt war eine einfache Beobachtung: Wer nicht mit dem Internet aufgewachsen ist, hat oft keine Gelegenheit
-        gehabt, den Umgang damit systematisch zu lernen. Gefälschte E-Mails, irreführende Nachrichten oder unsichere Passwörter
-        – das sind reale Risiken, auf die viele Menschen nicht vorbereitet sind.
+        Ausgangspunkt war eine einfache Beobachtung: Wer nicht mit dem Internet aufgewachsen ist, hatte oft keine
+        Gelegenheit, den Umgang damit systematisch zu lernen. Gefälschte E-Mails, irreführende Nachrichten oder
+        unsichere Passwörter – das sind reale Risiken, auf die viele Menschen nicht vorbereitet sind. Nicht weil
+        sie unvorsichtig sind, sondern weil ihnen die richtigen Werkzeuge fehlen.
       </p>
       <p>
-        medienkundig setzt genau da an. Die Plattform richtet sich an Menschen ab 50, die sicherer mit digitalen Medien umgehen
-        wollen – ohne Vorkenntnisse, ohne Fachjargon. Alles erklärt mit echten Beispielen, die aus dem Alltag gegriffen sind.
+        medienkundig setzt genau da an. Die Plattform richtet sich an Menschen ab 50, die sicherer mit digitalen
+        Medien umgehen wollen – mit echten Beispielen aus dem Alltag, ohne Fachsprache.
       </p>
     </section>
 
     <section class="ou-section">
-      <h2>Die Macherinnen und Macher</h2>
-      <div class="ou-team">
-        <div class="ou-person">
-          <div class="ou-person__avatar">JL</div>
-          <div>
+      <h2 class="ou-h2">Die Macherinnen und Macher</h2>
+      <ul class="ou-team" role="list">
+        <li class="ou-person">
+          <div class="ou-person__name-row">
             <strong class="ou-person__name">Jacquline Lehmann</strong>
-            <span class="ou-person__role">Konzept, Inhalt & Redaktion</span>
+            <span class="ou-person__role">Konzept, Inhalt &amp; Redaktion</span>
           </div>
-        </div>
-        <div class="ou-person">
-          <div class="ou-person__avatar">LS</div>
-          <div>
+          <p class="ou-person__desc">
+            Jacquline hat die Lerninhalte konzipiert, recherchiert und aufbereitet – von den Themengebieten
+            über die Übungsformate bis hin zu den konkreten Aufgaben und Erklärungen.
+          </p>
+        </li>
+        <li class="ou-person">
+          <div class="ou-person__name-row">
             <strong class="ou-person__name">Luka Sandvoß</strong>
-            <span class="ou-person__role">Design & Entwicklung</span>
+            <span class="ou-person__role">Design &amp; Entwicklung</span>
           </div>
-        </div>
-      </div>
-      <p>
-        Die Arbeit entstand gemeinsam – von der Konzeptphase über die inhaltliche Recherche bis zur Umsetzung der App.
-        Jacquline hat die Lerninhalte entwickelt und aufbereitet, Luka hat das Design und die technische Umsetzung verantwortet.
-      </p>
+          <p class="ou-person__desc">
+            Luka hat das visuelle Konzept, die Informationsarchitektur und die technische Umsetzung
+            der Plattform verantwortet – von der Lern-App über diese Website bis hin zum Backend.
+          </p>
+        </li>
+      </ul>
     </section>
 
     <section class="ou-section">
-      <h2>Ziele und Ansatz</h2>
+      <h2 class="ou-h2">Unser Ansatz</h2>
       <p>
-        Medienkompetenz ist keine Frage des Alters – aber ältere Generationen haben häufig weniger Berührungspunkte mit
-        digitalem Lernen gehabt. Unser Ansatz: kurze Einheiten, greifbare Beispiele, kein Überfordern. Fortschritt wird
-        lokal gespeichert, ein Konto ist optional.
+        Medienkompetenz ist keine Frage des Alters – aber ältere Generationen hatten häufig weniger
+        Berührungspunkte mit digitalem Lernen. Unser Ansatz: kurze Einheiten, greifbare Beispiele,
+        kein Überfordern. Fortschritt wird lokal gespeichert, ein Konto ist optional.
       </p>
       <p>
         Die Inhalte basieren auf Quellen wie dem BSI, der Bundeszentrale für politische Bildung und Klicksafe –
-        aufbereitet so, dass sie ohne Vorkenntnisse verständlich sind.
+        aufbereitet so, dass sie ohne Vorkenntnisse verständlich sind. Alle Quellen sind auf der
+        <a href="/quellen" class="ou-link">Quellenseite</a> gesammelt.
       </p>
     </section>
 
@@ -74,39 +76,31 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 </BaseLayout>
 
 <style>
-  .ou-head {
-    background: var(--color-primary-soft);
-    padding-block: var(--space-16) var(--space-14);
-  }
-
-  .ou-head__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .ou-head__title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-  }
-
   .ou-body {
-    padding-block: var(--space-14) var(--space-20);
     max-width: 720px;
+    padding-block: var(--space-12) var(--space-20);
     display: flex;
     flex-direction: column;
-    gap: var(--space-14);
+    gap: 0;
   }
 
   .ou-section {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    padding-block: var(--space-10);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .ou-section h2 {
+  .ou-section:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ou-section:last-child {
+    border-bottom: none;
+  }
+
+  .ou-h2 {
     font-size: var(--text-xl);
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -119,46 +113,58 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     line-height: var(--leading-relaxed);
   }
 
-  /* Team */
+  .ou-link {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Team list */
   .ou-team {
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
-    margin-block: var(--space-2) var(--space-2);
   }
 
   .ou-person {
     display: flex;
-    align-items: center;
-    gap: var(--space-4);
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .ou-person__avatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
-    font-size: var(--text-base);
-    font-weight: 900;
+  .ou-person:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ou-person__name-row {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    letter-spacing: 0.02em;
+    align-items: baseline;
+    gap: var(--space-4);
+    flex-wrap: wrap;
   }
 
   .ou-person__name {
-    display: block;
-    font-size: var(--text-base);
-    font-weight: 700;
+    font-size: var(--text-lg);
+    font-weight: 800;
     color: var(--color-text);
+    letter-spacing: -0.01em;
   }
 
   .ou-person__role {
-    display: block;
     font-size: var(--text-sm);
-    color: var(--color-muted);
-    margin-top: 2px;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .ou-person__desc {
+    font-size: var(--text-base);
+    color: var(--color-text-soft);
+    line-height: var(--leading-relaxed);
+    max-width: 60ch;
   }
 </style>
