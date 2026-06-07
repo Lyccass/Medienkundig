@@ -2,7 +2,7 @@
 
 **medienkundig** ist eine interaktive Lernplattform zur Förderung digitaler Medienkompetenz – entwickelt im Rahmen einer Bachelorarbeit.
 
-Die Plattform richtet sich an *Digital Immigrants*: Menschen ab 50, die im Alltag zunehmend mit digitalen Medien in Berührung kommen, aber bisher wenig formale Berührungspunkte damit hatten. Ziel ist es, grundlegende Konzepte wie sichere Passwörter, das Erkennen von Betrug oder den kritischen Umgang mit Online-Nachrichten niedrigschwellig und verständlich zu vermitteln – ohne Fachjargon, ohne Überforderung.
+Die Plattform richtet sich an *Digital Immigrants*: Menschen ab 50, die im Alltag mit digitalen Medien in Berührung kommen, aber bisher kaum Gelegenheit hatten, sich damit vertraut zu machen. Themen wie sichere Passwörter, Betrug erkennen oder kritisch mit Online-Nachrichten umgehen – verständlich erklärt, ohne Fachsprache.
 
 ---
 

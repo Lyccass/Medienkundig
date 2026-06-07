@@ -303,7 +303,7 @@ export const categories: Category[] = [
                 { term: "Cookie", definition: "Speichert Informationen im Browser" },
               ],
               explanation:
-                "Diese Begriffe begegnen Ihnen im Alltag ständig. Wer sie erkennt, kann Webseiten sicherer einschätzen.",
+                "Diese vier Begriffe tauchen überall auf. Wer sie kennt, sieht auf einen Blick, ob eine Webseite vertrauenswürdig ist.",
               glossarLinks: ["domain", "https", "cookie"],
             },
           },
@@ -327,7 +327,7 @@ export const categories: Category[] = [
               type: "lesson",
               title: "Bist du fit gegen Betrug?",
               kicker: "Lektion 1 · Einstieg",
-              body: "Ob am Telefon, per E-Mail oder an der Haustür – Betrugsversuche begegnen uns heute überall. Das Bundeskriminalamt zählte allein 2024 über 131.000 Cybercrime-Fälle in Deutschland – und erstmals kommen dabei KI-gestützte Methoden zum Einsatz. Das Gute daran: Schon ein einziges kurzes Training kann die Fähigkeit, echte von gefälschten Inhalten zu unterscheiden, erheblich verbessern.",
+              body: "Ob am Telefon, per E-Mail oder an der Haustür – Betrugsversuche begegnen uns heute überall. Das Bundeskriminalamt zählte allein 2024 über 131.000 Cybercrime-Fälle in Deutschland – und erstmals kommen dabei KI-gestützte Methoden zum Einsatz. Wer einmal gelernt hat, worauf man achten muss, erkennt die meisten Maschen auf den ersten Blick.",
               mediaType: "text",
               glossarLinks: ["phishing", "ki"],
             },

@@ -371,7 +371,7 @@ export function getOnboardingResult(correctCount: number, totalCount = onboardin
     return {
       level: "starter",
       title: "Grundlagen zuerst",
-      description: "Starte mit Links, Domains, Passwörtern und sicheren nächsten Schritten.",
+      description: "Fang mit den Grundlagen an: Links, Domains und Passwörter.",
       recommendedCategoryId: "grundlagen",
       recommendedLabel: "Grundlagen starten",
       correctCount,
@@ -383,7 +383,7 @@ export function getOnboardingResult(correctCount: number, totalCount = onboardin
     return {
       level: "basis",
       title: "Muster trainieren",
-      description: "Du erkennst einzelne Warnzeichen. Als Nächstes helfen realistische Betrugsfälle.",
+      description: "Du kennst die Basics schon. Jetzt gehen wir in die konkreten Betrugsfälle.",
       recommendedCategoryId: "scamming",
       recommendedLabel: "Betrugsfälle starten",
       correctCount,
@@ -394,7 +394,7 @@ export function getOnboardingResult(correctCount: number, totalCount = onboardin
   return {
     level: "sicher",
     title: "Direkt in die Fälle",
-    description: "Du kannst mit gemischten Fällen und Wiederholungen weiterarbeiten.",
+    description: "Gutes Niveau. Probier dich an gemischten Fällen und festige, was du weißt.",
     recommendedCategoryId: "scamming",
     recommendedLabel: "Fälle starten",
     correctCount,
