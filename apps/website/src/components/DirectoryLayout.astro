@@ -1,0 +1,35 @@
+---
+interface NavItem {
+  href: string;
+  label: string;
+  count?: string;
+}
+
+interface Props {
+  navLabel: string;
+  navItems: NavItem[];
+}
+
+const { navLabel, navItems } = Astro.props;
+---
+
+<div class="directory-shell">
+  <div class="container directory">
+    <aside class="directory__sidebar">
+      <p class="directory__sidebar-label">{navLabel}</p>
+      <nav class="directory__nav" aria-label={navLabel}>
+        {navItems.map((item) => (
+          <a class="directory__nav-item" href={item.href}>
+            <span class="directory__nav-dot"></span>
+            <span>{item.label}</span>
+            {item.count && <span class="directory__nav-count">{item.count}</span>}
+          </a>
+        ))}
+      </nav>
+    </aside>
+
+    <main class="directory__main">
+      <slot />
+    </main>
+  </div>
+</div>

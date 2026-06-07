@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
+import ContentFrame from "@/components/ContentFrame.astro";
+import ContentSection from "@/components/ContentSection.astro";
 ---
 
 <BaseLayout
@@ -9,86 +11,40 @@ import PageHeader from "@/components/PageHeader.astro";
 >
   <PageHeader eyebrow="Rechtliches" title="Impressum" />
 
-  <div class="container legal-body">
-
-    <section class="legal-section">
-      <h2 class="legal-h2">Angaben gemäß § 5 TMG</h2>
+  <ContentFrame width="legal">
+    <ContentSection title="Angaben gemäß § 5 TMG" tone="legal">
       <p>
         Luka Sandvoß &amp; Jacquline Lehmann<br />
         [Straße und Hausnummer]<br />
         [PLZ] [Stadt]<br />
         Deutschland
       </p>
-    </section>
+    </ContentSection>
 
-    <section class="legal-section">
-      <h2 class="legal-h2">Kontakt</h2>
+    <ContentSection title="Kontakt" tone="legal">
       <p>E-Mail: [E-Mail-Adresse]</p>
-    </section>
+    </ContentSection>
 
-    <section class="legal-section">
-      <h2 class="legal-h2">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+    <ContentSection title="Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV" tone="legal">
       <p>
         Luka Sandvoß &amp; Jacquline Lehmann<br />
         [Adresse wie oben]
       </p>
-    </section>
+    </ContentSection>
 
-    <section class="legal-section">
-      <h2 class="legal-h2">Hinweis</h2>
+    <ContentSection title="Hinweis" tone="legal">
       <p>
         Diese Website ist ein Hochschulprojekt im Rahmen einer Bachelorarbeit an der [Hochschule],
         Studiengang Mediendesign, 2026. Sie verfolgt keine kommerziellen Zwecke.
       </p>
-    </section>
+    </ContentSection>
 
-    <section class="legal-section">
-      <h2 class="legal-h2">Haftungsausschluss</h2>
+    <ContentSection title="Haftungsausschluss" tone="legal">
       <p>
         Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit
         und Aktualität können wir jedoch keine Gewähr übernehmen. Für externe Links sind ausschließlich
         deren Betreiber verantwortlich.
       </p>
-    </section>
-
-  </div>
+    </ContentSection>
+  </ContentFrame>
 </BaseLayout>
-
-<style>
-  .legal-body {
-    max-width: 680px;
-    padding-block: var(--space-12) var(--space-20);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .legal-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding-block: var(--space-8);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .legal-section:first-child {
-    border-top: 1px solid var(--color-border);
-  }
-
-  .legal-section:last-child {
-    border-bottom: none;
-  }
-
-  .legal-h2 {
-    font-size: var(--text-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-muted);
-  }
-
-  .legal-section p {
-    font-size: var(--text-base);
-    color: var(--color-text-soft);
-    line-height: var(--leading-relaxed);
-  }
-</style>

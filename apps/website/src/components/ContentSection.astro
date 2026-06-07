@@ -1,0 +1,16 @@
+---
+interface Props {
+  title: string;
+  tone?: "legal" | "editorial";
+}
+
+const { title, tone = "editorial" } = Astro.props;
+---
+
+<section class={`content-section content-section--${tone}`}>
+  <h2 class="content-section__title">{title}</h2>
+  <div class="content-section__body">
+    <slot />
+  </div>
+</section>
+

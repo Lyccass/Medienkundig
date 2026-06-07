@@ -1,0 +1,17 @@
+---
+interface Props {
+  id: string;
+  marker: string;
+  title: string;
+}
+
+const { id, marker, title } = Astro.props;
+---
+
+<section class="directory-group" id={id}>
+  <div class="directory-group__head">
+    <span class="directory-group__marker">{marker}</span>
+    <h2 class="directory-group__title">{title}</h2>
+  </div>
+  <slot />
+</section>

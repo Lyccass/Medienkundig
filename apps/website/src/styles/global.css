@@ -27,8 +27,12 @@ body {
   min-height: 100vh;
 }
 
+body.is-overlay-open {
+  overflow: hidden;
+}
+
 /* sections that scroll below the hero sit on white */
-main > *:not(.hero) {
+main > *:not(.hero):not(.ph) {
   background-color: #ffffff;
 }
 
@@ -108,7 +112,7 @@ h1, h2, h3, h4 {
   margin-bottom: var(--space-3);
 }
 
-/* Inline glossar term highlight — used via set:html so must be global */
+/* Inline glossar term highlight shared across landing, quiz, and glossary triggers */
 .glossar-inline {
   background: var(--color-primary-soft);
   color: var(--color-primary);

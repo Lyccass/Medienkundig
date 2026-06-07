@@ -1,41 +1,56 @@
 ---
 import Button from "./Button.astro";
 
-const steps = [
+type ButtonVariant = "primary" | "secondary" | "ghost";
+type VisualVariant = "pink" | "mint" | "lavender" | "amber";
+
+interface Step {
+  heading: string;
+  text: string;
+  cta: {
+    label: string;
+    href: string;
+    variant: ButtonVariant;
+  };
+  visual: VisualVariant;
+  mascot: "lean-left" | "lean-right" | "large-left" | "large-right" | "soft-left";
+}
+
+const steps: Step[] = [
   {
     heading: "Selbsttest machen",
     text: "Finden Sie in wenigen Minuten heraus, wie gut Sie digitale Bedrohungen schon erkennen – und wo Lernpotenzial steckt.",
     cta: { label: "Einstufung starten", href: "http://app.medienkundig.local", variant: "primary" },
-    blob: "rgba(249,168,212,0.28)",
-    mascotStyle: "transform: rotate(-4deg) scale(1.05);",
+    visual: "pink",
+    mascot: "lean-left",
   },
   {
     heading: "Lernpfad entdecken",
     text: "Basierend auf Ihrem Testergebnis erhalten Sie einen persönlichen Lernpfad – abgestimmt auf Ihre Kenntnisse und Ihr Tempo.",
     cta: { label: "App öffnen", href: "http://app.medienkundig.local", variant: "secondary" },
-    blob: "rgba(167,243,208,0.3)",
-    mascotStyle: "transform: rotate(3deg) scale(0.95);",
+    visual: "mint",
+    mascot: "lean-right",
   },
   {
     heading: "Themen verstehen",
     text: "Kurze, interaktive Lektionen erklären Risiken im Alltag – mit echten Beispielen, die Sie sofort einordnen können.",
     cta: { label: "Zum Glossar", href: "/glossar", variant: "secondary" },
-    blob: "rgba(196,181,253,0.32)",
-    mascotStyle: "transform: rotate(-2deg) scale(1.1);",
+    visual: "lavender",
+    mascot: "large-left",
   },
   {
     heading: "Wissen festigen",
     text: "Interaktive Übungen und echte Fallbeispiele helfen, das Gelernte zu festigen – jederzeit wiederholbar, in Ihrem Tempo.",
     cta: { label: "Übungen starten", href: "http://app.medienkundig.local", variant: "secondary" },
-    blob: "rgba(253,230,138,0.35)",
-    mascotStyle: "transform: rotate(5deg) scale(1.0);",
+    visual: "amber",
+    mascot: "large-right",
   },
   {
     heading: "Sicher handeln",
     text: "Wenden Sie Ihr Wissen im Alltag an und schützen Sie sich und andere nachhaltig vor Betrug, Fehlinformation und digitalen Fallen.",
     cta: { label: "Jetzt loslegen", href: "http://app.medienkundig.local", variant: "primary" },
-    blob: "rgba(167,243,208,0.28)",
-    mascotStyle: "transform: rotate(-3deg) scale(1.08);",
+    visual: "mint",
+    mascot: "soft-left",
   },
 ];
 ---
@@ -54,17 +69,16 @@ const steps = [
         <div class="step-row__text">
           <h3 class="step-row__heading">{step.heading}</h3>
           <p class="step-row__body">{step.text}</p>
-          <Button href={step.cta.href} variant={step.cta.variant as any}>{step.cta.label}</Button>
+          <Button href={step.cta.href} variant={step.cta.variant}>{step.cta.label}</Button>
         </div>
 
         <div class="step-row__visual">
           <div class="step-visual">
-            <div class="step-visual__blob" style={`background: radial-gradient(circle at center, ${step.blob} 0%, transparent 70%);`}></div>
+            <div class={`step-visual__blob step-visual__blob--${step.visual}`}></div>
             <img
               src="/assets/tinty.png"
               alt=""
-              class="step-visual__mascot"
-              style={step.mascotStyle}
+              class={`step-visual__mascot step-visual__mascot--${step.mascot}`}
               loading="lazy"
             />
           </div>
@@ -76,102 +90,3 @@ const steps = [
   </div>
 </section>
 
-<style>
-  .learning-steps__header {
-    text-align: center;
-    margin-bottom: var(--space-4);
-  }
-
-  .learning-steps__title {
-    font-size: var(--text-3xl);
-    margin-top: var(--space-2);
-  }
-
-  /* ── Step row ── */
-  .step-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-12);
-    align-items: center;
-    padding-block: var(--space-16);
-  }
-
-  .step-row--reversed .step-row__text   { order: 2; }
-  .step-row--reversed .step-row__visual { order: 1; }
-
-  /* ── Text side ── */
-  .step-row__text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-    max-width: 44ch;
-  }
-
-  .step-row__heading {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    color: var(--color-text);
-  }
-
-  .step-row__body {
-    font-size: var(--text-md);
-    color: var(--color-text-soft);
-    line-height: var(--leading-relaxed);
-  }
-
-  /* ── Visual side ── */
-  .step-row__visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 360px;
-  }
-
-  .step-visual {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .step-visual__blob {
-    position: absolute;
-    inset: -30px;
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  .step-visual__mascot {
-    position: relative;
-    z-index: 1;
-    width: 220px;
-    height: auto;
-    filter: drop-shadow(0 16px 40px rgba(108, 63, 255, 0.15));
-    transition: transform 0.4s ease;
-  }
-
-  .step-visual:hover .step-visual__mascot {
-    transform: scale(1.06) rotate(0deg) !important;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 860px) {
-    .step-row {
-      grid-template-columns: 1fr;
-      padding-block: var(--space-10);
-      gap: var(--space-6);
-    }
-
-    .step-row--reversed .step-row__text   { order: 1; }
-    .step-row--reversed .step-row__visual { order: 2; }
-
-    .step-row__text   { max-width: none; }
-    .step-row__visual { height: 260px; }
-    .step-visual      { width: 220px; height: 220px; }
-    .step-visual__mascot { width: 170px; }
-  }
-</style>

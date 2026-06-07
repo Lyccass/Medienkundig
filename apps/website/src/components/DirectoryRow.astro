@@ -1,0 +1,51 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  meta?: string;
+  href?: string;
+  external?: boolean;
+  index?: string;
+}
+
+const { title, description, meta, href, external = false, index } = Astro.props;
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+<li class="directory-row">
+  {
+    href ? (
+      <a class="directory-row__link" href={href} rel={rel} target={target}>
+        <div class="directory-row__left">
+          {index && <span class="directory-row__index">{index}</span>}
+          <span class="directory-row__text">
+            <span class="directory-row__title">{title}</span>
+            {description && <span class="directory-row__description">{description}</span>}
+          </span>
+        </div>
+
+        <div class="directory-row__right">
+          {meta && <span class="directory-row__meta">{meta}</span>}
+          <svg class="directory-row__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 8h8M9 5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </a>
+    ) : (
+      <div class="directory-row__link directory-row__link--static">
+        <div class="directory-row__left">
+          {index && <span class="directory-row__index">{index}</span>}
+          <span class="directory-row__text">
+            <span class="directory-row__title">{title}</span>
+            {description && <span class="directory-row__description">{description}</span>}
+          </span>
+        </div>
+
+        <div class="directory-row__right">
+          {meta && <span class="directory-row__meta">{meta}</span>}
+        </div>
+      </div>
+    )
+  }
+</li>

@@ -1,0 +1,12 @@
+---
+interface Props {
+  width?: "legal" | "content" | "wide";
+}
+
+const { width = "content" } = Astro.props;
+---
+
+<div class={`container content-frame content-frame--${width}`}>
+  <slot />
+</div>
+

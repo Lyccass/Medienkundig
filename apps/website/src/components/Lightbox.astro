@@ -13,70 +13,6 @@
   </div>
 </div>
 
-<style>
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-6);
-  }
-  .lightbox[hidden] { display: none; }
-
-  .lightbox__backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.82);
-    backdrop-filter: blur(6px);
-    cursor: zoom-out;
-  }
-
-  .lightbox__close {
-    position: absolute;
-    top: var(--space-4);
-    right: var(--space-4);
-    z-index: 2;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(4px);
-    transition: background 0.15s ease;
-  }
-  .lightbox__close:hover { background: rgba(255, 255, 255, 0.28); }
-
-  .lightbox__frame {
-    position: relative;
-    z-index: 1;
-    max-width: min(1100px, 94vw);
-    max-height: 90vh;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
-    animation: lb-in 0.22s ease;
-  }
-
-  .lightbox__img {
-    display: block;
-    max-width: 100%;
-    max-height: 90vh;
-    object-fit: contain;
-  }
-
-  @keyframes lb-in {
-    from { opacity: 0; transform: scale(0.93); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-</style>
-
 <script>
   const lb     = document.getElementById("global-lightbox") as HTMLElement;
   const img    = lb.querySelector<HTMLImageElement>(".lightbox__img")!;
@@ -87,13 +23,13 @@
     img.src = src;
     img.alt = alt;
     lb.hidden = false;
-    document.body.style.overflow = "hidden";
+    document.body.classList.add("is-overlay-open");
     close.focus();
   }
 
   function closeLb() {
     lb.hidden = true;
-    document.body.style.overflow = "";
+    document.body.classList.remove("is-overlay-open");
     img.src = "";
   }
 
@@ -103,5 +39,5 @@
     if (e.key === "Escape" && !lb.hidden) closeLb();
   });
 
-  (window as any).__lightbox = { open, close: closeLb };
+	  window.__lightbox = { open, close: closeLb };
 </script>

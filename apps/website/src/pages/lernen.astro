@@ -2,6 +2,9 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
 import Button from "@/components/Button.astro";
+import DirectoryLayout from "@/components/DirectoryLayout.astro";
+import DirectoryGroup from "@/components/DirectoryGroup.astro";
+import DirectoryRow from "@/components/DirectoryRow.astro";
 
 const appUrl = "http://app.medienkundig.local";
 
@@ -31,6 +34,38 @@ const categories = [
     count: "5 Übungen",
   },
 ];
+
+const steps = [
+  {
+    number: "01",
+    title: "Einstufungstest",
+    description:
+      "20 kurze Fragen ohne Vorkenntnisse. Am Ende bekommst du ein Level: Einsteiger, Fortgeschritten oder Sicher.",
+  },
+  {
+    number: "02",
+    title: "Thema wählen",
+    description:
+      "medienkundig empfiehlt dir einen Startpunkt. Du kannst aber jederzeit frei zwischen den vier Themenbereichen wechseln.",
+  },
+  {
+    number: "03",
+    title: "Interaktive Übungen",
+    description:
+      "Multiple Choice, URL-Trainer, Fallszenarien, Warnzeichen-Übungen und Memory wechseln sich ab.",
+  },
+  {
+    number: "04",
+    title: "Wiederholen & festigen",
+    description:
+      "Abgeschlossene Übungen bleiben verfügbar. Fortschritt, XP und Tages-Serie helfen beim Dranbleiben.",
+  },
+];
+
+const navItems = [
+  { href: "#themen", label: "Themen", count: String(categories.length) },
+  { href: "#ablauf", label: "Ablauf", count: String(steps.length) },
+];
 ---
 
 <BaseLayout
@@ -47,213 +82,33 @@ const categories = [
     </div>
   </PageHeader>
 
-  <!-- Categories -->
-  <section class="section container">
-    <div class="lp-section-header">
-      <span class="label-eyebrow">Themenbereiche</span>
-      <h2 class="lp-section-title">Vier Themen, eine Plattform</h2>
-    </div>
-    <ul class="lp-cats" role="list">
-      {categories.map((cat) => (
-        <li class="lp-cat">
-          <span class="lp-cat__number">{cat.number}</span>
-          <div class="lp-cat__body">
-            <div class="lp-cat__head">
-              <h3 class="lp-cat__title">{cat.title}</h3>
-              <span class="lp-cat__count">{cat.count}</span>
-            </div>
-            <p class="lp-cat__desc">{cat.description}</p>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </section>
+  <DirectoryLayout navLabel="Lernseite" navItems={navItems}>
+    <DirectoryGroup id="themen" marker="01" title="Themenbereiche">
+      <ul class="directory-list" role="list">
+        {categories.map((cat) => (
+          <DirectoryRow
+            index={cat.number}
+            title={cat.title}
+            description={cat.description}
+            meta={cat.count}
+          />
+        ))}
+      </ul>
+    </DirectoryGroup>
 
-  <!-- How it works -->
-  <section class="section section--tinted">
-    <div class="container lp-how">
-      <div class="lp-section-header">
-        <span class="label-eyebrow">Der Ablauf</span>
-        <h2 class="lp-section-title">So läuft eine Lerneinheit ab</h2>
-      </div>
-      <ol class="lp-steps" role="list">
-        <li class="lp-step">
-          <span class="lp-step__num" aria-hidden="true">1</span>
-          <div class="lp-step__body">
-            <strong>Einstufungstest</strong>
-            <p>20 kurze Fragen – keine Vorkenntnisse nötig. Am Ende bekommst du ein Level: Einsteiger, Fortgeschritten oder Sicher.</p>
-          </div>
-        </li>
-        <li class="lp-step">
-          <span class="lp-step__num" aria-hidden="true">2</span>
-          <div class="lp-step__body">
-            <strong>Thema wählen</strong>
-            <p>Wir empfehlen dir einen Startpunkt basierend auf deinem Ergebnis. Du kannst aber auch frei zwischen den vier Themenbereichen wählen.</p>
-          </div>
-        </li>
-        <li class="lp-step">
-          <span class="lp-step__num" aria-hidden="true">3</span>
-          <div class="lp-step__body">
-            <strong>Interaktive Übungen</strong>
-            <p>Multiple Choice, URL-Trainer, Fallszenarien, Memory – jede Lektion wechselt zwischen verschiedenen Formaten, damit es nicht eintönig wird.</p>
-          </div>
-        </li>
-        <li class="lp-step">
-          <span class="lp-step__num" aria-hidden="true">4</span>
-          <div class="lp-step__body">
-            <strong>Wiederholen &amp; festigen</strong>
-            <p>Bereits abgeschlossene Übungen kannst du jederzeit wiederholen. XP und eine Tages-Serie zeigen, wie regelmäßig du übst.</p>
-          </div>
-        </li>
+    <DirectoryGroup id="ablauf" marker="02" title="So läuft eine Lerneinheit ab">
+      <ol class="directory-list" role="list">
+        {steps.map((step) => (
+          <DirectoryRow
+            index={step.number}
+            title={step.title}
+            description={step.description}
+          />
+        ))}
       </ol>
-      <div class="lp-cta">
+      <div class="directory-action">
         <Button href={appUrl} variant="primary" size="lg">Jetzt loslegen</Button>
       </div>
-    </div>
-  </section>
+    </DirectoryGroup>
+  </DirectoryLayout>
 </BaseLayout>
-
-<style>
-  .lp-head-cta {
-    margin-top: var(--space-2);
-  }
-
-  /* ── Section header ── */
-  .lp-section-header {
-    margin-bottom: var(--space-8);
-  }
-
-  .lp-section-title {
-    font-size: var(--text-3xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-top: var(--space-2);
-  }
-
-  /* ── Categories ── */
-  .lp-cats {
-    list-style: none;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .lp-cat {
-    display: flex;
-    gap: var(--space-8);
-    align-items: flex-start;
-    padding-block: var(--space-8);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .lp-cat__number {
-    flex-shrink: 0;
-    font-size: var(--text-sm);
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: var(--color-primary);
-    opacity: 0.5;
-    padding-top: 4px;
-    width: 2rem;
-  }
-
-  .lp-cat__body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .lp-cat__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-  }
-
-  .lp-cat__title {
-    font-size: var(--text-xl);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--color-text);
-  }
-
-  .lp-cat__count {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-muted);
-    white-space: nowrap;
-  }
-
-  .lp-cat__desc {
-    font-size: var(--text-base);
-    color: var(--color-text-soft);
-    line-height: var(--leading-relaxed);
-    max-width: 70ch;
-  }
-
-  /* ── How it works ── */
-  .lp-how {
-    max-width: 760px;
-  }
-
-  .lp-steps {
-    list-style: none;
-    border-top: 1px solid var(--color-border);
-    margin-bottom: var(--space-10);
-  }
-
-  .lp-step {
-    display: flex;
-    gap: var(--space-6);
-    align-items: flex-start;
-    padding-block: var(--space-7);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .lp-step__num {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
-    font-size: var(--text-sm);
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 3px;
-  }
-
-  .lp-step__body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .lp-step__body strong {
-    font-size: var(--text-base);
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  .lp-step__body p {
-    font-size: var(--text-base);
-    color: var(--color-text-soft);
-    line-height: var(--leading-relaxed);
-  }
-
-  .lp-cta {
-    margin-top: var(--space-4);
-  }
-
-  @media (max-width: 600px) {
-    .lp-cat {
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .lp-cat__number {
-      padding-top: 0;
-    }
-  }
-</style>

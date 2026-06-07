@@ -1,6 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
+import DirectoryLayout from "@/components/DirectoryLayout.astro";
+import DirectoryGroup from "@/components/DirectoryGroup.astro";
+import DirectoryRow from "@/components/DirectoryRow.astro";
 
 const sources = [
   {
@@ -54,6 +57,21 @@ const sources = [
     ],
   },
 ];
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, "und")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+const navItems = sources.map((group) => ({
+  href: `#${slugify(group.category)}`,
+  label: group.category,
+  count: String(group.items.length),
+}));
 ---
 
 <BaseLayout
@@ -66,100 +84,25 @@ const sources = [
     subtitle={`Alle Inhalte auf medienkundig basieren auf öffentlich zugänglichen, vertrauenswürdigen Quellen. Hier findest du sie gesammelt.`}
   />
 
-  <div class="container qu-body">
-    {sources.map((group) => (
-      <section class="qu-group">
-        <h2 class="qu-group__heading">{group.category}</h2>
-        <ul class="qu-list" role="list">
+  <DirectoryLayout navLabel="Quellen" navItems={navItems}>
+    {sources.map((group, index) => (
+      <DirectoryGroup
+        id={navItems[index].href.slice(1)}
+        marker={String(index + 1).padStart(2, "0")}
+        title={group.category}
+      >
+        <ul class="directory-list" role="list">
           {group.items.map((item) => (
-            <li class="qu-item">
-              <a href={item.url} class="qu-item__link" target="_blank" rel="noopener noreferrer">
-                <div class="qu-item__text">
-                  <span class="qu-item__title">{item.title}</span>
-                  <span class="qu-item__desc">{item.desc}</span>
-                </div>
-                <svg class="qu-item__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-            </li>
+            <DirectoryRow
+              title={item.title}
+              description={item.desc}
+              meta={new URL(item.url).hostname.replace("www.", "")}
+              href={item.url}
+              external
+            />
           ))}
         </ul>
-      </section>
+      </DirectoryGroup>
     ))}
-  </div>
+  </DirectoryLayout>
 </BaseLayout>
-
-<style>
-  .qu-body {
-    padding-block: var(--space-12) var(--space-20);
-    max-width: 800px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-12);
-  }
-
-  .qu-group__heading {
-    font-size: var(--text-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-primary);
-    margin-bottom: var(--space-4);
-  }
-
-  .qu-list {
-    list-style: none;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .qu-item {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .qu-item__link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-6);
-    padding: var(--space-5) var(--space-2);
-    border-radius: var(--radius-sm);
-    transition: background 0.12s;
-    text-decoration: none;
-  }
-
-  .qu-item__link:hover {
-    background: var(--color-surface-soft);
-  }
-
-  .qu-item__link:hover .qu-item__arrow {
-    opacity: 1;
-    transform: translateX(3px);
-  }
-
-  .qu-item__text {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .qu-item__title {
-    font-size: var(--text-base);
-    font-weight: 700;
-    color: var(--color-text);
-    line-height: var(--leading-snug);
-  }
-
-  .qu-item__desc {
-    font-size: var(--text-sm);
-    color: var(--color-muted);
-    line-height: var(--leading-relaxed);
-  }
-
-  .qu-item__arrow {
-    color: var(--color-primary);
-    opacity: 0.3;
-    flex-shrink: 0;
-    transition: opacity 0.15s, transform 0.15s;
-  }
-</style>
