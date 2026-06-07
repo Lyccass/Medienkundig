@@ -8,16 +8,16 @@ interface Props {
 const { eyebrow, title, subtitle } = Astro.props;
 ---
 
-<div class="page-head">
-  <div class="container page-head__inner">
-    <div class="page-head__text">
+<div class="ph">
+  <div class="container ph__inner">
+    <div class="ph__text">
       {eyebrow && <span class="label-eyebrow">{eyebrow}</span>}
-      <h1 class="page-head__title">{title}</h1>
-      {subtitle && <p class="page-head__sub">{subtitle}</p>}
+      <h1 class="ph__title">{title}</h1>
+      {subtitle && <p class="ph__sub">{subtitle}</p>}
     </div>
     <slot />
   </div>
-  <div class="page-head__wave" aria-hidden="true">
+  <div class="ph__wave" aria-hidden="true">
     <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
       <path d="M0,80 C360,80 720,0 1440,0 L1440,80 Z" fill="#ffffff"/>
     </svg>
@@ -25,28 +25,26 @@ const { eyebrow, title, subtitle } = Astro.props;
 </div>
 
 <style>
-  .page-head {
+  .ph {
     background: var(--color-primary-soft);
     padding-block: var(--space-16) 0;
     position: relative;
   }
 
-  .page-head__inner {
+  .ph__inner {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     gap: var(--space-8);
     flex-wrap: wrap;
-    margin-top: var(--space-10);
   }
 
-  .page-head__text {
+  .ph__text {
     display: flex;
     flex-direction: column;
-    gap: 0;
   }
 
-  .page-head__title {
+  .ph__title {
     font-size: clamp(2.5rem, 6vw, 4rem);
     font-weight: 900;
     letter-spacing: -0.04em;
@@ -55,18 +53,18 @@ const { eyebrow, title, subtitle } = Astro.props;
     margin-top: var(--space-2);
   }
 
-  .page-head__sub {
+  .ph__sub {
     font-size: var(--text-sm);
     color: var(--color-muted);
     margin-top: var(--space-2);
   }
 
-  .page-head__wave {
+  .ph__wave {
     line-height: 0;
     margin-top: var(--space-10);
   }
 
-  .page-head__wave svg {
+  .ph__wave svg {
     display: block;
     width: 100%;
     height: 80px;
