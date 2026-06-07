@@ -42,11 +42,12 @@ export async function recordExerciseAttempt(
   const supabase = getSupabaseClient();
   if (!user || !supabase) return;
 
-  await supabase.rpc("record_learning_attempt", {
+  const { error } = await supabase.rpc("record_learning_attempt", {
     p_exercise_id: knownExerciseId,
     p_correct: correct,
     p_answer: answer ?? null,
   });
+  if (error) console.warn("[progress] record_learning_attempt failed:", error.message);
 }
 
 export async function recordExerciseCompletion(
@@ -58,9 +59,10 @@ export async function recordExerciseCompletion(
   const supabase = getSupabaseClient();
   if (!user || !supabase) return;
 
-  await supabase.rpc("complete_learning_exercises", {
+  const { error } = await supabase.rpc("complete_learning_exercises", {
     p_exercise_ids: getKnownExerciseIds(exerciseIds),
   });
+  if (error) console.warn("[progress] complete_learning_exercises failed:", error.message);
 }
 
 export async function replaceRemoteProgress(progress: Progress): Promise<void> {
@@ -70,11 +72,11 @@ export async function replaceRemoteProgress(progress: Progress): Promise<void> {
 
   const exerciseIds = getKnownExerciseIds(progress.completedExercises);
 
-  await supabase.from("profiles").upsert({ user_id: user.id }, { onConflict: "user_id" });
   if (exerciseIds.length > 0) {
-    await supabase.rpc("complete_learning_exercises", {
+    const { error } = await supabase.rpc("complete_learning_exercises", {
       p_exercise_ids: exerciseIds,
     });
+    if (error) console.warn("[progress] replaceRemoteProgress RPC failed:", error.message);
   }
 }
 

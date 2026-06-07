@@ -26,6 +26,9 @@ export function useAuthStatus(): AuthState {
         email: status.user?.email ?? null,
         isRegistered: status.isRegistered,
       });
+    }).catch(() => {
+      if (!alive) return;
+      setState({ loading: false, email: null, isRegistered: false });
     });
 
     if (!supabase) {

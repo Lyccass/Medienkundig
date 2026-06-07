@@ -19,7 +19,7 @@ export async function ensureSupabaseUser(): Promise<User | null> {
 }
 
 export function isRegisteredUser(user: User | null): boolean {
-  return Boolean(user && !(user as { is_anonymous?: boolean }).is_anonymous);
+  return Boolean(user && !user.is_anonymous);
 }
 
 export async function getAuthStatus(): Promise<AuthStatus> {
