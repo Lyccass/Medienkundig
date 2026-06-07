@@ -22,6 +22,7 @@ interface Props {
   onAttempt?: (exerciseId: string, correct: boolean, selectedIndex?: number) => void;
   completionVariant?: "learning" | "assessment";
   getAssessmentResult?: (correctCount: number, totalCount: number) => {
+    level?: string;
     title: string;
     description: string;
     recommendedLabel: string;
@@ -35,6 +36,18 @@ type Phase =
 
 const XP_CORRECT = 10;
 const XP_MEMORY = 20;
+
+const LEVEL_STYLE: Record<string, string> = {
+  starter: styles.levelStarter,
+  basis:   styles.levelBasis,
+  sicher:  styles.levelSicher,
+};
+
+const LEVEL_LABEL: Record<string, string> = {
+  starter: "Einsteiger",
+  basis:   "Fortgeschritten",
+  sicher:  "Sicher",
+};
 
 function getNextLessonButtonLabel(exercises: Exercise[], index: number) {
   const next = exercises[index + 1];
@@ -155,7 +168,7 @@ export function ExercisePage({
     return (
       <div className={styles.page}>
         <div className={styles.completeWrap}>
-          <div className={`${styles.completeCircle} ${perfect ? styles.completePerfect : ""}`}>
+          <div className={`${styles.completeCircle} ${(!isAssessment && perfect) ? styles.completePerfect : ""}`}>
             <Check className={styles.iconOnDark} size={40} strokeWidth={2.5} />
           </div>
           <h2 className={styles.completeTitle}>
@@ -165,10 +178,16 @@ export function ExercisePage({
             {isAssessment ? "Einstufung abgeschlossen" : "Einheit abgeschlossen"}
           </p>
 
+          {isAssessment && assessmentResult?.level && (
+            <span className={`${styles.levelBadge} ${LEVEL_STYLE[assessmentResult.level] ?? ""}`}>
+              {LEVEL_LABEL[assessmentResult.level] ?? assessmentResult.level}
+            </span>
+          )}
+
           {isAssessment ? (
-            <div className={styles.xpBubble}>
-              <span className={styles.xpNum}>{correctCount}/{scoredExercises.length}</span>
-              <span className={styles.xpLabel}>richtig</span>
+            <div className={styles.scoreBubble}>
+              <span className={styles.scoreNum}>{correctCount}</span>
+              <span className={styles.scoreLabel}>/ {scoredExercises.length} richtig</span>
             </div>
           ) : (
             <div className={styles.xpBubble}>

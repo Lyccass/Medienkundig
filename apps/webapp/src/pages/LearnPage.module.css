@@ -356,6 +356,36 @@
   line-height: 1.5;
 }
 
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .left {
+    height: auto;
+  }
+
+  .pathWrap {
+    overflow-y: visible;
+  }
+
+  .right {
+    display: none;
+  }
+
+  /* Make every row's inline CTA look like an active button on mobile
+     since there's no detail panel to reveal it. */
+  .startBtn {
+    color: #fff !important;
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+  }
+}
+
 /* ── CTABlock ───────────────────────────────────────────────────────────── */
 .ctaWrap {
   margin-top: auto;
