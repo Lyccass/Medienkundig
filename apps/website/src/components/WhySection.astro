@@ -58,89 +58,99 @@ const cards = [
       </p>
     </div>
 
-    <!-- Quiz frame -->
-    <div class="quiz" id="why-quiz">
+    <!-- Browser-chrome shell to make quiz look like the app -->
+    <div class="quiz-shell">
 
-      <!-- Top bar: back + progress -->
-      <div class="quiz__topbar">
-        <button class="quiz__back" id="quiz-back" type="button" aria-label="Vorherige Frage" hidden>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="quiz-shell__chrome" aria-hidden="true">
+        <span class="quiz-shell__dot quiz-shell__dot--red"></span>
+        <span class="quiz-shell__dot quiz-shell__dot--yellow"></span>
+        <span class="quiz-shell__dot quiz-shell__dot--green"></span>
+        <span class="quiz-shell__urlbar">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="flex-shrink:0">
+            <rect x="1.5" y="4.5" width="8" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M3.5 4.5V3a2 2 0 1 1 4 0v1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
           </svg>
-        </button>
-        <div class="quiz__progress" role="progressbar" aria-valuemin="0" aria-valuemax={cards.length} aria-valuenow="1">
-          {cards.map((_, i) => (
-            <div class={`quiz__seg ${i === 0 ? "quiz__seg--active" : ""}`} data-seg={i}></div>
-          ))}
-        </div>
+          app.medienkundig.de
+        </span>
       </div>
 
-      <!-- Steps -->
-      {cards.map((card, i) => (
-        <div class="quiz__step" data-step={i} aria-hidden={i !== 0 ? "true" : "false"} hidden={i !== 0}>
-          <div class="quiz__step-meta">
-            <span class="quiz__step-count">Aufgabe {i + 1} / {cards.length}</span>
-            <span class="quiz__step-tag">{card.tag}</span>
-          </div>
+      <!-- Quiz frame -->
+      <div class="quiz" id="why-quiz">
 
-          <h3 class="quiz__question">{card.question}</h3>
-          <p class="quiz__hint">
-            {card.hint.map((part) => (
-              typeof part === "string" ? part : (
-                <span data-glossar={part.id} class="glossar-inline">{part.term}</span>
-              )
-            ))}
-          </p>
-
-          <button
-            class="quiz__img-btn"
-            data-lightbox={card.img}
-            type="button"
-            aria-label="Bild vergrößern"
-          >
-            <img src={card.img} alt={card.imgAlt} class="quiz__img" loading={i === 0 ? "eager" : "lazy"} />
-            <span class="quiz__zoom-hint" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/>
-                <path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-                <path d="M6 4v4M4 6h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-              </svg>
-              Vergrößern
-            </span>
-          </button>
-
-          <div class="quiz__opts" role="group" aria-label="Antwortoptionen">
-            {card.opts.map((opt) => (
-              <button
-                class="quiz__opt"
-                data-correct={opt.correct ? "true" : "false"}
-                type="button"
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-
-          <div class="quiz__explanation" aria-live="polite" hidden>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <circle cx="9" cy="9" r="8" fill="#dcfce7"/>
-              <polyline points="5,9 8,12 13,6" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Top bar: back + progress + counter -->
+        <div class="quiz__topbar">
+          <button class="quiz__back" id="quiz-back" type="button" aria-label="Vorherige Frage" hidden>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <p>{card.explanation}</p>
-          </div>
+          </button>
+          <progress class="quiz__progress" id="quiz-progress" value="1" max={cards.length} aria-label="Fortschritt"></progress>
+          <span class="quiz__counter" id="quiz-counter" aria-live="polite">1&thinsp;/&thinsp;{cards.length}</span>
         </div>
-      ))}
 
-      <!-- Bottom nav -->
-      <div class="quiz__nav">
-        <button class="quiz__nav-btn quiz__nav-btn--ghost" id="quiz-prev" type="button" disabled>
-          Zurück
-        </button>
-        <button class="quiz__nav-btn quiz__nav-btn--primary" id="quiz-next" type="button" disabled>
-          Weiter
-        </button>
+        <!-- Steps -->
+        {cards.map((card, i) => (
+          <div class="quiz__step" data-step={i} aria-hidden={i !== 0 ? "true" : "false"} hidden={i !== 0}>
+            <div class="quiz__step-meta">
+              <span class="quiz__step-tag">{card.tag}</span>
+            </div>
+
+            <h3 class="quiz__question">{card.question}</h3>
+            <p class="quiz__hint">
+              {card.hint.map((part) => (
+                typeof part === "string" ? part : (
+                  <span data-glossar={part.id} class="glossar-inline">{part.term}</span>
+                )
+              ))}
+            </p>
+
+            <button
+              class="quiz__img-btn"
+              data-lightbox={card.img}
+              type="button"
+              aria-label="Bild vergrößern"
+            >
+              <img src={card.img} alt={card.imgAlt} class="quiz__img" loading={i === 0 ? "eager" : "lazy"} />
+              <span class="quiz__zoom-hint" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+                  <path d="M10 10l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  <path d="M6 4v4M4 6h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                Vergrößern
+              </span>
+            </button>
+
+            <div class="quiz__opts" role="group" aria-label="Antwortoptionen">
+              {card.opts.map((opt) => (
+                <button
+                  class="quiz__opt"
+                  data-correct={opt.correct ? "true" : "false"}
+                  type="button"
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            <div class="quiz__explanation" aria-live="polite" hidden>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="8" fill="#dcfce7"/>
+                <polyline points="5,9 8,12 13,6" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p>{card.explanation}</p>
+            </div>
+          </div>
+        ))}
+
+        <!-- Bottom nav -->
+        <div class="quiz__nav">
+          <button class="quiz__nav-btn quiz__nav-btn--primary" id="quiz-next" type="button" disabled>
+            Weiter
+          </button>
+        </div>
+
       </div>
-
     </div>
   </div>
 </section>
@@ -148,31 +158,29 @@ const cards = [
 <script>
   const quiz      = document.getElementById("why-quiz")!;
   const steps     = Array.from(quiz.querySelectorAll<HTMLElement>(".quiz__step"));
-  const segs      = Array.from(quiz.querySelectorAll<HTMLElement>(".quiz__seg"));
   const backBtn   = quiz.querySelector<HTMLButtonElement>("#quiz-back")!;
-  const prevBtn   = quiz.querySelector<HTMLButtonElement>("#quiz-prev")!;
   const nextBtn   = quiz.querySelector<HTMLButtonElement>("#quiz-next")!;
+  const progressEl = document.getElementById("quiz-progress") as HTMLProgressElement;
+  const counterEl  = document.getElementById("quiz-counter")!;
+  const total      = steps.length;
 
   let current  = 0;
-  const answered = new Array(steps.length).fill(false);
+  const answered = new Array(total).fill(false);
 
-	  function showStep(idx: number) {
-	    steps.forEach((s, i) => {
-	      s.hidden = i !== idx;
-	      s.setAttribute("aria-hidden", i === idx ? "false" : "true");
-	    });
-    segs.forEach((seg, i) => {
-      seg.classList.toggle("quiz__seg--active", i === idx);
-      seg.classList.toggle("quiz__seg--done",   i < idx);
+  function showStep(idx: number) {
+    steps.forEach((s, i) => {
+      s.hidden = i !== idx;
+      s.setAttribute("aria-hidden", i === idx ? "false" : "true");
     });
+
     backBtn.hidden   = idx === 0;
-    prevBtn.disabled = idx === 0;
     nextBtn.disabled = !answered[idx];
 
-    const isLast = idx === steps.length - 1;
-    nextBtn.textContent = isLast
-      ? (answered[idx] ? "Fertig ✓" : "Weiter")
-      : "Weiter";
+    progressEl.value = idx + 1;
+    counterEl.textContent = `${idx + 1} / ${total}`;
+
+    const isLast = idx === total - 1;
+    nextBtn.textContent = isLast ? (answered[idx] ? "Fertig ✓" : "Weiter") : "Weiter";
     current = idx;
   }
 
@@ -192,7 +200,7 @@ const cards = [
         expl.hidden = false;
 
         nextBtn.disabled = false;
-        const isLast = stepIdx === steps.length - 1;
+        const isLast = stepIdx === total - 1;
         if (isLast) nextBtn.textContent = "Fertig ✓";
       });
     });
@@ -202,13 +210,12 @@ const cards = [
       const btn = (e.currentTarget as HTMLButtonElement);
       const src = btn.dataset.lightbox!;
       const alt = btn.querySelector("img")?.alt ?? "";
-	      window.__lightbox?.open(src, alt);
+      window.__lightbox?.open(src, alt);
     });
   });
 
   backBtn.addEventListener("click", () => { if (current > 0) showStep(current - 1); });
-  prevBtn.addEventListener("click", () => { if (current > 0) showStep(current - 1); });
-  nextBtn.addEventListener("click", () => { if (current < steps.length - 1) showStep(current + 1); });
+  nextBtn.addEventListener("click", () => { if (current < total - 1) showStep(current + 1); });
 
   showStep(0);
 </script>
